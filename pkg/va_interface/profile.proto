@@ -1,0 +1,161 @@
+syntax = "proto3";
+
+package va_interface;
+
+import "common.proto";
+import "constants.proto";
+
+option go_package = "va_visionai_server/internal/va_interface";
+
+// 创建个人档案请求
+message CreateUserProfileRequest {
+  RequestHeader request_header = 1;
+  // 用户信息
+  UserProfile user_profile = 2;
+}
+
+// 创建个人档案响应
+message CreateUserProfileResponse {
+  ResponseHeader response_header = 1;
+  UserProfile user_profile = 2;
+}
+
+// 编辑个人档案请求
+message EditUserProfileRequest {
+  RequestHeader request_header = 1;
+  // 用户信息
+  UserProfile user_profile = 2;
+}
+
+// 编辑个人档案响应
+message EditUserProfileResponse {
+  ResponseHeader response_header = 1;
+  UserProfile user_profile = 2;
+}
+
+// 个人档案
+message UserProfile {
+  // 档案唯一标识
+  string profile_id = 1;
+  // UserID
+  string user_id = 2;
+  // 头像
+  string avatar = 3;
+  // 昵称
+  string nickname = 4;
+  // 生日
+  int64 birth_timestamp = 5;
+  // 性别
+  Gender gender = 6;
+  // 星座
+  string constellation = 7;
+  // 职业
+  string occupation = 8;
+  // 情感状态
+  string emotional_state = 9;
+  // 出生地经纬度
+  float birth_longitude = 10;
+  float birth_latitude = 11;
+  // 出生地址
+  string birth_address = 12;
+  // 出生国家
+  string birth_country = 13;
+  // 出生省份
+  string birth_province = 14;
+  // 出生城市
+  string birth_city = 15;
+  // 出生区县
+  string birth_district = 16;
+  // 出生街道
+  string birth_street = 17;
+}
+
+// 获取个人档案请求
+message GetUserProfileRequest {
+  RequestHeader request_header = 1;
+}
+
+// 获取个人档案响应
+message GetUserProfileResponse {
+  ResponseHeader response_header = 1;
+  // 用户信息
+  UserProfile user_profile = 2;
+}
+
+// 修改用户名请求
+message EditUserNameRequest {
+  RequestHeader request_header = 1;
+  // 用户名
+  string user_name = 2;
+}
+
+// 修改用户名响应
+message EditUserNameResponse {
+  ResponseHeader response_header = 1;
+}
+
+// 创建用户自定义个人信息请求
+message CreateCustomProfileRequest {
+  RequestHeader request_header = 1;
+  // 用户自定义个人信息
+  CustomProfile profile = 2;
+}
+
+// 创建用户自定义个人信息响应
+message CreateCustomProfileResponse {
+  ResponseHeader response_header = 1;
+}
+
+// 获取用户自定义个人信息列表请求
+message GetCustomProfileListRequest {
+  RequestHeader request_header = 1;
+}
+
+// 获取用户自定义个人信息列表响应
+message GetCustomProfileListResponse {
+  ResponseHeader response_header = 1;
+  // 用户自定义个人信息列表
+  repeated CustomProfile profiles = 2;
+}
+
+// 获取用户自定义个人信息列表请求
+message ListCustomProfileRequest {
+  RequestHeader request_header = 1;
+}
+
+// 获取用户自定义个人信息列表响应
+message ListCustomProfileResponse {
+  ResponseHeader response_header = 1;
+  repeated CustomProfile profiles = 2;
+}
+
+// 删除用户自定义个人信息请求
+message DeleteCustomProfileRequest {
+  RequestHeader request_header = 1;
+  // 用户自定义个人信息ID
+  string profile_id = 2;
+}
+
+// 删除用户自定义个人信息响应
+message DeleteCustomProfileResponse {
+  ResponseHeader response_header = 1;
+}
+
+// 用户自定义个人信息
+message CustomProfile {
+  UserProfile profile = 1;
+  // 关系
+  Relation relation = 2;
+}
+
+// 编辑用户自定义个人信息请求
+message EditCustomProfileRequest {
+  RequestHeader request_header = 1;
+  // 用户自定义个人信息
+  CustomProfile profile = 2;
+}
+
+// 编辑用户自定义个人信息响应
+message EditCustomProfileResponse {
+  ResponseHeader response_header = 1;
+}

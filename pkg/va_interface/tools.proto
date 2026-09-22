@@ -1,0 +1,59 @@
+syntax = "proto3";
+package va_interface;
+
+import "common.proto";
+import "google/api/annotations.proto";
+
+option go_package = "va_visionai_server/internal/va_interface";
+
+service ToolService {
+  rpc ListToolsGroupByType(ListToolsGroupByTypeRequest) returns (ListToolsGroupByTypeResponse) {
+    option (google.api.http) = {
+      post: "/v1/tool/list_tools_group_by_type"
+      body: "*"
+    };
+  }
+}
+
+message ListToolsGroupByTypeRequest {
+  RequestHeader request_header = 1;
+}
+
+message ListToolsGroupByTypeResponse {
+  ResponseHeader response_header = 1;
+  repeated ToolsGroupByTypeInfo tools_group_by_type_infos = 2;
+}
+
+message ToolsGroupByTypeInfo {
+  string tool_type_label = 1;
+  repeated ToolsInfo tools_infos = 2;
+}
+
+// 工作流类型
+enum ToolResultType {
+  // 未知
+  TOOL_RESULT_TYPE_UNKNOWN = 0;
+  // 图片
+  TOOL_RESULT_TYPE_IMAGE = 1;
+  // 视频
+  TOOL_RESULT_TYPE_VIDEO = 2;
+}
+
+message ToolsInfo {
+  string tool_id = 1;
+  string title = 2;
+  string icon = 3;
+  string tag_icon = 4;
+  // 上传图片数量
+  int32 image_input_count = 5;
+  // 任务结果类型（图片 视频）
+  ToolResultType result_type = 6;
+  // 是否是VIP工具
+  bool is_vip_tool = 7;
+  // 工具消耗基础积分
+  int32 credit = 8;
+  // 工具参数
+  repeated ToolParamsInfo tool_param_infos = 9;
+  // 工具能力
+  repeated ToolEnhance tool_enhances = 10;
+}

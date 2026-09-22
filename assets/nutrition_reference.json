@@ -1,0 +1,2034 @@
+{
+  "age_groups": [
+    {
+      "age_range": "0,3",
+      "gender": 1,
+      "macronutrients": {
+        "carbohydrate": {
+          "highRatio": 0.65,
+          "lowRatio": 0.45,
+          "unit": "g/100kcal"
+        },
+        "fat": {
+          "highRatio": 0.5,
+          "lowRatio": 0.15,
+          "unit": "g/100kcal"
+        },
+        "fiber": {
+          "highValue": 15.4,
+          "lowValue": 12.6,
+          "unit": "g"
+        },
+        "protein": {
+          "highRatio": 0.2,
+          "lowRatio": 0.05,
+          "unit": "g/100kcal"
+        }
+      },
+      "minerals": {
+        "calcium": {
+          "highValue": 770,
+          "lowValue": 630,
+          "unit": "mg"
+        },
+        "copper": {
+          "highValue": 8,
+          "lowValue": 0.8,
+          "unit": "mg"
+        },
+        "iodine": {
+          "highValue": 600,
+          "lowValue": 120,
+          "unit": "μg"
+        },
+        "iron": {
+          "highValue": 7.7,
+          "lowValue": 6.3,
+          "unit": "mg"
+        },
+        "magnesium": {
+          "highValue": 88,
+          "lowValue": 72,
+          "unit": "mg"
+        },
+        "manganese": {
+          "highValue": 11,
+          "lowValue": 4.5,
+          "unit": "mg"
+        },
+        "phosphorus": {
+          "highValue": 506,
+          "lowValue": 414,
+          "unit": "mg"
+        },
+        "potassium": {
+          "highValue": 2200,
+          "lowValue": 1800,
+          "unit": "mg"
+        },
+        "selenium": {
+          "highValue": 400,
+          "lowValue": 60,
+          "unit": "μg"
+        },
+        "sodium": {
+          "highValue": 1320,
+          "lowValue": 1080,
+          "unit": "mg"
+        },
+        "zinc": {
+          "highValue": 3.3,
+          "lowValue": 2.7,
+          "unit": "mg"
+        }
+      },
+      "vitamins": {
+        "choline": {
+          "highValue": 220,
+          "lowValue": 180,
+          "unit": "mg"
+        },
+        "folate": {
+          "highValue": 165,
+          "lowValue": 135,
+          "unit": "mcg DFE"
+        },
+        "niacin": {
+          "highValue": 6.6,
+          "lowValue": 5.4,
+          "unit": "mg"
+        },
+        "riboflavin": {
+          "highValue": 0.6,
+          "lowValue": 0.5,
+          "unit": "mg"
+        },
+        "thiamin": {
+          "highValue": 0.6,
+          "lowValue": 0.5,
+          "unit": "mg"
+        },
+        "vitamin_a": {
+          "highValue": 330,
+          "lowValue": 270,
+          "unit": "mcg RAE"
+        },
+        "vitamin_b12": {
+          "highValue": 1,
+          "lowValue": 0.8,
+          "unit": "mcg"
+        },
+        "vitamin_b6": {
+          "highValue": 0.6,
+          "lowValue": 0.5,
+          "unit": "mg"
+        },
+        "vitamin_c": {
+          "highValue": 16.5,
+          "lowValue": 13.5,
+          "unit": "mg"
+        },
+        "vitamin_d": {
+          "highValue": 660,
+          "lowValue": 540,
+          "unit": "IU"
+        },
+        "vitamin_e": {
+          "highValue": 6.6,
+          "lowValue": 5.4,
+          "unit": "mg AT"
+        },
+        "vitamin_k": {
+          "highValue": 33,
+          "lowValue": 27,
+          "unit": "mcg"
+        }
+      }
+    },
+    {
+      "age_range": "0,3",
+      "gender": 2,
+      "macronutrients": {
+        "carbohydrate": {
+          "highRatio": 0.65,
+          "lowRatio": 0.45,
+          "unit": "g/100kcal"
+        },
+        "fat": {
+          "highRatio": 0.45,
+          "lowRatio": 0.05,
+          "unit": "g/100kcal"
+        },
+        "fiber": {
+          "highValue": 18.7,
+          "lowValue": 15.3,
+          "unit": "g"
+        },
+        "protein": {
+          "highRatio": 0.3,
+          "lowRatio": 0.1,
+          "unit": "g/100kcal"
+        }
+      },
+      "minerals": {
+        "calcium": {
+          "highValue": 1100,
+          "lowValue": 900,
+          "unit": "mg"
+        },
+        "copper": {
+          "highValue": 8,
+          "lowValue": 0.8,
+          "unit": "mg"
+        },
+        "iodine": {
+          "highValue": 600,
+          "lowValue": 120,
+          "unit": "μg"
+        },
+        "iron": {
+          "highValue": 11,
+          "lowValue": 9,
+          "unit": "mg"
+        },
+        "magnesium": {
+          "highValue": 143,
+          "lowValue": 117,
+          "unit": "mg"
+        },
+        "manganese": {
+          "highValue": 11,
+          "lowValue": 4.5,
+          "unit": "mg"
+        },
+        "phosphorus": {
+          "highValue": 550,
+          "lowValue": 450,
+          "unit": "mg"
+        },
+        "potassium": {
+          "highValue": 2530,
+          "lowValue": 2070,
+          "unit": "mg"
+        },
+        "selenium": {
+          "highValue": 400,
+          "lowValue": 60,
+          "unit": "μg"
+        },
+        "sodium": {
+          "highValue": 1650,
+          "lowValue": 1350,
+          "unit": "mg"
+        },
+        "zinc": {
+          "highValue": 5.5,
+          "lowValue": 4.5,
+          "unit": "mg"
+        }
+      },
+      "vitamins": {
+        "choline": {
+          "highValue": 275,
+          "lowValue": 225,
+          "unit": "mg"
+        },
+        "folate": {
+          "highValue": 220,
+          "lowValue": 180,
+          "unit": "mcg DFE"
+        },
+        "niacin": {
+          "highValue": 8.8,
+          "lowValue": 7.2,
+          "unit": "mg"
+        },
+        "riboflavin": {
+          "highValue": 0.7,
+          "lowValue": 0.5,
+          "unit": "mg"
+        },
+        "thiamin": {
+          "highValue": 0.7,
+          "lowValue": 0.5,
+          "unit": "mg"
+        },
+        "vitamin_a": {
+          "highValue": 440,
+          "lowValue": 360,
+          "unit": "mcg RAE"
+        },
+        "vitamin_b12": {
+          "highValue": 1.3,
+          "lowValue": 1.1,
+          "unit": "mcg"
+        },
+        "vitamin_b6": {
+          "highValue": 0.7,
+          "lowValue": 0.5,
+          "unit": "mg"
+        },
+        "vitamin_c": {
+          "highValue": 27.5,
+          "lowValue": 22.5,
+          "unit": "mg"
+        },
+        "vitamin_d": {
+          "highValue": 660,
+          "lowValue": 540,
+          "unit": "IU"
+        },
+        "vitamin_e": {
+          "highValue": 7.7,
+          "lowValue": 6.3,
+          "unit": "mg AT"
+        },
+        "vitamin_k": {
+          "highValue": 60.5,
+          "lowValue": 49.5,
+          "unit": "mcg"
+        }
+      }
+    },
+    {
+      "age_range": "4,8",
+      "gender": 1,
+      "macronutrients": {
+        "carbohydrate": {
+          "highRatio": 0.65,
+          "lowRatio": 0.45,
+          "unit": "g/100kcal"
+        },
+        "fat": {
+          "highRatio": 0.45,
+          "lowRatio": 0.05,
+          "unit": "g/100kcal"
+        },
+        "fiber": {
+          "highValue": 27.5,
+          "lowValue": 22.5,
+          "unit": "g"
+        },
+        "protein": {
+          "highRatio": 0.3,
+          "lowRatio": 0.1,
+          "unit": "g/100kcal"
+        }
+      },
+      "minerals": {
+        "calcium": {
+          "highValue": 1430,
+          "lowValue": 1170,
+          "unit": "mg"
+        },
+        "copper": {
+          "highValue": 8,
+          "lowValue": 0.8,
+          "unit": "mg"
+        },
+        "iodine": {
+          "highValue": 600,
+          "lowValue": 120,
+          "unit": "μg"
+        },
+        "iron": {
+          "highValue": 16.5,
+          "lowValue": 13.5,
+          "unit": "mg"
+        },
+        "magnesium": {
+          "highValue": 396,
+          "lowValue": 324,
+          "unit": "mg"
+        },
+        "manganese": {
+          "highValue": 11,
+          "lowValue": 4.5,
+          "unit": "mg"
+        },
+        "phosphorus": {
+          "highValue": 1375,
+          "lowValue": 1125,
+          "unit": "mg"
+        },
+        "potassium": {
+          "highValue": 2530,
+          "lowValue": 2070,
+          "unit": "mg"
+        },
+        "selenium": {
+          "highValue": 400,
+          "lowValue": 60,
+          "unit": "μg"
+        },
+        "sodium": {
+          "highValue": 2530,
+          "lowValue": 2070,
+          "unit": "mg"
+        },
+        "zinc": {
+          "highValue": 9.9,
+          "lowValue": 8.1,
+          "unit": "mg"
+        }
+      },
+      "vitamins": {
+        "choline": {
+          "highValue": 440,
+          "lowValue": 360,
+          "unit": "mg"
+        },
+        "folate": {
+          "highValue": 440,
+          "lowValue": 360,
+          "unit": "mcg DFE"
+        },
+        "niacin": {
+          "highValue": 15.4,
+          "lowValue": 12.6,
+          "unit": "mg"
+        },
+        "riboflavin": {
+          "highValue": 1.1,
+          "lowValue": 0.9,
+          "unit": "mg"
+        },
+        "thiamin": {
+          "highValue": 1.1,
+          "lowValue": 0.9,
+          "unit": "mg"
+        },
+        "vitamin_a": {
+          "highValue": 770,
+          "lowValue": 630,
+          "unit": "mcg RAE"
+        },
+        "vitamin_b12": {
+          "highValue": 2.6,
+          "lowValue": 2.2,
+          "unit": "mcg"
+        },
+        "vitamin_b6": {
+          "highValue": 1.3,
+          "lowValue": 1.1,
+          "unit": "mg"
+        },
+        "vitamin_c": {
+          "highValue": 71.5,
+          "lowValue": 58.5,
+          "unit": "mg"
+        },
+        "vitamin_d": {
+          "highValue": 660,
+          "lowValue": 540,
+          "unit": "IU"
+        },
+        "vitamin_e": {
+          "highValue": 16.5,
+          "lowValue": 13.5,
+          "unit": "mg AT"
+        },
+        "vitamin_k": {
+          "highValue": 82.5,
+          "lowValue": 67.5,
+          "unit": "mcg"
+        }
+      }
+    },
+    {
+      "age_range": "4,8",
+      "gender": 2,
+      "macronutrients": {
+        "carbohydrate": {
+          "highRatio": 0.65,
+          "lowRatio": 0.45,
+          "unit": "g/100kcal"
+        },
+        "fat": {
+          "highRatio": 0.45,
+          "lowRatio": 0.05,
+          "unit": "g/100kcal"
+        },
+        "fiber": {
+          "highValue": 24.2,
+          "lowValue": 19.8,
+          "unit": "g"
+        },
+        "protein": {
+          "highRatio": 0.3,
+          "lowRatio": 0.1,
+          "unit": "g/100kcal"
+        }
+      },
+      "minerals": {
+        "calcium": {
+          "highValue": 1430,
+          "lowValue": 1170,
+          "unit": "mg"
+        },
+        "copper": {
+          "highValue": 8,
+          "lowValue": 0.8,
+          "unit": "mg"
+        },
+        "iodine": {
+          "highValue": 600,
+          "lowValue": 120,
+          "unit": "μg"
+        },
+        "iron": {
+          "highValue": 8.8,
+          "lowValue": 7.2,
+          "unit": "mg"
+        },
+        "magnesium": {
+          "highValue": 264,
+          "lowValue": 216,
+          "unit": "mg"
+        },
+        "manganese": {
+          "highValue": 11,
+          "lowValue": 4.5,
+          "unit": "mg"
+        },
+        "phosphorus": {
+          "highValue": 1375,
+          "lowValue": 1125,
+          "unit": "mg"
+        },
+        "potassium": {
+          "highValue": 2530,
+          "lowValue": 2070,
+          "unit": "mg"
+        },
+        "selenium": {
+          "highValue": 400,
+          "lowValue": 60,
+          "unit": "μg"
+        },
+        "sodium": {
+          "highValue": 1980,
+          "lowValue": 1620,
+          "unit": "mg"
+        },
+        "zinc": {
+          "highValue": 8.8,
+          "lowValue": 7.2,
+          "unit": "mg"
+        }
+      },
+      "vitamins": {
+        "choline": {
+          "highValue": 412.5,
+          "lowValue": 337.5,
+          "unit": "mg"
+        },
+        "folate": {
+          "highValue": 330,
+          "lowValue": 270,
+          "unit": "mcg DFE"
+        },
+        "niacin": {
+          "highValue": 13.2,
+          "lowValue": 10.8,
+          "unit": "mg"
+        },
+        "riboflavin": {
+          "highValue": 1,
+          "lowValue": 0.8,
+          "unit": "mg"
+        },
+        "thiamin": {
+          "highValue": 1,
+          "lowValue": 0.8,
+          "unit": "mg"
+        },
+        "vitamin_a": {
+          "highValue": 660,
+          "lowValue": 540,
+          "unit": "mcg RAE"
+        },
+        "vitamin_b12": {
+          "highValue": 2,
+          "lowValue": 1.6,
+          "unit": "mcg"
+        },
+        "vitamin_b6": {
+          "highValue": 1.1,
+          "lowValue": 0.9,
+          "unit": "mg"
+        },
+        "vitamin_c": {
+          "highValue": 49.5,
+          "lowValue": 40.5,
+          "unit": "mg"
+        },
+        "vitamin_d": {
+          "highValue": 660,
+          "lowValue": 540,
+          "unit": "IU"
+        },
+        "vitamin_e": {
+          "highValue": 12.1,
+          "lowValue": 9.9,
+          "unit": "mg AT"
+        },
+        "vitamin_k": {
+          "highValue": 66,
+          "lowValue": 54,
+          "unit": "mcg"
+        }
+      }
+    },
+    {
+      "age_range": "9,13",
+      "gender": 1,
+      "macronutrients": {
+        "carbohydrate": {
+          "highRatio": 0.65,
+          "lowRatio": 0.45,
+          "unit": "g/100kcal"
+        },
+        "fat": {
+          "highRatio": 0.45,
+          "lowRatio": 0.05,
+          "unit": "g/100kcal"
+        },
+        "fiber": {
+          "highValue": 27.5,
+          "lowValue": 22.5,
+          "unit": "g"
+        },
+        "protein": {
+          "highRatio": 0.35,
+          "lowRatio": 0.1,
+          "unit": "g/100kcal"
+        }
+      },
+      "minerals": {
+        "calcium": {
+          "highValue": 1100,
+          "lowValue": 900,
+          "unit": "mg"
+        },
+        "copper": {
+          "highValue": 8,
+          "lowValue": 0.8,
+          "unit": "mg"
+        },
+        "iodine": {
+          "highValue": 600,
+          "lowValue": 120,
+          "unit": "μg"
+        },
+        "iron": {
+          "highValue": 19.8,
+          "lowValue": 16.2,
+          "unit": "mg"
+        },
+        "magnesium": {
+          "highValue": 352,
+          "lowValue": 288,
+          "unit": "mg"
+        },
+        "manganese": {
+          "highValue": 11,
+          "lowValue": 4.5,
+          "unit": "mg"
+        },
+        "phosphorus": {
+          "highValue": 770,
+          "lowValue": 630,
+          "unit": "mg"
+        },
+        "potassium": {
+          "highValue": 2860,
+          "lowValue": 2340,
+          "unit": "mg"
+        },
+        "selenium": {
+          "highValue": 400,
+          "lowValue": 60,
+          "unit": "μg"
+        },
+        "sodium": {
+          "highValue": 2530,
+          "lowValue": 2070,
+          "unit": "mg"
+        },
+        "zinc": {
+          "highValue": 8.8,
+          "lowValue": 7.2,
+          "unit": "mg"
+        }
+      },
+      "vitamins": {
+        "choline": {
+          "highValue": 467.5,
+          "lowValue": 382.5,
+          "unit": "mg"
+        },
+        "folate": {
+          "highValue": 440,
+          "lowValue": 360,
+          "unit": "mcg DFE"
+        },
+        "niacin": {
+          "highValue": 15.4,
+          "lowValue": 12.6,
+          "unit": "mg"
+        },
+        "riboflavin": {
+          "highValue": 1.2,
+          "lowValue": 1,
+          "unit": "mg"
+        },
+        "thiamin": {
+          "highValue": 1.2,
+          "lowValue": 1,
+          "unit": "mg"
+        },
+        "vitamin_a": {
+          "highValue": 770,
+          "lowValue": 630,
+          "unit": "mcg RAE"
+        },
+        "vitamin_b12": {
+          "highValue": 2.6,
+          "lowValue": 2.2,
+          "unit": "mcg"
+        },
+        "vitamin_b6": {
+          "highValue": 1.4,
+          "lowValue": 1.2,
+          "unit": "mg"
+        },
+        "vitamin_c": {
+          "highValue": 82.5,
+          "lowValue": 67.5,
+          "unit": "mg"
+        },
+        "vitamin_d": {
+          "highValue": 660,
+          "lowValue": 540,
+          "unit": "IU"
+        },
+        "vitamin_e": {
+          "highValue": 16.5,
+          "lowValue": 13.5,
+          "unit": "mg AT"
+        },
+        "vitamin_k": {
+          "highValue": 99,
+          "lowValue": 81,
+          "unit": "mcg"
+        }
+      }
+    },
+    {
+      "age_range": "9,13",
+      "gender": 2,
+      "macronutrients": {
+        "carbohydrate": {
+          "highRatio": 0.65,
+          "lowRatio": 0.45,
+          "unit": "g/100kcal"
+        },
+        "fat": {
+          "highRatio": 0.45,
+          "lowRatio": 0.05,
+          "unit": "g/100kcal"
+        },
+        "fiber": {
+          "highValue": 30.8,
+          "lowValue": 25.2,
+          "unit": "g"
+        },
+        "protein": {
+          "highRatio": 0.35,
+          "lowRatio": 0.1,
+          "unit": "g/100kcal"
+        }
+      },
+      "minerals": {
+        "calcium": {
+          "highValue": 1100,
+          "lowValue": 900,
+          "unit": "mg"
+        },
+        "copper": {
+          "highValue": 8,
+          "lowValue": 0.8,
+          "unit": "mg"
+        },
+        "iodine": {
+          "highValue": 600,
+          "lowValue": 120,
+          "unit": "μg"
+        },
+        "iron": {
+          "highValue": 19.8,
+          "lowValue": 16.2,
+          "unit": "mg"
+        },
+        "magnesium": {
+          "highValue": 341,
+          "lowValue": 279,
+          "unit": "mg"
+        },
+        "manganese": {
+          "highValue": 11,
+          "lowValue": 4.5,
+          "unit": "mg"
+        },
+        "phosphorus": {
+          "highValue": 770,
+          "lowValue": 630,
+          "unit": "mg"
+        },
+        "potassium": {
+          "highValue": 2860,
+          "lowValue": 2340,
+          "unit": "mg"
+        },
+        "selenium": {
+          "highValue": 400,
+          "lowValue": 60,
+          "unit": "μg"
+        },
+        "sodium": {
+          "highValue": 2530,
+          "lowValue": 2070,
+          "unit": "mg"
+        },
+        "zinc": {
+          "highValue": 8.8,
+          "lowValue": 7.2,
+          "unit": "mg"
+        }
+      },
+      "vitamins": {
+        "choline": {
+          "highValue": 467.5,
+          "lowValue": 382.5,
+          "unit": "mg"
+        },
+        "folate": {
+          "highValue": 440,
+          "lowValue": 360,
+          "unit": "mcg DFE"
+        },
+        "niacin": {
+          "highValue": 15.4,
+          "lowValue": 12.6,
+          "unit": "mg"
+        },
+        "riboflavin": {
+          "highValue": 1.2,
+          "lowValue": 1,
+          "unit": "mg"
+        },
+        "thiamin": {
+          "highValue": 1.2,
+          "lowValue": 1,
+          "unit": "mg"
+        },
+        "vitamin_a": {
+          "highValue": 770,
+          "lowValue": 630,
+          "unit": "mcg RAE"
+        },
+        "vitamin_b12": {
+          "highValue": 2.6,
+          "lowValue": 2.2,
+          "unit": "mcg"
+        },
+        "vitamin_b6": {
+          "highValue": 1.4,
+          "lowValue": 1.2,
+          "unit": "mg"
+        },
+        "vitamin_c": {
+          "highValue": 82.5,
+          "lowValue": 67.5,
+          "unit": "mg"
+        },
+        "vitamin_d": {
+          "highValue": 660,
+          "lowValue": 540,
+          "unit": "IU"
+        },
+        "vitamin_e": {
+          "highValue": 16.5,
+          "lowValue": 13.5,
+          "unit": "mg AT"
+        },
+        "vitamin_k": {
+          "highValue": 99,
+          "lowValue": 81,
+          "unit": "mcg"
+        }
+      }
+    },
+    {
+      "age_range": "14,18",
+      "gender": 1,
+      "macronutrients": {
+        "carbohydrate": {
+          "highRatio": 0.65,
+          "lowRatio": 0.45,
+          "unit": "g/100kcal"
+        },
+        "fat": {
+          "highRatio": 0.45,
+          "lowRatio": 0.05,
+          "unit": "g/100kcal"
+        },
+        "fiber": {
+          "highValue": 22,
+          "lowValue": 18,
+          "unit": "g"
+        },
+        "protein": {
+          "highRatio": 0.3,
+          "lowRatio": 0.1,
+          "unit": "g/100kcal"
+        }
+      },
+      "minerals": {
+        "calcium": {
+          "highValue": 1100,
+          "lowValue": 900,
+          "unit": "mg"
+        },
+        "copper": {
+          "highValue": 8,
+          "lowValue": 0.8,
+          "unit": "mg"
+        },
+        "iodine": {
+          "highValue": 600,
+          "lowValue": 120,
+          "unit": "μg"
+        },
+        "iron": {
+          "highValue": 11,
+          "lowValue": 9,
+          "unit": "mg"
+        },
+        "magnesium": {
+          "highValue": 143,
+          "lowValue": 117,
+          "unit": "mg"
+        },
+        "manganese": {
+          "highValue": 11,
+          "lowValue": 4.5,
+          "unit": "mg"
+        },
+        "phosphorus": {
+          "highValue": 550,
+          "lowValue": 450,
+          "unit": "mg"
+        },
+        "potassium": {
+          "highValue": 2530,
+          "lowValue": 2070,
+          "unit": "mg"
+        },
+        "selenium": {
+          "highValue": 400,
+          "lowValue": 60,
+          "unit": "μg"
+        },
+        "sodium": {
+          "highValue": 1650,
+          "lowValue": 1350,
+          "unit": "mg"
+        },
+        "zinc": {
+          "highValue": 5.5,
+          "lowValue": 4.5,
+          "unit": "mg"
+        }
+      },
+      "vitamins": {
+        "choline": {
+          "highValue": 275,
+          "lowValue": 225,
+          "unit": "mg"
+        },
+        "folate": {
+          "highValue": 220,
+          "lowValue": 180,
+          "unit": "mcg DFE"
+        },
+        "niacin": {
+          "highValue": 8.8,
+          "lowValue": 7.2,
+          "unit": "mg"
+        },
+        "riboflavin": {
+          "highValue": 0.7,
+          "lowValue": 0.5,
+          "unit": "mg"
+        },
+        "thiamin": {
+          "highValue": 0.7,
+          "lowValue": 0.5,
+          "unit": "mg"
+        },
+        "vitamin_a": {
+          "highValue": 440,
+          "lowValue": 360,
+          "unit": "mcg RAE"
+        },
+        "vitamin_b12": {
+          "highValue": 1.3,
+          "lowValue": 1.1,
+          "unit": "mcg"
+        },
+        "vitamin_b6": {
+          "highValue": 0.7,
+          "lowValue": 0.5,
+          "unit": "mg"
+        },
+        "vitamin_c": {
+          "highValue": 27.5,
+          "lowValue": 22.5,
+          "unit": "mg"
+        },
+        "vitamin_d": {
+          "highValue": 660,
+          "lowValue": 540,
+          "unit": "IU"
+        },
+        "vitamin_e": {
+          "highValue": 7.7,
+          "lowValue": 6.3,
+          "unit": "mg AT"
+        },
+        "vitamin_k": {
+          "highValue": 60.5,
+          "lowValue": 49.5,
+          "unit": "mcg"
+        }
+      }
+    },
+    {
+      "age_range": "14,18",
+      "gender": 2,
+      "macronutrients": {
+        "carbohydrate": {
+          "highRatio": 0.65,
+          "lowRatio": 0.45,
+          "unit": "g/100kcal"
+        },
+        "fat": {
+          "highRatio": 0.45,
+          "lowRatio": 0.05,
+          "unit": "g/100kcal"
+        },
+        "fiber": {
+          "highValue": 24.2,
+          "lowValue": 19.8,
+          "unit": "g"
+        },
+        "protein": {
+          "highRatio": 0.35,
+          "lowRatio": 0.1,
+          "unit": "g/100kcal"
+        }
+      },
+      "minerals": {
+        "calcium": {
+          "highValue": 1320,
+          "lowValue": 1080,
+          "unit": "mg"
+        },
+        "copper": {
+          "highValue": 8,
+          "lowValue": 0.8,
+          "unit": "mg"
+        },
+        "iodine": {
+          "highValue": 600,
+          "lowValue": 120,
+          "unit": "μg"
+        },
+        "iron": {
+          "highValue": 8.8,
+          "lowValue": 7.2,
+          "unit": "mg"
+        },
+        "magnesium": {
+          "highValue": 352,
+          "lowValue": 288,
+          "unit": "mg"
+        },
+        "manganese": {
+          "highValue": 11,
+          "lowValue": 4.5,
+          "unit": "mg"
+        },
+        "phosphorus": {
+          "highValue": 770,
+          "lowValue": 630,
+          "unit": "mg"
+        },
+        "potassium": {
+          "highValue": 2860,
+          "lowValue": 2340,
+          "unit": "mg"
+        },
+        "selenium": {
+          "highValue": 400,
+          "lowValue": 60,
+          "unit": "μg"
+        },
+        "sodium": {
+          "highValue": 2530,
+          "lowValue": 2070,
+          "unit": "mg"
+        },
+        "zinc": {
+          "highValue": 8.8,
+          "lowValue": 7.2,
+          "unit": "mg"
+        }
+      },
+      "vitamins": {
+        "choline": {
+          "highValue": 467.5,
+          "lowValue": 382.5,
+          "unit": "mg"
+        },
+        "folate": {
+          "highValue": 440,
+          "lowValue": 360,
+          "unit": "mcg DFE"
+        },
+        "niacin": {
+          "highValue": 15.4,
+          "lowValue": 12.6,
+          "unit": "mg"
+        },
+        "riboflavin": {
+          "highValue": 1.2,
+          "lowValue": 1,
+          "unit": "mg"
+        },
+        "thiamin": {
+          "highValue": 1.2,
+          "lowValue": 1,
+          "unit": "mg"
+        },
+        "vitamin_a": {
+          "highValue": 770,
+          "lowValue": 630,
+          "unit": "mcg RAE"
+        },
+        "vitamin_b12": {
+          "highValue": 2.6,
+          "lowValue": 2.2,
+          "unit": "mcg"
+        },
+        "vitamin_b6": {
+          "highValue": 1.7,
+          "lowValue": 1.4,
+          "unit": "mg"
+        },
+        "vitamin_c": {
+          "highValue": 82.5,
+          "lowValue": 67.5,
+          "unit": "mg"
+        },
+        "vitamin_d": {
+          "highValue": 660,
+          "lowValue": 540,
+          "unit": "IU"
+        },
+        "vitamin_e": {
+          "highValue": 16.5,
+          "lowValue": 13.5,
+          "unit": "mg AT"
+        },
+        "vitamin_k": {
+          "highValue": 99,
+          "lowValue": 81,
+          "unit": "mcg"
+        }
+      }
+    },
+    {
+      "age_range": "19,30",
+      "gender": 1,
+      "macronutrients": {
+        "carbohydrate": {
+          "highRatio": 0.65,
+          "lowRatio": 0.45,
+          "unit": "g/100kcal"
+        },
+        "fat": {
+          "highRatio": 0.45,
+          "lowRatio": 0.05,
+          "unit": "g/100kcal"
+        },
+        "fiber": {
+          "highValue": 34.1,
+          "lowValue": 27.9,
+          "unit": "g"
+        },
+        "protein": {
+          "highRatio": 0.3,
+          "lowRatio": 0.1,
+          "unit": "g/100kcal"
+        }
+      },
+      "minerals": {
+        "calcium": {
+          "highValue": 1430,
+          "lowValue": 1170,
+          "unit": "mg"
+        },
+        "copper": {
+          "highValue": 8,
+          "lowValue": 0.8,
+          "unit": "mg"
+        },
+        "iodine": {
+          "highValue": 600,
+          "lowValue": 120,
+          "unit": "μg"
+        },
+        "iron": {
+          "highValue": 12.1,
+          "lowValue": 9.9,
+          "unit": "mg"
+        },
+        "magnesium": {
+          "highValue": 451,
+          "lowValue": 369,
+          "unit": "mg"
+        },
+        "manganese": {
+          "highValue": 11,
+          "lowValue": 4.5,
+          "unit": "mg"
+        },
+        "phosphorus": {
+          "highValue": 1375,
+          "lowValue": 1125,
+          "unit": "mg"
+        },
+        "potassium": {
+          "highValue": 3300,
+          "lowValue": 2700,
+          "unit": "mg"
+        },
+        "selenium": {
+          "highValue": 400,
+          "lowValue": 60,
+          "unit": "μg"
+        },
+        "sodium": {
+          "highValue": 2530,
+          "lowValue": 2070,
+          "unit": "mg"
+        },
+        "zinc": {
+          "highValue": 12.1,
+          "lowValue": 9.9,
+          "unit": "mg"
+        }
+      },
+      "vitamins": {
+        "choline": {
+          "highValue": 605,
+          "lowValue": 495,
+          "unit": "mg"
+        },
+        "folate": {
+          "highValue": 440,
+          "lowValue": 360,
+          "unit": "mcg DFE"
+        },
+        "niacin": {
+          "highValue": 17.6,
+          "lowValue": 14.4,
+          "unit": "mg"
+        },
+        "riboflavin": {
+          "highValue": 1.4,
+          "lowValue": 1.2,
+          "unit": "mg"
+        },
+        "thiamin": {
+          "highValue": 1.3,
+          "lowValue": 1.1,
+          "unit": "mg"
+        },
+        "vitamin_a": {
+          "highValue": 990,
+          "lowValue": 810,
+          "unit": "mcg RAE"
+        },
+        "vitamin_b12": {
+          "highValue": 2.6,
+          "lowValue": 2.2,
+          "unit": "mcg"
+        },
+        "vitamin_b6": {
+          "highValue": 1.4,
+          "lowValue": 1.2,
+          "unit": "mg"
+        },
+        "vitamin_c": {
+          "highValue": 82.5,
+          "lowValue": 67.5,
+          "unit": "mg"
+        },
+        "vitamin_d": {
+          "highValue": 660,
+          "lowValue": 540,
+          "unit": "IU"
+        },
+        "vitamin_e": {
+          "highValue": 16.5,
+          "lowValue": 13.5,
+          "unit": "mg AT"
+        },
+        "vitamin_k": {
+          "highValue": 82.5,
+          "lowValue": 67.5,
+          "unit": "mcg"
+        }
+      }
+    },
+    {
+      "age_range": "19,30",
+      "gender": 2,
+      "macronutrients": {
+        "carbohydrate": {
+          "highRatio": 0.65,
+          "lowRatio": 0.45,
+          "unit": "g/100kcal"
+        },
+        "fat": {
+          "highRatio": 0.45,
+          "lowRatio": 0.05,
+          "unit": "g/100kcal"
+        },
+        "fiber": {
+          "highValue": 27.5,
+          "lowValue": 22.5,
+          "unit": "g"
+        },
+        "protein": {
+          "highRatio": 0.3,
+          "lowRatio": 0.1,
+          "unit": "g/100kcal"
+        }
+      },
+      "minerals": {
+        "calcium": {
+          "highValue": 1430,
+          "lowValue": 1170,
+          "unit": "mg"
+        },
+        "copper": {
+          "highValue": 8,
+          "lowValue": 0.8,
+          "unit": "mg"
+        },
+        "iodine": {
+          "highValue": 600,
+          "lowValue": 120,
+          "unit": "μg"
+        },
+        "iron": {
+          "highValue": 8.8,
+          "lowValue": 7.2,
+          "unit": "mg"
+        },
+        "magnesium": {
+          "highValue": 264,
+          "lowValue": 216,
+          "unit": "mg"
+        },
+        "manganese": {
+          "highValue": 11,
+          "lowValue": 4.5,
+          "unit": "mg"
+        },
+        "phosphorus": {
+          "highValue": 1375,
+          "lowValue": 1125,
+          "unit": "mg"
+        },
+        "potassium": {
+          "highValue": 2750,
+          "lowValue": 2250,
+          "unit": "mg"
+        },
+        "selenium": {
+          "highValue": 400,
+          "lowValue": 60,
+          "unit": "μg"
+        },
+        "sodium": {
+          "highValue": 1980,
+          "lowValue": 1620,
+          "unit": "mg"
+        },
+        "zinc": {
+          "highValue": 8.8,
+          "lowValue": 7.2,
+          "unit": "mg"
+        }
+      },
+      "vitamins": {
+        "choline": {
+          "highValue": 412.5,
+          "lowValue": 337.5,
+          "unit": "mg"
+        },
+        "folate": {
+          "highValue": 330,
+          "lowValue": 270,
+          "unit": "mcg DFE"
+        },
+        "niacin": {
+          "highValue": 13.2,
+          "lowValue": 10.8,
+          "unit": "mg"
+        },
+        "riboflavin": {
+          "highValue": 1,
+          "lowValue": 0.8,
+          "unit": "mg"
+        },
+        "thiamin": {
+          "highValue": 1,
+          "lowValue": 0.8,
+          "unit": "mg"
+        },
+        "vitamin_a": {
+          "highValue": 660,
+          "lowValue": 540,
+          "unit": "mcg RAE"
+        },
+        "vitamin_b12": {
+          "highValue": 2,
+          "lowValue": 1.6,
+          "unit": "mcg"
+        },
+        "vitamin_b6": {
+          "highValue": 1.1,
+          "lowValue": 0.9,
+          "unit": "mg"
+        },
+        "vitamin_c": {
+          "highValue": 49.5,
+          "lowValue": 40.5,
+          "unit": "mg"
+        },
+        "vitamin_d": {
+          "highValue": 660,
+          "lowValue": 540,
+          "unit": "IU"
+        },
+        "vitamin_e": {
+          "highValue": 12.1,
+          "lowValue": 9.9,
+          "unit": "mg AT"
+        },
+        "vitamin_k": {
+          "highValue": 66,
+          "lowValue": 54,
+          "unit": "mcg"
+        }
+      }
+    },
+    {
+      "age_range": "31,50",
+      "gender": 1,
+      "macronutrients": {
+        "carbohydrate": {
+          "highRatio": 0.65,
+          "lowRatio": 0.45,
+          "unit": "g/100kcal"
+        },
+        "fat": {
+          "highRatio": 0.45,
+          "lowRatio": 0.05,
+          "unit": "g/100kcal"
+        },
+        "fiber": {
+          "highValue": 34.1,
+          "lowValue": 27.9,
+          "unit": "g"
+        },
+        "protein": {
+          "highRatio": 0.35,
+          "lowRatio": 0.1,
+          "unit": "g/100kcal"
+        }
+      },
+      "minerals": {
+        "calcium": {
+          "highValue": 1100,
+          "lowValue": 900,
+          "unit": "mg"
+        },
+        "copper": {
+          "highValue": 8,
+          "lowValue": 0.8,
+          "unit": "mg"
+        },
+        "iodine": {
+          "highValue": 600,
+          "lowValue": 120,
+          "unit": "μg"
+        },
+        "iron": {
+          "highValue": 8.8,
+          "lowValue": 7.2,
+          "unit": "mg"
+        },
+        "magnesium": {
+          "highValue": 462,
+          "lowValue": 378,
+          "unit": "mg"
+        },
+        "manganese": {
+          "highValue": 11,
+          "lowValue": 4.5,
+          "unit": "mg"
+        },
+        "phosphorus": {
+          "highValue": 770,
+          "lowValue": 630,
+          "unit": "mg"
+        },
+        "potassium": {
+          "highValue": 3740,
+          "lowValue": 3060,
+          "unit": "mg"
+        },
+        "selenium": {
+          "highValue": 400,
+          "lowValue": 60,
+          "unit": "μg"
+        },
+        "sodium": {
+          "highValue": 2530,
+          "lowValue": 2070,
+          "unit": "mg"
+        },
+        "zinc": {
+          "highValue": 12.1,
+          "lowValue": 9.9,
+          "unit": "mg"
+        }
+      },
+      "vitamins": {
+        "choline": {
+          "highValue": 605,
+          "lowValue": 495,
+          "unit": "mg"
+        },
+        "folate": {
+          "highValue": 440,
+          "lowValue": 360,
+          "unit": "mcg DFE"
+        },
+        "niacin": {
+          "highValue": 17.6,
+          "lowValue": 14.4,
+          "unit": "mg"
+        },
+        "riboflavin": {
+          "highValue": 1.4,
+          "lowValue": 1.2,
+          "unit": "mg"
+        },
+        "thiamin": {
+          "highValue": 1.3,
+          "lowValue": 1.1,
+          "unit": "mg"
+        },
+        "vitamin_a": {
+          "highValue": 990,
+          "lowValue": 810,
+          "unit": "mcg RAE"
+        },
+        "vitamin_b12": {
+          "highValue": 2.6,
+          "lowValue": 2.2,
+          "unit": "mcg"
+        },
+        "vitamin_b6": {
+          "highValue": 1.4,
+          "lowValue": 1.2,
+          "unit": "mg"
+        },
+        "vitamin_c": {
+          "highValue": 99,
+          "lowValue": 81,
+          "unit": "mg"
+        },
+        "vitamin_d": {
+          "highValue": 660,
+          "lowValue": 540,
+          "unit": "IU"
+        },
+        "vitamin_e": {
+          "highValue": 16.5,
+          "lowValue": 13.5,
+          "unit": "mg AT"
+        },
+        "vitamin_k": {
+          "highValue": 132,
+          "lowValue": 108,
+          "unit": "mcg"
+        }
+      }
+    },
+    {
+      "age_range": "31,50",
+      "gender": 2,
+      "macronutrients": {
+        "carbohydrate": {
+          "highRatio": 0.65,
+          "lowRatio": 0.45,
+          "unit": "g/100kcal"
+        },
+        "fat": {
+          "highRatio": 0.45,
+          "lowRatio": 0.05,
+          "unit": "g/100kcal"
+        },
+        "fiber": {
+          "highValue": 37.4,
+          "lowValue": 30.6,
+          "unit": "g"
+        },
+        "protein": {
+          "highRatio": 0.35,
+          "lowRatio": 0.1,
+          "unit": "g/100kcal"
+        }
+      },
+      "minerals": {
+        "calcium": {
+          "highValue": 1100,
+          "lowValue": 900,
+          "unit": "mg"
+        },
+        "copper": {
+          "highValue": 8,
+          "lowValue": 0.8,
+          "unit": "mg"
+        },
+        "iodine": {
+          "highValue": 600,
+          "lowValue": 120,
+          "unit": "μg"
+        },
+        "iron": {
+          "highValue": 8.8,
+          "lowValue": 7.2,
+          "unit": "mg"
+        },
+        "magnesium": {
+          "highValue": 440,
+          "lowValue": 360,
+          "unit": "mg"
+        },
+        "manganese": {
+          "highValue": 11,
+          "lowValue": 4.5,
+          "unit": "mg"
+        },
+        "phosphorus": {
+          "highValue": 770,
+          "lowValue": 630,
+          "unit": "mg"
+        },
+        "potassium": {
+          "highValue": 3740,
+          "lowValue": 3060,
+          "unit": "mg"
+        },
+        "selenium": {
+          "highValue": 400,
+          "lowValue": 60,
+          "unit": "μg"
+        },
+        "sodium": {
+          "highValue": 2530,
+          "lowValue": 2070,
+          "unit": "mg"
+        },
+        "zinc": {
+          "highValue": 12.1,
+          "lowValue": 9.9,
+          "unit": "mg"
+        }
+      },
+      "vitamins": {
+        "choline": {
+          "highValue": 605,
+          "lowValue": 495,
+          "unit": "mg"
+        },
+        "folate": {
+          "highValue": 440,
+          "lowValue": 360,
+          "unit": "mcg DFE"
+        },
+        "niacin": {
+          "highValue": 17.6,
+          "lowValue": 14.4,
+          "unit": "mg"
+        },
+        "riboflavin": {
+          "highValue": 1.4,
+          "lowValue": 1.2,
+          "unit": "mg"
+        },
+        "thiamin": {
+          "highValue": 1.3,
+          "lowValue": 1.1,
+          "unit": "mg"
+        },
+        "vitamin_a": {
+          "highValue": 990,
+          "lowValue": 810,
+          "unit": "mcg RAE"
+        },
+        "vitamin_b12": {
+          "highValue": 2.6,
+          "lowValue": 2.2,
+          "unit": "mcg"
+        },
+        "vitamin_b6": {
+          "highValue": 1.4,
+          "lowValue": 1.2,
+          "unit": "mg"
+        },
+        "vitamin_c": {
+          "highValue": 99,
+          "lowValue": 81,
+          "unit": "mg"
+        },
+        "vitamin_d": {
+          "highValue": 660,
+          "lowValue": 540,
+          "unit": "IU"
+        },
+        "vitamin_e": {
+          "highValue": 16.5,
+          "lowValue": 13.5,
+          "unit": "mg AT"
+        },
+        "vitamin_k": {
+          "highValue": 132,
+          "lowValue": 108,
+          "unit": "mcg"
+        }
+      }
+    },
+    {
+      "age_range": "51,150",
+      "gender": 1,
+      "macronutrients": {
+        "carbohydrate": {
+          "highRatio": 0.65,
+          "lowRatio": 0.45,
+          "unit": "g/100kcal"
+        },
+        "fat": {
+          "highRatio": 0.45,
+          "lowRatio": 0.05,
+          "unit": "g/100kcal"
+        },
+        "fiber": {
+          "highValue": 30.8,
+          "lowValue": 25.2,
+          "unit": "g"
+        },
+        "protein": {
+          "highRatio": 0.35,
+          "lowRatio": 0.1,
+          "unit": "g/100kcal"
+        }
+      },
+      "minerals": {
+        "calcium": {
+          "highValue": 1100,
+          "lowValue": 900,
+          "unit": "mg"
+        },
+        "copper": {
+          "highValue": 8,
+          "lowValue": 0.8,
+          "unit": "mg"
+        },
+        "iodine": {
+          "highValue": 600,
+          "lowValue": 120,
+          "unit": "μg"
+        },
+        "iron": {
+          "highValue": 8.8,
+          "lowValue": 7.2,
+          "unit": "mg"
+        },
+        "magnesium": {
+          "highValue": 462,
+          "lowValue": 378,
+          "unit": "mg"
+        },
+        "manganese": {
+          "highValue": 11,
+          "lowValue": 4.5,
+          "unit": "mg"
+        },
+        "phosphorus": {
+          "highValue": 770,
+          "lowValue": 630,
+          "unit": "mg"
+        },
+        "potassium": {
+          "highValue": 3740,
+          "lowValue": 3060,
+          "unit": "mg"
+        },
+        "selenium": {
+          "highValue": 400,
+          "lowValue": 60,
+          "unit": "μg"
+        },
+        "sodium": {
+          "highValue": 2530,
+          "lowValue": 2070,
+          "unit": "mg"
+        },
+        "zinc": {
+          "highValue": 12.1,
+          "lowValue": 9.9,
+          "unit": "mg"
+        }
+      },
+      "vitamins": {
+        "choline": {
+          "highValue": 605,
+          "lowValue": 495,
+          "unit": "mg"
+        },
+        "folate": {
+          "highValue": 440,
+          "lowValue": 360,
+          "unit": "mcg DFE"
+        },
+        "niacin": {
+          "highValue": 17.6,
+          "lowValue": 14.4,
+          "unit": "mg"
+        },
+        "riboflavin": {
+          "highValue": 1.4,
+          "lowValue": 1.2,
+          "unit": "mg"
+        },
+        "thiamin": {
+          "highValue": 1.3,
+          "lowValue": 1.1,
+          "unit": "mg"
+        },
+        "vitamin_a": {
+          "highValue": 990,
+          "lowValue": 810,
+          "unit": "mcg RAE"
+        },
+        "vitamin_b12": {
+          "highValue": 2.6,
+          "lowValue": 2.2,
+          "unit": "mcg"
+        },
+        "vitamin_b6": {
+          "highValue": 1.9,
+          "lowValue": 1.5,
+          "unit": "mg"
+        },
+        "vitamin_c": {
+          "highValue": 99,
+          "lowValue": 81,
+          "unit": "mg"
+        },
+        "vitamin_d": {
+          "highValue": 880,
+          "lowValue": 720,
+          "unit": "IU"
+        },
+        "vitamin_e": {
+          "highValue": 16.5,
+          "lowValue": 13.5,
+          "unit": "mg AT"
+        },
+        "vitamin_k": {
+          "highValue": 132,
+          "lowValue": 108,
+          "unit": "mcg"
+        }
+      }
+    },
+    {
+      "age_range": "51,150",
+      "gender": 2,
+      "macronutrients": {
+        "carbohydrate": {
+          "highRatio": 0.65,
+          "lowRatio": 0.45,
+          "unit": "g/100kcal"
+        },
+        "fat": {
+          "highRatio": 0.45,
+          "lowRatio": 0.05,
+          "unit": "g/100kcal"
+        },
+        "fiber": {
+          "highValue": 30.8,
+          "lowValue": 25.2,
+          "unit": "g"
+        },
+        "protein": {
+          "highRatio": 0.35,
+          "lowRatio": 0.1,
+          "unit": "g/100kcal"
+        }
+      },
+      "minerals": {
+        "calcium": {
+          "highValue": 1100,
+          "lowValue": 900,
+          "unit": "mg"
+        },
+        "copper": {
+          "highValue": 8,
+          "lowValue": 0.8,
+          "unit": "mg"
+        },
+        "iodine": {
+          "highValue": 600,
+          "lowValue": 120,
+          "unit": "μg"
+        },
+        "iron": {
+          "highValue": 8.8,
+          "lowValue": 7.2,
+          "unit": "mg"
+        },
+        "magnesium": {
+          "highValue": 462,
+          "lowValue": 378,
+          "unit": "mg"
+        },
+        "manganese": {
+          "highValue": 11,
+          "lowValue": 4.5,
+          "unit": "mg"
+        },
+        "phosphorus": {
+          "highValue": 770,
+          "lowValue": 630,
+          "unit": "mg"
+        },
+        "potassium": {
+          "highValue": 3740,
+          "lowValue": 3060,
+          "unit": "mg"
+        },
+        "selenium": {
+          "highValue": 400,
+          "lowValue": 60,
+          "unit": "μg"
+        },
+        "sodium": {
+          "highValue": 2530,
+          "lowValue": 2070,
+          "unit": "mg"
+        },
+        "zinc": {
+          "highValue": 12.1,
+          "lowValue": 9.9,
+          "unit": "mg"
+        }
+      },
+      "vitamins": {
+        "choline": {
+          "highValue": 605,
+          "lowValue": 495,
+          "unit": "mg"
+        },
+        "folate": {
+          "highValue": 440,
+          "lowValue": 360,
+          "unit": "mcg DFE"
+        },
+        "niacin": {
+          "highValue": 17.6,
+          "lowValue": 14.4,
+          "unit": "mg"
+        },
+        "riboflavin": {
+          "highValue": 1.4,
+          "lowValue": 1.2,
+          "unit": "mg"
+        },
+        "thiamin": {
+          "highValue": 1.3,
+          "lowValue": 1.1,
+          "unit": "mg"
+        },
+        "vitamin_a": {
+          "highValue": 990,
+          "lowValue": 810,
+          "unit": "mcg RAE"
+        },
+        "vitamin_b12": {
+          "highValue": 2.6,
+          "lowValue": 2.2,
+          "unit": "mcg"
+        },
+        "vitamin_b6": {
+          "highValue": 1.4,
+          "lowValue": 1.2,
+          "unit": "mg"
+        },
+        "vitamin_c": {
+          "highValue": 99,
+          "lowValue": 81,
+          "unit": "mg"
+        },
+        "vitamin_d": {
+          "highValue": 660,
+          "lowValue": 540,
+          "unit": "IU"
+        },
+        "vitamin_e": {
+          "highValue": 16.5,
+          "lowValue": 13.5,
+          "unit": "mg AT"
+        },
+        "vitamin_k": {
+          "highValue": 132,
+          "lowValue": 108,
+          "unit": "mcg"
+        }
+      }
+    }
+  ]
+}

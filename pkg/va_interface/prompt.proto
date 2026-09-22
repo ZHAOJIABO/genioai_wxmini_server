@@ -1,0 +1,137 @@
+syntax = "proto3";
+package va_interface;
+
+import "common.proto";
+
+option go_package = "va_visionai_server/internal/va_interface";
+
+message Prompt {
+  // prompt ID 问答时设置prompt id 可启用对应的prompt
+  string prompt_id = 1;
+  // 标题
+  string title = 2;
+  // 描述
+  string description = 3;
+  // 导语标题
+  string lead_title = 4;
+  // 导语
+  string lead = 5;
+  // 场景标识
+  string kind_id = 6;
+  // icon
+  string icon = 7;
+  // 图片问题
+  repeated string photo_question = 8;
+  // 是否允许直接调起相机
+  bool enable_camera = 9;
+  // 是否在相机场景展示
+  bool camera_show = 10;
+}
+
+message PromptKind {
+  // 场景标识
+  string kind_id = 1;
+  // 显示文本
+  string label = 2;
+  // 分类下所有prompt
+  repeated Prompt prompts = 3;
+  // icon 图标
+  string icon_url = 4;
+}
+
+message ListPromptsRequest {
+  RequestHeader request_header = 1;
+}
+
+message ListPromptsResponse {
+  ResponseHeader response_header = 1;
+  repeated PromptKind kinds = 2;
+}
+
+message ListCameraPromptRequest {
+  RequestHeader request_header = 1;
+  // 场景标识
+  string kind_id = 2;
+}
+
+message ListCameraPromptResponse {
+  ResponseHeader response_header = 1;
+  repeated Prompt prompts = 2;
+}
+
+message PromptEnhanceRequest {
+  RequestHeader request_header = 1;
+  // 原始prompt
+  string prompt = 2;
+  // 图片URL
+  repeated string image_urls = 3;
+  // tools id 根据toolid查询工具对应的场景（文生图 图生图 图生视频...）
+  string tool_id = 4;
+}
+
+message PromptEnhanceResponse {
+  ResponseHeader response_header = 1;
+  // 增强后的prompt
+  repeated string prompts = 2;
+}
+
+// 灵感推荐相关消息定义
+
+// 灵感Prompt
+message InspirationPrompt {
+  // 灵感ID
+  string prompt_id = 1;
+  // 灵感标题（展示在输入框底部）
+  string title = 2;
+  // 灵感详细文本（点击后填充到输入框）
+  string content = 3;
+}
+
+// 获取灵感推荐请求
+message GetInspirationPromptsRequest {
+  RequestHeader request_header = 1;
+  // 工具类型ID（文生图、文生视频等）
+  string tool_id = 2;
+  // prompt ID 游标，服务端取此promptID这之后的数据
+  string prompt_id_cursor = 3;
+}
+
+// 获取灵感推荐响应
+message GetInspirationPromptsResponse {
+  ResponseHeader response_header = 1;
+  // 灵感列表
+  repeated InspirationPrompt prompts = 2;
+}
+
+// 用户自定义Prompt历史记录项
+message CustomPromptHistoryItem {
+  // 历史记录ID
+  string history_id = 1;
+  // 用户输入的自定义prompt
+  string custom_prompt = 2;
+}
+
+// 获取用户自定义Prompt历史请求
+message GetUserCustomPromptHistoryRequest {
+  RequestHeader request_header = 1;
+  // 工具ID
+  string tool_id = 2;
+}
+
+// 获取用户自定义Prompt历史响应
+message GetUserCustomPromptHistoryResponse {
+  ResponseHeader response_header = 1;
+  // Prompt历史记录列表
+  repeated CustomPromptHistoryItem history_items = 2;
+}
+
+// 删除自定义Prompt历史请求
+message DeleteCustomPromptHistoryRequest {
+  RequestHeader request_header = 1;
+  string history_id = 2;
+}
+
+// 删除自定义Prompt历史响应
+message DeleteCustomPromptHistoryResponse {
+  ResponseHeader response_header = 1;
+}

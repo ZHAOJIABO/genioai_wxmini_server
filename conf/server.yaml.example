@@ -1,0 +1,232 @@
+servername: "vision-ai-server"
+LogConfig:
+  LogPath: log/visionai.log.__POD__
+  LogLevel: debug
+  MaxAgeDays: 7
+  MaxSize: 100
+  MaxBackups: 100
+  Compress: false
+
+VisionAiServerConfig:
+  Port: 8181
+  HTTPPort: 8200
+  DialTimeout: 10s
+  Mode: LOCAL
+  Region: r2  # 可选: cn (阿里云OSS), r2 (Cloudflare R2), 其他 (腾讯云COS)
+
+TencentSms:
+  SecretId: "<your-tencent-secret-id>"
+  SecretKey: "<your-tencent-secret-key>"
+  AppId: "<your-app-id>"
+  TemplateId: "<your-template-id>"
+  Endpoint: "sms.tencentcloudapi.com"
+  Region: "ap-beijing"
+  SignName: "<your-sign-name>"
+  ExpireMinutes: 6000
+
+Redis:
+  Addr: "127.0.0.1:6379"
+  Db: 0
+  AuthInfo: ""
+
+MongoDB:
+  Addr: "mongodb://<username>:<password>@<host>:<port>/<database>"
+  Db: visionai
+  Collection: msg_
+
+metrics:
+  addr: ":9188"
+  path: "/metrics"
+  namespace: "aix_visionai_server"
+
+geoip:
+  enabled: true
+  database_path: "assets/GeoLite2-Country.mmdb"
+
+Mysql:
+  Addr: localhost
+  User: root
+  Password: <your-mysql-password>
+  Db: <your-database-name>
+  Port: 3306
+  MigrationsDir: /path/to/migrations
+
+Apple:
+  KID: <your-apple-kid>
+  TeamID: <your-apple-team-id>
+  PrivateKey: |
+    -----BEGIN PRIVATE KEY-----
+    <your-apple-private-key>
+    -----END PRIVATE KEY-----
+
+
+AmountConfig:
+  AdRewardPlay: 5
+  AdRewardClick: 10
+  AdRewardAction: 20
+  SignMaxDays: 6
+  AdRewardMaxPerDay: 30
+  SigninDayOfAmount:
+    - Day: 1
+      Amount: 2
+    - Day: 2
+      Amount: 4
+    - Day: 3
+      Amount: 6
+    - Day: 4
+      Amount: 8
+    - Day: 5
+      Amount: 10
+    - Day: 6
+      Amount: 12
+
+LlmConfig:
+  GPT:
+    ApiKey: <your-gpt-api-key>
+    Endpoint: https://api.openai.com/v1
+
+  Doubao:
+    ApiKey: <your-doubao-api-key>
+    Endpoint: https://ark.cn-beijing.volces.com/api/v3
+    Region: cn-beijing
+    DoubaoPro: <your-endpoint-id>
+    DoubaoProVision: <your-endpoint-id>
+    DeepSeekR1: <your-endpoint-id>
+
+  DoubaoVision:
+    ApiKey: <your-doubao-vision-api-key>
+    Endpoint: https://ark.cn-beijing.volces.com/api/v3
+    Region: cn-beijing
+    DoubaoVision: <your-endpoint-id>
+
+  VolcEngineASR:
+    AppKey: <your-volcengine-app-key>
+    AccessKey: <your-volcengine-access-key>
+    Endpoint: https://openspeech.bytedance.com/api/v3/auc/bigmodel
+  VolcEngineTTS:
+    AppKey: <your-volcengine-app-key>
+    AccessKey: <your-volcengine-access-key>
+    Endpoint: wss://openspeech.bytedance.com/api/v3/tts/bidirection
+  Kimi:
+    Endpoint: "https://api.moonshot.cn/v1"
+    APIKey: "<your-kimi-api-key>"
+    ModelName: "moonshot-v1-8k"
+  AzureOpenAI:
+    Endpoint: "https://<your-resource>.openai.azure.com/"
+    APIKey: "<your-azure-openai-api-key>"
+    GPT4O: "gpt-4o"
+  DeepSeek:
+    Endpoint: "https://api.deepseek.com"
+    APIKey: <your-deepseek-api-key>
+    DeepSeekR1: "deepseek-reasoner"
+    DeepSeekV3: "deepseek-chat"
+  Tencent:
+    Endpoint: "https://api.hunyuan.cloud.tencent.com/v1"
+    APIKey: <your-tencent-api-key>
+  Gemini:
+    AuthFile: "/path/to/gemini_auth.json"
+  GptImage:
+        Endpoint: "<your-gpt-image-endpoint>"
+        APIKey: <your-gpt-image-api-key>
+  KlingAPI:
+    Endpoint: "https://api.klingai.com"
+    AppID: <your-kling-app-id>
+    Secret: <your-kling-secret>
+  MinimaxAPI:
+    Endpoint: https://api.minimax.chat
+    AppID: <your-minimax-app-id>
+    Secret: <your-minimax-secret>
+
+
+OssConfig:
+  # 阿里云 OSS 配置（中国区域）
+  Endpoint: oss-cn-beijing.aliyuncs.com
+  AccessKeyId: <your-aliyun-access-key-id>
+  AccessKeySecret: <your-aliyun-access-key-secret>
+  Bucket: <your-bucket-name>
+  UgcAddr: https://<your-bucket-name>.<endpoint>
+
+CosConfig:
+  # 腾讯云 COS 配置（国际区域）
+  Endpoint: https://<your-bucket>.<region>.myqcloud.com
+  AccessKeyId: <your-tencent-access-key-id>
+  AccessKeySecret: <your-tencent-access-key-secret>
+  Bucket: <your-bucket-name>
+  UgcAddr: https://<your-cdn-domain>
+
+R2Config:
+  # Cloudflare R2 配置 - 兼容 S3 API
+  # Endpoint 格式: https://<account_id>.r2.cloudflarestorage.com
+  # 在 Cloudflare Dashboard -> R2 -> 管理 R2 API 令牌 中获取
+  Endpoint: https://<your-account-id>.r2.cloudflarestorage.com
+  AccessKeyId: <your-r2-access-key-id>
+  AccessKeySecret: <your-r2-secret-access-key>
+  Bucket: <your-r2-bucket-name>
+  # UgcAddr: 公开访问地址，使用自定义域名享受全球 CDN 加速和零流量费用
+  # 可以是自定义域名或 R2 公开 URL（https://pub-xxxxx.r2.dev）
+  UgcAddr: https://<your-custom-domain>
+
+
+ComfyUI:
+  Server: <your-comfyui-server>
+  Port: 443
+  Username: <your-comfyui-username>
+  Password: <your-comfyui-password>
+
+PayLinker:
+  Addr: http://127.0.0.1:8080
+
+AstroServer:
+  Addr: http://127.0.0.1:5005
+
+AIBrainServer:
+  Addr: 127.0.0.1:8080
+
+# 并发槽位和队列槽位对账器配置
+Reconciler:
+  enabled: true
+  interval: 1m
+  redis_scan_count: 1000
+  max_tasks_per_round: 10000
+  worker_pool_size: 16
+  key_ttl_seconds: 3600
+  queue:
+    enabled: true
+    interval: 1m
+    redis_scan_count: 1000
+    max_tasks_per_round: 10000
+    worker_pool_size: 16
+  concurrent:
+    enabled: true
+    interval: 1m
+    redis_scan_count: 1000
+    max_tasks_per_round: 10000
+    worker_pool_size: 16
+    awaiting_timeout: 10m
+
+# 事件上报配置
+EventSink:
+  enabled: false
+  addr: ""
+  queue_size: 10000
+  batch_size: 100
+  flush_interval: 5s
+  shutdown_timeout: 10s
+  source: "va_visionai_server"
+  server_node: ""
+
+# 推送网关配置
+PushGateway:
+  enabled: false
+  addr: "http://127.0.0.1:8090"
+  timeout: 10s
+  env: "production"
+
+# 邮件服务配置
+Email:
+  smtp_host: smtp.example.com
+  smtp_port: 587
+  username: <your-email@example.com>
+  password: <your-email-password-or-app-token>
+  from_address: <your-email@example.com>
+  expire_minutes: 5

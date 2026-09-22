@@ -1,0 +1,82 @@
+version: "2"
+run:
+  # 提高大型项目的超时时间，避免因分析耗时导致失败
+  timeout: 10m
+  # 使用配置文件所在目录作为相对路径模式，利于 CI/IDE 输出稳定
+  relative-path-mode: cfg
+linters:
+  enable:
+    - asasalint
+    - asciicheck
+    - bidichk
+    - bodyclose
+    - durationcheck
+    - fatcontext
+    - gocheckcompilerdirectives
+    - gochecksumtype
+    - loggercheck
+    - makezero
+    - nilnesserr
+    - perfsprint
+    - prealloc
+    - protogetter
+    - reassign
+    - recvcheck
+    - rowserrcheck
+    - spancheck
+    - sqlclosecheck
+    - testifylint
+    - zerologlint
+  disable:
+    - contextcheck
+    - cyclop
+    - dupl
+    - errcheck
+    - errchkjson
+    - errorlint
+    - exhaustive
+    - funlen
+    - gosec
+    - gosmopolitan
+    - ineffassign
+    - musttag
+    - nilerr
+    - noctx
+    - staticcheck
+    - unused
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    rules:
+      - linters:
+          - errcheck
+        path: _test\.go$
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
+      - pkg
+formatters:
+  enable:
+    - gci
+    - gofmt
+  settings:
+    gci:
+      sections:
+        - standard
+        - default
+        - prefix(va_visionai_server)
+        - blank
+        - dot
+      custom-order: true
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
+      - pkg

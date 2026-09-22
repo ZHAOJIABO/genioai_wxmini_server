@@ -1,0 +1,80 @@
+{
+    "request_header": {
+        "req_id": "76",
+        "access_token": "Excepteur nostrud dolore quis",
+        "app": {
+            "package_name": "com.bluex.picflow",
+            "app_name": "夫勇",
+            "category": [
+                "deserunt nisi"
+            ],
+            "app_version": "officia occaecat",
+            "app_store_version": "ex ea"
+        },
+        "device": {
+            "ip": "09e2:aa1b:d58f:402c:2328:ae86:7bdf:ce8e",
+            "user_agent": "eu",
+            "idfa": "40",
+            "idfa_md5": "78",
+            "imei": "50-838396-771085-3",
+            "imei_md5": "voluptate irure nostrud",
+            "oaid": "68",
+            "oaid_md5": "31",
+            "android_id": "33",
+            "device_type": 347573699,
+            "brand": "qui pariatur",
+            "model": "proident id est aliquip occaecat",
+            "os": 777315765,
+            "osv": "do",
+            "network": 107453242,
+            "operator": -1558034495,
+            "width": 412108923,
+            "height": 1825885870,
+            "orientation": -1717170981,
+            "geo": {
+                "lat": 19,
+                "lon": 14
+            },
+            "installed_app": [
+                "incididunt sed irure sit aliquip"
+            ],
+            "caids": [
+                {
+                    "ver": "magna do",
+                    "caid": "40"
+                },
+                {
+                    "ver": "veniam ullamco consequat officia adipisicing",
+                    "caid": "62"
+                },
+                {
+                    "ver": "incididunt in elit",
+                    "caid": "50"
+                }
+            ],
+            "boot_mark": "voluptate dolor",
+            "update_mark": "2024-12-12",
+            "mac": "90:14:93:c8:d4:06",
+            "android_id_md5": "7",
+            "ipv6": "3f80:7ad7:c7e0:b5b9:bb52:ed0a:d75e:4d5a",
+            "user_info": {
+                "age": 489729635,
+                "gender": -712529893
+            },
+            "birth_time": "2025-08-11 18:12:00",
+            "boot_time": "2026-01-03 18:09:49",
+            "update_time": "2024-11-09",
+            "idfv": "44",
+            "idfv_md5": "8",
+            "language": "VIETNAMESE"
+        },
+        "user_id": "8632545365011",
+        "app_store": "ZHUOYITONG",
+        "user_type": "USER_TYPE_REGISTER",
+        "request_time_ms": 1019752808779097
+    },
+    "workflow_id": "test_gemini",
+    "workflow_input": [
+        {"input_name":"InputPrompt","input_type":0,"input_content":"nipple stimulation"}
+    ]
+}

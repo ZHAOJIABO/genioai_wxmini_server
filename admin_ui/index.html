@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GenioAI Admin</title>
+    <link rel="stylesheet" href="css/pico.min.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <script defer src="js/app.js"></script>
+    <script defer src="js/alpine.min.js"></script>
+</head>
+<body x-data="adminApp()" x-init="init()">
+    <!-- 登录页面 -->
+    <div x-show="!token" class="login-container">
+        <main class="container">
+            <article class="login-card">
+                <header>
+                    <h2>GenioAI 管理后台</h2>
+                </header>
+                <form @submit.prevent="login()">
+                    <label>
+                        用户名
+                        <input type="text" x-model="loginForm.username" placeholder="请输入用户名" required>
+                    </label>
+                    <label>
+                        密码
+                        <input type="password" x-model="loginForm.password" placeholder="请输入密码" required>
+                    </label>
+                    <button type="submit" :disabled="loading">
+                        <span x-show="loading" aria-busy="true"></span>
+                        <span x-show="!loading">登录</span>
+                    </button>
+                </form>
+                <p x-show="error" class="error-msg" x-text="error"></p>
+            </article>
+        </main>
+    </div>
+
+    <!-- 管理界面 -->
+    <div x-show="token" class="admin-layout">
+        <button class="menu-toggle" @click="sidebarOpen = !sidebarOpen">☰</button>
+        <div class="sidebar-overlay" :class="{'open': sidebarOpen}" @click="sidebarOpen = false"></div>
+        <nav class="sidebar" :class="{'open': sidebarOpen}">
+            <h3>GenioAI Admin</h3>
+            <ul>
+                <li><a href="#" @click.prevent="navigate('dashboard'); sidebarOpen=false" :class="{'active': page === 'dashboard'}">仪表盘</a></li>
+                <li><a href="#" @click.prevent="navigate('users'); sidebarOpen=false" :class="{'active': page === 'users'}">用户管理</a></li>
+                <li><a href="#" @click.prevent="navigate('credits'); sidebarOpen=false" :class="{'active': page === 'credits'}">积分管理</a></li>
+                <li><a href="#" @click.prevent="navigate('stats'); sidebarOpen=false" :class="{'active': page === 'stats'}">统计分析</a></li>
+                <li><a href="#" @click.prevent="navigate('configs'); sidebarOpen=false" :class="{'active': page === 'configs'}">系统配置</a></li>
+                <li><a href="#" @click.prevent="navigate('audit'); sidebarOpen=false" :class="{'active': page === 'audit'}">审计日志</a></li>
+            </ul>
+            <div class="sidebar-footer">
+                <small x-text="'欢迎, ' + adminUser"></small>
+                <a href="#" @click.prevent="logout()">退出登录</a>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <!-- 仪表盘 -->
+            <div x-show="page === 'dashboard'">
+                <h2>仪表盘</h2>
+                <div class="grid" x-show="dashboard">
+                    <article>
+                        <header>总用户数</header>
+                        <p class="stat-number" x-text="dashboard.total_users || 0"></p>
+                    </article>
+                    <article>
+                        <header>总任务数</header>
+                        <p class="stat-number" x-text="dashboard.total_tasks || 0"></p>
+                    </article>
+                    <article>
+                        <header>完成任务</header>
+                        <p class="stat-number" x-text="dashboard.completed_tasks || 0"></p>
+                    </article>
+                    <article>
+                        <header>今日任务</header>
+                        <p class="stat-number" x-text="dashboard.today_tasks || 0"></p>
+                    </article>
+                </div>
+            </div>
+
+            <!-- 用户管理 -->
+            <div x-show="page === 'users'">
+                <h2>用户管理</h2>
+                <div class="toolbar">
+                    <input type="search" placeholder="搜索用户名/邮箱/ID..." x-model="userSearch" @keyup.enter="loadUsers()">
+                    <button @click="loadUsers()">搜索</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>用户ID</th>
+                            <th>用户名</th>
+                            <th>邮箱</th>
+                            <th>状态</th>
+                            <th>注册时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template x-for="user in users" :key="user.user_id">
+                            <tr>
+                                <td x-text="user.user_id"></td>
+                                <td x-text="user.user_name"></td>
+                                <td x-text="user.email"></td>
+                                <td>
+                                    <span x-show="user.status === 0" class="badge-ok">正常</span>
+                                    <span x-show="user.status === 1" class="badge-ban">封禁</span>
+                                </td>
+                                <td x-text="formatTime(user.created_at)"></td>
+                                <td>
+                                    <button x-show="user.status === 0" class="btn-sm btn-danger" @click="banUser(user.user_id)">封禁</button>
+                                    <button x-show="user.status === 1" class="btn-sm btn-success" @click="unbanUser(user.user_id)">解封</button>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+                <div class="pagination" x-show="userTotal > userSize">
+                    <button @click="userPage > 1 && (userPage--, loadUsers())" :disabled="userPage <= 1">上一页</button>
+                    <span x-text="'第 ' + userPage + ' 页 / 共 ' + Math.ceil(userTotal / userSize) + ' 页'"></span>
+                    <button @click="userPage < Math.ceil(userTotal / userSize) && (userPage++, loadUsers())" :disabled="userPage >= Math.ceil(userTotal / userSize)">下一页</button>
+                </div>
+            </div>
+
+            <!-- 积分管理 -->
+            <div x-show="page === 'credits'">
+                <h2>积分管理</h2>
+                <article>
+                    <header>添加积分</header>
+                    <form @submit.prevent="addCredits()">
+                        <div class="grid">
+                            <label>
+                                用户邮箱
+                                <input type="email" x-model="creditForm.email" placeholder="输入用户邮箱">
+                            </label>
+                            <label>
+                                积分数量
+                                <input type="number" x-model.number="creditForm.amount" min="1" placeholder="积分数量">
+                            </label>
+                        </div>
+                        <label>
+                            备注
+                            <input type="text" x-model="creditForm.description" placeholder="添加原因（可选）">
+                        </label>
+                        <button type="submit" :disabled="loading">添加积分</button>
+                    </form>
+                </article>
+
+                <article>
+                    <header>查询积分</header>
+                    <div class="grid">
+                        <label>
+                            用户ID
+                            <input type="text" x-model="creditQueryUID" placeholder="输入用户ID">
+                        </label>
+                        <div>
+                            <label>&nbsp;</label>
+                            <button @click="queryBalance()">查询余额</button>
+                        </div>
+                    </div>
+                    <div x-show="creditBalance">
+                        <p>总积分: <strong x-text="creditBalance?.total || 0"></strong></p>
+                        <p>会员积分: <span x-text="creditBalance?.membership || 0"></span> | 购买积分: <span x-text="creditBalance?.purchased || 0"></span> | 系统赠送: <span x-text="creditBalance?.system || 0"></span></p>
+                    </div>
+                </article>
+            </div>
+
+            <!-- 统计分析 -->
+            <div x-show="page === 'stats'">
+                <h2>统计分析</h2>
+                <article>
+                    <header>每日任务趋势（近7天）</header>
+                    <table>
+                        <thead>
+                            <tr><th>日期</th><th>总数</th><th>完成</th><th>失败</th></tr>
+                        </thead>
+                        <tbody>
+                            <template x-for="day in dailyTasks" :key="day.date">
+                                <tr>
+                                    <td x-text="day.date"></td>
+                                    <td x-text="day.total"></td>
+                                    <td x-text="day.completed"></td>
+                                    <td x-text="day.failed"></td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </article>
+                <article>
+                    <header>用户生图排行</header>
+                    <table>
+                        <thead>
+                            <tr><th>用户ID</th><th>总任务</th><th>完成</th><th>失败</th><th>消耗积分</th><th>最后活跃</th></tr>
+                        </thead>
+                        <tbody>
+                            <template x-for="u in userStats" :key="u.user_id">
+                                <tr>
+                                    <td x-text="u.user_id"></td>
+                                    <td x-text="u.total_tasks"></td>
+                                    <td x-text="u.completed_tasks"></td>
+                                    <td x-text="u.failed_tasks"></td>
+                                    <td x-text="u.total_credits_used"></td>
+                                    <td x-text="u.last_task_time"></td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </article>
+            </div>
+
+            <!-- 系统配置 -->
+            <div x-show="page === 'configs'">
+                <h2>系统配置</h2>
+                <table>
+                    <thead>
+                        <tr><th>配置项</th><th>值</th><th>备注</th><th>操作</th></tr>
+                    </thead>
+                    <tbody>
+                        <template x-for="cfg in configs" :key="cfg.config_name">
+                            <tr>
+                                <td x-text="cfg.config_name"></td>
+                                <td>
+                                    <input type="text" :value="cfg.value" @change="cfg.value = $event.target.value" style="margin:0">
+                                </td>
+                                <td x-text="cfg.comment"></td>
+                                <td>
+                                    <button class="btn-sm" @click="updateConfig(cfg.config_name, cfg.value)">保存</button>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 审计日志 -->
+            <div x-show="page === 'audit'">
+                <h2>审计日志</h2>
+                <table>
+                    <thead>
+                        <tr><th>时间</th><th>管理员</th><th>操作</th><th>资源</th><th>资源ID</th><th>IP</th></tr>
+                    </thead>
+                    <tbody>
+                        <template x-for="log in auditLogs" :key="log.ID">
+                            <tr>
+                                <td x-text="formatGormTime(log.CreatedAt)"></td>
+                                <td x-text="log.AdminName"></td>
+                                <td x-text="log.Action"></td>
+                                <td x-text="log.Resource"></td>
+                                <td x-text="log.ResourceID"></td>
+                                <td x-text="log.IP"></td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+                <div class="pagination" x-show="auditTotal > auditSize">
+                    <button @click="auditPage > 1 && (auditPage--, loadAuditLogs())" :disabled="auditPage <= 1">上一页</button>
+                    <span x-text="'第 ' + auditPage + ' 页'"></span>
+                    <button @click="auditPage++; loadAuditLogs()">下一页</button>
+                </div>
+            </div>
+
+            <!-- 消息提示 -->
+            <div x-show="message" class="toast" x-text="message" x-transition></div>
+        </main>
+    </div>
+</body>
+</html>

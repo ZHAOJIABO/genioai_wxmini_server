@@ -1,0 +1,88 @@
+*swp
+*swo
+data
+target
+bin/rtb_ui
+log
+*pyc
+.idea/*
+*.exe
+rtb_go_ui_v2.iml
+start.sh
+stop.sh
+all.sh
+*.DS_Store
+*sandbox*
+main
+.vscode/*
+*.mp3
+.cursorrules
+.aider*
+cmd/__debug*
+.idea
+server-local.yaml
+server-local.yml
+.claude
+logs
+.serena
+.cache
+.gomodcache
+docker-compose.yml
+.gocache
+CLAUDE.MD
+.cursor
+.gemini
+.agent
+assets/GeoLite2-City.mmdb
+# Auto Claude data directory
+.auto-claude/
+
+# 编译产物
+bin/
+*.exe
+*.dll
+*.so
+*.dylib
+
+# 日志文件
+*.log
+server.log
+
+# 备份文件
+*.bak
+*.bak2
+*.bak3
+*.backup
+
+# IDE 临时文件
+.DS_Store
+.vscode/
+.idea/
+
+
+# 敏感配置文件（包含密钥和凭证）
+conf/server.yaml
+test_r2_upload.go
+
+# 环境变量文件（包含数据库密码等敏感信息）
+.env
+.env.local
+.env.production
+!.env.example
+
+# 生产配置（可能包含敏感信息）
+conf/server.prod.yaml
+
+# Dockerfile（可能包含敏感配置）
+Dockerfile
+
+# 第三方依赖（符号链接）
+third_party/
+pkg/va_interface/third_party/
+
+# 编译后的可执行文件
+va_server
+va_visionai_server
+
+# GCP 服务账号密钥（含私钥，禁止提交）
+conf/gemini_auth.json

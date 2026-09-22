@@ -1,0 +1,101 @@
+syntax = "proto3";
+
+package aibrain;
+
+option go_package = "github.com/bluefocus/va_interface/protos/aibrain/v1";
+
+// ConfigService 配置管理服务
+service ConfigService {
+  // ReloadProviderConfig 手动触发热加载
+  rpc ReloadProviderConfig(ReloadProviderConfigRequest) returns (ReloadProviderConfigResponse) {}
+
+  // GetProviderConfig 获取当前Provider配置
+  rpc GetProviderConfig(GetProviderConfigRequest) returns (GetProviderConfigResponse) {}
+
+  // ValidateProviderConfig 验证配置文件有效性
+  rpc ValidateProviderConfig(ValidateProviderConfigRequest) returns (ValidateProviderConfigResponse) {}
+}
+
+// ReloadProviderConfigRequest 重载Provider配置请求
+message ReloadProviderConfigRequest {
+  // 配置文件路径，如果为空则使用默认路径
+  string config_path = 1;
+}
+
+// ReloadProviderConfigResponse 重载Provider配置响应
+message ReloadProviderConfigResponse {
+  // 操作是否成功
+  bool success = 1;
+
+  // 错误信息，如果success为false则包含错误详情
+  string error_message = 2;
+
+  // 重载时间
+  int64 reload_time = 3;
+}
+
+// GetProviderConfigRequest 获取Provider配置请求
+message GetProviderConfigRequest {
+  // Provider名称，如果为空则返回所有Provider配置
+  string provider_name = 1;
+}
+
+// GetProviderConfigResponse 获取Provider配置响应
+message GetProviderConfigResponse {
+  // 操作是否成功
+  bool success = 1;
+
+  // 错误信息，如果success为false则包含错误详情
+  string error_message = 2;
+
+  // Provider配置信息
+  map<string, ProviderInfo> providers = 3;
+}
+
+// ProviderInfo Provider信息
+message ProviderInfo {
+  // 是否启用
+  bool enabled = 1;
+
+  // 名称
+  string name = 2;
+
+  // API Key
+  string api_key = 3;
+
+  // Endpoint
+  string endpoint = 4;
+
+  // 超时时间
+  int64 timeout = 5;
+
+  // 模型列表
+  repeated ModelInfo models = 6;
+}
+
+// ModelInfo 模型信息
+message ModelInfo {
+  // 模型名称
+  string name = 1;
+
+  // 能力列表
+  repeated string capabilities = 2;
+}
+
+// ValidateProviderConfigRequest 验证Provider配置请求
+message ValidateProviderConfigRequest {
+  // 配置文件路径，如果为空则使用默认路径
+  string config_path = 1;
+}
+
+// ValidateProviderConfigResponse 验证Provider配置响应
+message ValidateProviderConfigResponse {
+  // 配置是否有效
+  bool valid = 1;
+
+  // 错误信息，如果valid为false则包含错误详情
+  string error_message = 2;
+
+  // 验证时间
+  int64 validate_time = 3;
+}

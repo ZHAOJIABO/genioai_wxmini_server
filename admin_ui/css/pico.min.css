@@ -1,0 +1,50 @@
+/* Pico CSS v2 - Minimal classless CSS framework */
+/* Minified placeholder - using CDN-fetched version */
+/* Source: https://picocss.com */
+
+/*! Pico CSS v2.0.6 | MIT License | github.com/picocss/pico */
+:root{--pico-font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue","Noto Sans","Liberation Sans",Arial,sans-serif;--pico-font-size:100%;--pico-font-weight:400;--pico-line-height:1.5;--pico-border-radius:0.25rem;--pico-border-width:1px;--pico-outline-width:3px;--pico-transition-duration:0.2s;--pico-spacing:1rem;--pico-typography-spacing-vertical:1.5rem;--pico-block-spacing-vertical:calc(var(--pico-spacing) * 2);--pico-block-spacing-horizontal:var(--pico-spacing);--pico-grid-column-gap:var(--pico-spacing);--pico-grid-row-gap:var(--pico-spacing);--pico-form-element-spacing-vertical:0.75rem;--pico-form-element-spacing-horizontal:1rem}
+
+[data-theme=light],:root:not([data-theme=dark]){--pico-background-color:#fff;--pico-color:#374151;--pico-h1-color:#1f2937;--pico-h2-color:#1f2937;--pico-h3-color:#1f2937;--pico-muted-color:#6b7280;--pico-muted-border-color:#e5e7eb;--pico-primary:#4a90d9;--pico-primary-hover:#3a7bc8;--pico-card-background-color:#fff;--pico-card-border-color:#e5e7eb;--pico-card-box-shadow:0 1px 3px rgba(0,0,0,.1);--pico-table-border-color:#e5e7eb;--pico-form-element-border-color:#d1d5db;--pico-form-element-focus-color:var(--pico-primary)}
+
+*,::after,::before{box-sizing:border-box;background-repeat:no-repeat}
+::after,::before{text-decoration:inherit;vertical-align:inherit}
+:where(:root){-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%;text-size-adjust:100%;background-color:var(--pico-background-color);color:var(--pico-color);font-weight:var(--pico-font-weight);font-size:var(--pico-font-size);line-height:var(--pico-line-height);font-family:var(--pico-font-family);overflow-wrap:break-word;cursor:default;tab-size:4}
+
+body{width:100%;margin:0}
+main{display:block}
+
+body>header,body>main,body>footer,.container{width:100%;margin-right:auto;margin-left:auto;padding:var(--pico-block-spacing-vertical) var(--pico-block-spacing-horizontal)}
+.container{max-width:1200px}
+
+.grid{grid-column-gap:var(--pico-grid-column-gap);grid-row-gap:var(--pico-grid-row-gap);display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+
+h1,h2,h3,h4,h5,h6{margin-top:0;margin-bottom:var(--pico-typography-spacing-vertical);color:var(--pico-h1-color);font-weight:700;line-height:1.2}
+h1{font-size:2rem}h2{font-size:1.5rem}h3{font-size:1.25rem}
+
+p{margin-bottom:var(--pico-typography-spacing-vertical)}
+small{font-size:.875em}
+a{color:var(--pico-primary);text-decoration:none}
+a:hover{text-decoration:underline}
+strong{font-weight:700}
+
+article{margin-bottom:var(--pico-block-spacing-vertical);padding:var(--pico-block-spacing-vertical) var(--pico-block-spacing-horizontal);border-radius:var(--pico-border-radius);background:var(--pico-card-background-color);box-shadow:var(--pico-card-box-shadow);border:1px solid var(--pico-card-border-color)}
+article>header{margin-bottom:calc(var(--pico-block-spacing-vertical)*.5);padding-bottom:calc(var(--pico-block-spacing-vertical)*.5);border-bottom:1px solid var(--pico-muted-border-color);font-weight:600;color:var(--pico-muted-color)}
+
+table{width:100%;border-collapse:collapse;border-spacing:0;text-indent:0}
+th,td{padding:0.5rem 0.75rem;border-bottom:1px solid var(--pico-table-border-color);text-align:left}
+th{font-weight:600;color:var(--pico-h1-color)}
+tbody tr:hover{background:rgba(74,144,217,.04)}
+
+input,select,textarea{width:100%;margin-bottom:var(--pico-spacing);padding:var(--pico-form-element-spacing-vertical) var(--pico-form-element-spacing-horizontal);border:var(--pico-border-width) solid var(--pico-form-element-border-color);border-radius:var(--pico-border-radius);outline:0;background-color:var(--pico-background-color);color:var(--pico-color);font-family:inherit;font-size:inherit;line-height:inherit;transition:border-color var(--pico-transition-duration)}
+input:focus,select:focus,textarea:focus{border-color:var(--pico-form-element-focus-color);box-shadow:0 0 0 var(--pico-outline-width) rgba(74,144,217,.15)}
+
+label{display:block;margin-bottom:calc(var(--pico-spacing)*.25);font-weight:500}
+
+button,[type=submit],[type=button]{display:inline-block;width:100%;margin-bottom:var(--pico-spacing);padding:var(--pico-form-element-spacing-vertical) var(--pico-form-element-spacing-horizontal);border:var(--pico-border-width) solid var(--pico-primary);border-radius:var(--pico-border-radius);outline:0;background-color:var(--pico-primary);color:#fff;font-weight:700;font-size:inherit;line-height:inherit;text-align:center;cursor:pointer;transition:background-color var(--pico-transition-duration),border-color var(--pico-transition-duration)}
+button:hover,[type=submit]:hover{background-color:var(--pico-primary-hover);border-color:var(--pico-primary-hover)}
+button:disabled,[type=submit]:disabled{opacity:.5;cursor:not-allowed}
+
+[aria-busy=true]{cursor:progress}
+[aria-busy=true]::before{content:"";display:inline-block;width:1em;height:1em;border:.15em solid currentColor;border-right-color:transparent;border-radius:50%;animation:spin .5s linear infinite;margin-right:.5em;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}

@@ -1,0 +1,208 @@
+syntax = "proto3";
+package va_interface;
+
+import "common.proto";
+import "userinfo.proto";
+
+option go_package = "va_visionai_server/internal/va_interface";
+
+// 验证方式类型
+enum AuthType {
+  AUTH_TYPE_UNKNOWN = 0;
+  AUTH_TYPE_PHONE = 1; // 手机号验证
+  AUTH_TYPE_APPLE = 2; // 苹果ID验证
+  AUTH_TYPE_GOOGLE = 3; // 谷歌账号验证
+  AUTH_TYPE_WECHAT = 4; // 微信验证
+  AUTH_TYPE_EMAIL = 5; // 邮箱验证
+  AUTH_TYPE_GUEST = 6; // 游客登录
+}
+
+// 手机号验证码请求
+message PhoneVerifyCodeRequest {
+  RequestHeader request_header = 1;
+  // 手机号，必须以+地区开头，比如+8617600001111
+  string phone_number = 2;
+}
+
+// 手机号验证码响应
+message PhoneVerifyCodeResponse {
+  ResponseHeader response_header = 1;
+}
+
+// 手机号登录请求
+message PhoneAuthRequest {
+  RequestHeader request_header = 1;
+  // 手机号，必须以+地区开头，比如+8617600001111
+  string phone_number = 2;
+  // 验证码
+  string verify_code = 3;
+}
+
+// 苹果登录请求
+message AppleAuthRequest {
+  RequestHeader request_header = 1;
+  // 苹果登录凭证
+  string apple_id_token = 2;
+  // 苹果登录authorization code
+  string apple_authorization_code = 3;
+}
+
+// 谷歌登录请求
+message GoogleAuthRequest {
+  RequestHeader request_header = 1;
+  // 谷歌登录凭证
+  string google_id_token = 2;
+}
+
+// 微信登录请求
+message WeChatAuthRequest {
+  RequestHeader request_header = 1;
+  // 微信code
+  string code = 2;
+  // 当前仅支持 miniprogram；空值也按小程序处理
+  string auth_type = 3;
+}
+
+// 微信 session_key 操作：必须携带有效业务 user_id、access_token。
+// OpenID 和签名均从服务端获取，客户端不能指定其他用户。
+message WeChatSessionRequest {
+  RequestHeader request_header = 1;
+}
+
+message WeChatSessionResponse {
+  ResponseHeader response_header = 1;
+  // 仅在业务状态成功时解读。false 表示缺失或失效，需要重新微信登录。
+  bool valid = 2;
+}
+
+// 邮箱验证码请求
+message EmailVerifyCodeRequest {
+  RequestHeader request_header = 1;
+  // 邮箱地址
+  string email = 2;
+}
+
+// 邮箱验证码响应
+message EmailVerifyCodeResponse {
+  ResponseHeader response_header = 1;
+}
+
+// 邮箱登录请求（验证码方式）
+message EmailAuthRequest {
+  RequestHeader request_header = 1;
+  // 邮箱地址
+  string email = 2;
+  // 验证码
+  string verify_code = 3;
+}
+
+// 邮箱密码登录请求
+message EmailPasswordAuthRequest {
+  RequestHeader request_header = 1;
+  // 邮箱地址
+  string email = 2;
+  // 密码
+  string password = 3;
+}
+
+// 邮箱注册请求
+message EmailRegisterRequest {
+  RequestHeader request_header = 1;
+  // 邮箱地址
+  string email = 2;
+  // 验证码
+  string verify_code = 3;
+  // 密码
+  string password = 4;
+  // 确认密码
+  string confirm_password = 5;
+}
+
+// 邮箱注册响应
+message EmailRegisterResponse {
+  ResponseHeader response_header = 1;
+  // 是否需要设置密码（验证码验证成功后返回）
+  bool need_set_password = 2;
+}
+
+// 找回密码 - 发送重置验证码请求
+message SendPasswordResetCodeRequest {
+  RequestHeader request_header = 1;
+  string email = 2;
+}
+
+// 找回密码 - 发送重置验证码响应
+message SendPasswordResetCodeResponse {
+  ResponseHeader response_header = 1;
+}
+
+// 重置密码请求
+message ResetPasswordRequest {
+  RequestHeader request_header = 1;
+  string email = 2;
+  string verify_code = 3;
+  string new_password = 4;
+  string confirm_password = 5;
+}
+
+// 重置密码响应
+message ResetPasswordResponse {
+  ResponseHeader response_header = 1;
+}
+
+// 统一的身份验证响应
+message AuthResponse {
+  ResponseHeader response_header = 1;
+  // 授权token
+  string access_token = 2;
+  // 过期时间
+  string expire_time = 3;
+  // 刷新token，用来获取access_token
+  string refresh_token = 4;
+  // 用户信息
+  UserInfo user_info = 5;
+  // 首次登录标志
+  bool is_first_login = 6;
+  // 认证类型
+  AuthType auth_type = 7;
+}
+
+// 刷新token请求
+message TokenRefreshRequest {
+  RequestHeader request_header = 1;
+  // 刷新token
+  string refresh_token = 2;
+}
+
+// 刷新token响应
+message TokenRefreshResponse {
+  ResponseHeader response_header = 1;
+  // 授权token
+  string access_token = 2;
+  // 过期时间
+  string expire_time = 3;
+}
+
+// 登出请求
+message AuthLogoutRequest {
+  RequestHeader request_header = 1;
+}
+
+// 登出响应
+message AuthLogoutResponse {
+  ResponseHeader response_header = 1;
+}
+
+// 游客登录请求
+message GuestLoginRequest {
+  RequestHeader request_header = 1;
+}
+
+// 游客登录响应
+message GuestLoginResponse {
+  ResponseHeader response_header = 1;
+  // 授权token
+  string access_token = 2;
+  // 过期时间
+  string expire_time = 3;
+}

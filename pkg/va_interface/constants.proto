@@ -1,0 +1,500 @@
+syntax = "proto3";
+package va_interface;
+
+option go_package = "va_visionai_server/internal/va_interface";
+
+// 支付状态
+enum PaymentStatus {
+  // 创建订单完成，等待支付成功通知
+  PaymentStatusPending = 0;
+  // 支付成功
+  PaymentStatusSuccess = 1;
+  // 支付失败
+  PaymentStatusFailed = 2;
+  // 取消支付
+  PaymentStatusCancel = 3;
+}
+
+// 订阅状态
+enum SubscribeStatus {
+  // 未订阅
+  SubscribeNot = 0;
+  // 订阅生效中
+  SubscribeActivate = 1;
+  // 订阅过期
+  SubscribeExpired = 2;
+}
+
+// 支付方式
+enum PaymentWay {
+  // 苹果支付
+  PaymentApple = 0;
+  // 微信支付
+  PaymentWayWechat = 1;
+  // 支付宝支付
+  PaymentWayAlipay = 2;
+  // 谷歌支付
+  PaymentWayGoogle = 3;
+}
+
+enum PublishStatus {
+  // 未发布
+  PUBLISH_STATUS_UNPUBLISHED = 0;
+  // 已发布
+  PUBLISH_STATUS_PUBLISHED = 1;
+}
+
+enum WorkflowTaskStatus {
+  // 未开始
+  WORKFLOW_TASK_STATUS_PENDING = 0;
+  // 失败
+  WORKFLOW_TASK_STATUS_FAILED = 10;
+  // 进行中
+  WORKFLOW_TASK_STATUS_PROCESSING = 20;
+
+  // 提交外部API失败，等待重试
+  WORKFLOW_TASK_STATUS_PENDING_SUBMISSION_RETRY = 30;
+  // 已提交外部API，等待其完成
+  WORKFLOW_TASK_STATUS_AWAITING_PROVIDER_COMPLETION = 40;
+
+  // 等待链触发
+  WORKFLOW_TASK_STATUS_PENDING_CHAIN = 50;
+
+  // 已完成
+  WORKFLOW_TASK_STATUS_COMPLETED = 100;
+}
+
+enum MessageType {
+  // Text Message url字段为空
+  MT_TEXT = 0;
+  // Image Message url字段为文件地址
+  MT_IMAGE = 1;
+  // Voice，Message url字段为文件地址
+  MT_VOICE = 2;
+  // FILE，Message url字段为文件地址
+  MT_FILE = 3;
+  // VIDEO Message Blob字段为视频数据
+  MT_VIDEO = 4;
+}
+
+enum FileType {
+  // 音频
+  FT_AUDIO = 0;
+  // 图片
+  FT_IMAGE = 1;
+  // 视频
+  FT_VIDEO = 2;
+  // DOC
+  FT_DOC = 3;
+  // PDF
+  FT_PDF = 4;
+  // TXT
+  FT_TXT = 5;
+}
+
+// 用户事件类型
+enum UserEventType {
+  // Unknown
+  USER_EVENT_TYPE_UNKNOWN = 0;
+  // 用户查看图片
+  USER_EVENT_TYPE_VIEW_PICTURE = 1;
+  // 埋点事件
+  TRACKING_EVENT = 2;
+  // asa归因事件上报
+  ATTRIBUTION_EVENT_ASA = 3;
+  // asaToken上报
+  ATTRIBUTION_EVENT_ASA_TOKEN = 4;
+}
+
+// 事件类型枚举
+enum WatchEventType {
+  // 未知事件类型
+  WATCH_EVENT_TYPE_UNKNOWN = 0;
+  // 图片任务处理进度事件
+  WATCH_EVENT_TYPE_PICTURE_TASK_PROGRESS = 1;
+}
+
+enum UploaderRole {
+  // 用户
+  UPLOADER_ROLE_USER = 0;
+  // 系统
+  UPLOADER_ROLE_SYSTEM = 1;
+}
+
+// 星座
+/**
+   ZODIAC_SIGNS_CN = {
+       "Aries": "白羊座",
+       "Taurus": "金牛座",
+       "Gemini": "双子座",
+       "Cancer": "巨蟹座",
+       "Leo": "狮子座",
+       "Virgo": "处女座",
+       "Libra": "天秤座",
+       "Scorpio": "天蝎座",
+       "Sagittarius": "射手座",
+       "Capricorn": "摩羯座",
+       "Aquarius": "水瓶座",
+       "Pisces": "双鱼座"
+   }
+
+*/
+enum Constellation {
+  // 未知
+  CONSTELLATION_UNKNOWN = 0;
+  // 白羊座
+  CONSTELLATION_ARIES = 1;
+  // 金牛座
+  CONSTELLATION_TAURUS = 2;
+  // 双子座
+  CONSTELLATION_GEMINI = 3;
+  // 巨蟹座
+  CONSTELLATION_CANCER = 4;
+  // 狮子座
+  CONSTELLATION_LEO = 5;
+  // 处女座
+  CONSTELLATION_VIRGO = 6;
+  // 天秤座
+  CONSTELLATION_LIBRA = 7;
+  // 天蝎座
+  CONSTELLATION_SCORPIO = 8;
+  // 射手座
+  CONSTELLATION_SAGITTARIUS = 9;
+  // 摩羯座
+  CONSTELLATION_CAPRICORN = 10;
+  // 水瓶座
+  CONSTELLATION_AQUARIUS = 11;
+  // 双鱼座
+  CONSTELLATION_PISCES = 12;
+}
+
+// 埋点事件类型
+enum TrackingEventType {
+  // 未知事件
+  TRACKING_EVENT_TYPE_UNKNOWN = 0;
+  // 引导步骤1
+  TRACKING_EVENT_TYPE_CLICK_GUIDE_BTN1 = 1;
+  // 引导步骤2
+  TRACKING_EVENT_TYPE_CLICK_GUIDE_BTN2 = 2;
+  // 引导步骤3
+  TRACKING_EVENT_TYPE_CLICK_GUIDE_BTN3 = 3;
+  // 展示订阅页
+  TRACKING_EVENT_TYPE_SHOW_PRO_PAGE = 4;
+  // 点击订阅按钮
+  TRACKING_EVENT_TYPE_CLICK_BUY_BTN = 5;
+  // 点击关闭按钮
+  TRACKING_EVENT_TYPE_CLICK_CLOSE_BTN = 6;
+  // 点击视频拍摄按钮
+  TRACKING_EVENT_TYPE_CLICK_HOLD_BTN = 7;
+  // 点击拍照按钮
+  TRACKING_EVENT_TYPE_CLICK_PHOTO_BTN = 8;
+  // 选择相册按钮
+  TRACKING_EVENT_TYPE_CLICK_ALBUM_BTN = 9;
+  // 点击播放/暂停按钮
+  TRACKING_EVENT_TYPE_CLICK_VOICE_BTN = 10;
+  // 点击提问按钮
+  TRACKING_EVENT_TYPE_CLICK_NEXT_BTN = 11;
+  // 点击默认问题
+  TRACKING_EVENT_TYPE_CLICK_QUE_BTN = 12;
+  // 相机权限按钮
+  TRACKING_EVENT_TYPE_CAM_PERMISSION_BTN = 13;
+  // 展示tab页面
+  TRACKING_EVENT_TYPE_TABBAR_CAM = 14;
+  TRACKING_EVENT_TYPE_TABBAR_VISION = 15;
+  TRACKING_EVENT_TYPE_TABBAR_MINE = 16;
+  // people_free_banner
+  TRACKING_EVENT_TYPE_PEOPLE_FREE_BANNER = 17;
+  // pet_free_banner
+  TRACKING_EVENT_TYPE_PET_FREE_BANNER = 18;
+  // video_upload_btn 视频上传按钮
+  TRACKING_EVENT_TYPE_VIDEO_UPLOAD_BTN = 19;
+  // video_create_btn 视频创建按钮
+  TRACKING_EVENT_TYPE_VIDEO_CREATE_BTN = 20;
+  // image_upload_btn 图片上传按钮
+  TRACKING_EVENT_TYPE_IMAGE_UPLOAD_BTN = 21;
+  // image_create_btn 图片创建按钮
+  TRACKING_EVENT_TYPE_IMAGE_CREATE_BTN = 22;
+  // tabbar_people 我的tabbar
+  TRACKING_EVENT_TYPE_TABBAR_PEOPLE = 23;
+  // tabbar_pet 宠物tabbar
+  TRACKING_EVENT_TYPE_TABBAR_PET = 24;
+  // tabbar_album 相册tabbar
+  TRACKING_EVENT_TYPE_TABBAR_ALBUM = 25;
+  // download_btn 下载按钮
+  TRACKING_EVENT_TYPE_DOWNLOAD_BTN = 26;
+  // delete_btn 删除按钮
+  TRACKING_EVENT_TYPE_DELETE_BTN = 27;
+  // 大健康相关埋点
+  //  引导步骤4
+  TRACKING_EVENT_TYPE_CLICK_GUIDE_BTN4 = 28;
+  // 引导步骤5
+  TRACKING_EVENT_TYPE_CLICK_GUIDE_BTN5 = 29;
+  // 展示激励用户页
+  TRACKING_EVENT_TYPE_SHOW_INSPIRE_USERS_PAGE = 30;
+  // 点击激励订阅按钮
+  TRACKING_EVENT_TYPE_CLICK_BUY_INSPIRE_BTN = 31;
+  // 点击激励页关闭按钮
+  TRACKING_EVENT_TYPE_CLOSE_BUY_INSPIRE_BTN = 32;
+  // 点击AIScan按钮
+  TRACKING_EVENT_TYPE_CLICK_SCAN_BTN = 33;
+  // 食物识别页>添加图片+
+  TRACKING_EVENT_TYPE_CLICK_ADD_FOOD_IMAGE_BTN = 34;
+  // 点击早餐
+  TRACKING_EVENT_TYPE_CLICK_BREAKFAST_BTN = 35;
+  // 点击午餐
+  TRACKING_EVENT_TYPE_CLICK_LUNCH_BTN = 36;
+  // 点击晚餐
+  TRACKING_EVENT_TYPE_CLICK_DINNER_BTN = 37;
+  // 点击零食
+  TRACKING_EVENT_TYPE_CLICK_SNACK_BTN = 38;
+  // 点击plan按钮
+  TRACKING_EVENT_TYPE_CLICK_PLAN_BTN = 39;
+  // 点击see more按钮
+  TRACKING_EVENT_TYPE_CLICK_SEE_MORE_BTN = 40;
+  // 点击拍照按钮
+  TRACKING_EVENT_TYPE_CLICK_SNAP_BTN = 41;
+  // 点击相册照片
+  TRACKING_EVENT_TYPE_CLICK_ALBUM_IMAGE_BTN = 42;
+  // 点击食物刷新按钮
+  TRACKING_EVENT_TYPE_CLICK_FOOD_REFRESH_BTN = 43;
+  // 点击食物编辑保存按钮
+  TRACKING_EVENT_TYPE_CLICK_FOOD_SAVE_BTN = 44;
+  // 点击Analysis按钮
+  TRACKING_EVENT_TYPE_CLICK_ANALYSIS_BTN = 45;
+  // 计划→二级页面营养素
+  TRACKING_EVENT_TYPE_CLICK_COACH_NUTRIENT_BTN = 46;
+  // 计划→二级页面菜谱
+  TRACKING_EVENT_TYPE_CLICK_COACH_RECIPE_BTN = 47;
+  // 点击菜谱刷新页面
+  TRACKING_EVENT_TYPE_CLICK_RECIPE_REFRESH_BTN = 48;
+  // 展示tab页面
+  TRACKING_EVENT_TYPE_TABBAR_COACH_BTN = 49;
+  TRACKING_EVENT_TYPE_TABBAR_FOOD_LOG_BTN = 50;
+  TRACKING_EVENT_TYPE_TABBAR_MINE_BTN = 51;
+
+  // click_random_upload 点击盲盒创作
+  TRACKING_EVENT_TYPE_CLICK_RANDOM_UPLOAD_BTN = 52;
+  // click_model 拉起创作页
+  TRACKING_EVENT_TYPE_CLICK_MODEL_BTN = 53;
+  // open_list_page	拉起列表页
+  TRACKING_EVENT_TYPE_OPEN_LIST_PAGE = 54;
+
+  //  // tabbar_home
+  TRACKING_EVENT_TYPE_TABBAR_HOME = 55;
+  // tabbar_discover
+  TRACKING_EVENT_TYPE_TABBAR_DISCOVER = 56;
+  // tabbar_tools
+  TRACKING_EVENT_TYPE_TABBAR_TOOL = 57;
+
+  // click_tools_btn 点击工具按钮
+  TRACKING_EVENT_TYPE_CLICK_TOOLS_BTN = 58;
+  // animate_video_btn 图生视频按钮
+  TRACKING_EVENT_TYPE_ANIMATE_VIDEO_BTN = 59;
+
+  // tools detail 工具详情 上传
+  TRACKING_EVENT_TYPE_TOOLS_DETAIL_UPLOAD_BTN = 60;
+  // tools detail 工具详情 创建任务
+  TRACKING_EVENT_TYPE_TOOLS_DETAIL_CREATE_BTN = 61;
+  //soulmate 完成注册
+  TRACKING_EVENT_TYPE_COMPLETE_REGISTRATION = 62;
+  //soulmate TAB页
+  TRACKING_EVENT_TYPE_TABBAR_SOULMATE = 63;
+  TRACKING_EVENT_TYPE_TABBAR_CHAT = 64;
+
+  // view_invite_page 访问邀请页面
+  TRACKING_EVENT_TYPE_VIEW_INVITE_PAGE = 101;
+  // 用户点击复制邀请码
+  TRACKING_EVENT_TYPE_COPY_INVITE_CODE = 102;
+  // 用户点击复制邀请连接并发起分享
+  TRACKING_EVENT_TYPE_COPY_INVITE_LINK = 103;
+}
+
+// 埋点事件来源
+enum TrackingEventSource {
+  // 未知来源
+  TRACKING_SOURCE_UNKNOWN = 0;
+  // 新用户引导
+  TRACKING_SOURCE_NEW_GUIDE = 1;
+  // 首页Pro按钮
+  TRACKING_SOURCE_CAM_BTN = 2;
+  // 场景页Pro按钮
+  TRACKING_SOURCE_VISION_BTN = 3;
+  // 我的页Pro按钮
+  TRACKING_SOURCE_MY_BTN = 4;
+  // 订阅提醒
+  TRACKING_SOURCE_SHOW_PRO_PAGE = 5;
+  // 次数耗尽
+  TRACKING_SOURCE_OVERTIME_PRO_PAGE = 6;
+  // 拍摄页面
+  TRACKING_SOURCE_CAM_PAGE = 7;
+  // 点击tabbar
+  TRACKING_SOURCE_CLICK_TAB = 8;
+  // 一级页面 PRO
+  TRACKING_SOURCE_PRO_BTN = 9;
+  // create_btn 创建按钮
+  TRACKING_SOURCE_CREATE_BTN = 10;
+  // album_join 相册按钮
+  TRACKING_SOURCE_ALBUM_JOIN = 11;
+  // list_page
+  TRACKING_SOURCE_LIST_PAGE = 12;
+  // people_detail_page
+  TRACKING_SOURCE_PEOPLE_DETAIL_PAGE = 13;
+  // pet_detail_page
+  TRACKING_SOURCE_PET_DETAIL_PAGE = 14;
+  // album_pet_list
+  TRACKING_SOURCE_ALBUM_PET_LIST = 16;
+  // album_people_list
+  TRACKING_SOURCE_ALBUM_PEOPLE_LIST = 17;
+  // 大健康相关事件来源
+  // 一级页面订阅卡片>订阅页
+  TRACKING_SOURCE_CARD_BTN = 18;
+  // 新用户首次进入调起订阅>订阅页
+  TRACKING_SOURCE_GUIDE_BUY = 19;
+  // 计划-二级页面营养素>订阅页
+  TRACKING_SOURCE_COACH_NUTRIENT_BUY = 20;
+  // 计划-二级页面菜谱>订阅页
+  TRACKING_SOURCE_COACH_RECIPE_BUY = 21;
+  // 记录-二级页面营养素>订阅页
+  TRACKING_SOURCE_FOOD_LOG_NUTRIENT_BUY = 22;
+  // 记录-二级页面菜谱>订阅页
+  TRACKING_SOURCE_FOOD_LOG_RECIPE_BUY = 23;
+  // 食物拍照>订阅页
+  TRACKING_SOURCE_FOOD_SNAP_BUY = 24;
+  // 点击订阅页关闭按钮
+  TRACKING_SOURCE_CLOSE_PAGE_BTN = 25;
+  // 点击激励悬浮窗"
+  TRACKING_SOURCE_CLICK_INSPIRE_FLOATING = 26;
+  // 记录页
+  TRACKING_SOURCE_FOOD_LOG_PAGE = 27;
+  // 食物拍摄页面
+  TRACKING_SOURCE_FOOD_PHOTO_PAGE = 28;
+  // 食物编辑页面
+  TRACKING_SOURCE_FOOD_EDIT_PAGE = 29;
+  // 计划页
+  TRACKING_SOURCE_COACH_PAGE = 30;
+  // home_btn
+  TRACKING_SOURCE_HOME_BTN = 31;
+  // bestie_detail_page
+  TRACKING_SOURCE_BESTIE_DETAIL_PAGE = 32;
+  // home 首页
+  TRACKING_SOURCE_HOME = 33;
+  TRACKING_SOURCE_DISCOVER = 34;
+  // create_page
+  TRACKING_SOURCE_CREATE = 35;
+  // task_result
+  TRACKING_SOURCE_TASK_RESULT = 36;
+  // 发现页 discover_page 视频列表页
+  TRACKING_SOURCE_DISCOVER_VIDEO_LIST_PAGE = 37;
+  // 发现页 discover_page 图片列表页
+  TRACKING_SOURCE_DISCOVER_IMAGE_LIST_PAGE = 38;
+  // album_video_list 相册视频结果页
+  TRACKING_SOURCE_ALBUM_VIDEO_LIST_PAGE = 39;
+  // album_image_list 相册图片结果页
+  TRACKING_SOURCE_ALBUM_IMAGE_LIST_PAGE = 40;
+  // tool page
+  TRACKING_SOURCE_TOOL = 41;
+  TRACKING_SOURCE_PROGRESS = 42;
+  // view_invite_page 邀请页面
+  TRACKING_SOURCE_INVITE_PAGE = 43;
+
+  //soulmate新用户注册
+  TRACKING_SOURCE_NEW_USER_REGISTRATION = 542;
+  //双人档案引导
+  TRACKING_SOURCE_DUAL_PROFILE_GUIDE_BUY = 543;
+  //计划-灵魂伴侣引导
+  TRACKING_SOURCE_SOULMATE_GUIDE_BUY = 544;
+}
+
+// 性别
+enum Gender {
+  Gender_UNKNOWN = 0;
+  Gender_MALE = 1;
+  Gender_FEMALE = 2;
+  // 无性别者
+  Gender_NONBINARY = 3;
+  // 性别保密
+  Gender_CONFIDENTIAL = 4;
+}
+
+// biz handler 业务处理ID
+enum ChatBizHandlerID {
+  // 默认聊天
+  CHAT_BIZ_HANDLER_ID_DEFAULT = 0;
+  // Astro 用户个人信息问答业务
+  CHAT_BIZ_HANDLER_ID_USER_PERSONAL_INFO = 1;
+}
+
+// 工作流类型
+enum WorkflowKindType {
+  // 未知
+  WORKFLOW_KIND_TYPE_UNKNOWN = 0;
+  // 图片
+  WORKFLOW_KIND_TYPE_IMAGE = 1;
+  // 视频
+  WORKFLOW_KIND_TYPE_VIDEO = 2;
+}
+
+// 工作流生成主题
+enum WorkflowTheme {
+  // 未知
+  WORKFLOW_THEME_UNKNOWN = 0;
+  // 人物
+  WORKFLOW_THEME_PERSON = 1;
+  // 宠物
+  WORKFLOW_THEME_PET = 2;
+  // 整蛊
+  WORKFLOW_THEME_PRANK = 3;
+  // Hot
+  WORKFLOW_THEME_HOT = 4;
+}
+
+// 餐食类型
+enum MealType {
+  MEAL_TYPE_UNSPECIFIED = 0; // 未指定
+  MEAL_TYPE_BREAKFAST = 1; // 早餐
+  MEAL_TYPE_LUNCH = 2; // 午餐
+  MEAL_TYPE_DINNER = 3; // 晚餐
+  MEAL_TYPE_SNACK = 4; // 零食
+}
+
+// 积分变化类型
+enum CreditChangeType {
+  // 全部
+  CREDIT_CHANGE_TYPE_ALL = 0;
+  // 充值
+  CREDIT_CHANGE_TYPE_RECHARGE = 1;
+  // 消耗
+  CREDIT_CHANGE_TYPE_CONSUME = 3;
+}
+
+// 系统主题
+enum Theme {
+  // 默认主题
+  THEME_DEFAULT = 0;
+
+  // 圣诞主题
+  THEME_CHRISTMAS = 1;
+
+  // 新年主题
+  THEME_NEW_YEAR = 2;
+}
+
+// 任务模式
+enum TaskMode {
+  // 全部模式
+  TASK_MODE_ALL = 0;
+  // 仅Workflow模式
+  TASK_MODE_WORKFLOW = 1;
+  // 仅模型直连模式
+  TASK_MODE_MODEL_DIRECT = 2;
+}
+
+// 图片生成任务类型
+enum ImageGenerationType {
+  // 未指定
+  IMAGE_GENERATION_TYPE_UNSPECIFIED = 0;
+  // 文生图 (Text-to-Image)
+  IMAGE_GENERATION_TYPE_TEXT_TO_IMAGE = 1;
+  // 图生图 (Image-to-Image)
+  IMAGE_GENERATION_TYPE_IMAGE_TO_IMAGE = 2;
+}

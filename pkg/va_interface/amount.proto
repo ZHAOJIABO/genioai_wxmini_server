@@ -1,0 +1,101 @@
+syntax = "proto3";
+package va_interface;
+
+import "common.proto";
+
+option go_package = "va_visionai_server/internal/va_interface";
+
+// 积分类型
+enum AmountType {
+  // 未知类型
+  AmountType_UNKNOWN = 0;
+  // 签到
+  AmountType_SIGNIN = 1;
+  // 领取时间
+  AmountType_REWARD = 2;
+  // 积分消费
+  AmountType_CONSUME = 3;
+  // 积分充值
+  AmountType_CHARGE = 4;
+}
+
+message AmountRecord {
+  // 积分类型
+  AmountType type = 1;
+  // 积分值
+  int64 amount = 2;
+  // 积分获取时间
+  string get_time = 3;
+}
+
+enum SigninType {
+  NOT_SIGNIN = 0;
+  SIGNIN = 1;
+}
+message SignInRecord {
+  string day = 1;
+  int64 award_amount = 2;
+  SigninType signin_type = 3;
+}
+
+// 积分详情获取请求
+message AmountRequest {
+  RequestHeader request_header = 1;
+}
+
+// 积分详情获取响应
+message AmountResponse {
+  ResponseHeader response_header = 1;
+  // 剩余总积分
+  int64 total_amount = 2;
+  // 积分领取和使用记录
+  repeated AmountRecord amount_records = 3;
+  // 签到记录
+  repeated SignInRecord signin_records = 4;
+  // 连续签到的天数
+  int32 continuous_days = 5;
+}
+
+// 签到请求
+message SignInRequest {
+  RequestHeader request_header = 1;
+  // 第几天签到
+  int32 signin_day = 2;
+}
+
+// 签到响应
+message SignInResponse {
+  ResponseHeader response_header = 1;
+  // 奖励的积分
+  int64 award_amount = 2;
+  // 剩余总积分
+  int64 total_amount = 3;
+}
+
+// 广告奖励类型
+enum AdActionType {
+  // 未知类型
+  VideoActionType_UNKNOWN = 0;
+  // 播放
+  VideoActionType_PLAY = 1;
+  // 点击
+  VideoActionType_CLICK = 2;
+  // 转化行为
+  VideoActionType_ACTIOIN = 3;
+}
+
+// 广告奖励请求
+message AdAwardRequest {
+  RequestHeader request_header = 1;
+  // 广告奖励类型
+  AdActionType action_type = 2;
+}
+
+// 广告奖励响应
+message AdAwardResponse {
+  ResponseHeader response_header = 1;
+  // 奖励的积分
+  int64 award_amount = 2;
+  // 剩余总积分
+  int64 total_amount = 3;
+}

@@ -1,0 +1,129 @@
+syntax = "proto3";
+package va_interface;
+
+import "common.proto";
+import "constants.proto";
+import "device.proto";
+import "picture.proto";
+
+option go_package = "va_visionai_server/internal/va_interface";
+
+enum LLMMsgQuality {
+  Normal = 0;
+  Good = 1;
+  Bad = 2;
+}
+
+message ReportLLMMsgQualityRequest {
+  RequestHeader request_header = 1;
+  string chat_id = 2;
+  string msg_id = 3;
+  LLMMsgQuality quality = 4;
+}
+
+message ReportLLMMsgQualityResponse {
+  ResponseHeader response_header = 1;
+}
+
+// 用户事件上报
+message ReportUserEventRequest {
+  RequestHeader request_header = 1;
+  // 事件名称
+  UserEventType event_type = 2;
+  // 事件数据
+  oneof event_data {
+    TaskProgressEventData task_progress_data = 3;
+    CustomEventData custom_data = 4;
+    TrackingEventData tracking_data = 5;
+    AttributionAsaEventData asa_data = 6;
+    AttributionAsaTokenEventData asaToken_data = 7;
+  }
+}
+
+// 用户事件上报响应
+message ReportUserEventResponse {
+  ResponseHeader response_header = 1;
+}
+
+message ViewPictureEventData {
+  string picture_task_id = 1;
+}
+
+message TaskProgressEventData {
+  string picture_task_id = 1;
+  int32 progress = 2;
+  PictureInfo picture_info = 3;
+  bool can_retry = 4;
+  string task_fail_reason = 5;
+  string task_fail_reason_full = 6;
+}
+
+message CustomEventData {
+  string data = 1; // JSON字符串
+}
+
+message TrackingEventData {
+  // 事件类型
+  TrackingEventType event_type = 1;
+  // 事件来源
+  TrackingEventSource event_source = 2;
+  // 例如：1:Android,2:iOS
+  int32 os = 3;
+  // AppStore
+  AppStore app_store = 4;
+  // 额外数据(JSON格式)
+  // 灵感prompt 上报示例：  {"inspiration_prompt_id":"prompt_1"}
+  string extra_data = 5;
+}
+message AttributionAsaEventData {
+  bool attribution = 1;
+  int64 org_id = 2;
+  int64 campaign_id = 3;
+  string conversion_type = 4;
+  string click_date = 5;
+  string claim_type = 6;
+  int64 ad_group_id = 7;
+  string country_or_region = 8;
+  int64 keyword_id = 9;
+  int64 ad_id = 10;
+}
+
+message AttributionAsaTokenEventData {
+  string token = 1; // token字符串
+}
+
+// 监听事件请求
+message EventWatchRequest {
+  RequestHeader request_header = 1;
+  // 要监听的事件类型
+  WatchEventType event_type = 2;
+}
+
+// 监听事件响应
+message EventWatchResponse {
+  ResponseHeader response_header = 1;
+  // 事件类型
+  WatchEventType event_type = 2;
+  // 事件数据 (JSON格式字符串)
+  oneof event_data {
+    TaskProgressEventData task_progress_data = 3;
+    CustomEventData custom_data = 4;
+  }
+}
+
+// 用户反馈
+message UserFeedbackRequest {
+  RequestHeader request_header = 1;
+  // 客户端上传的反馈类型
+  string feedback_type = 2;
+  // 反馈内容
+  string feedback_content = 3;
+  // 截图
+  repeated string screenshot_urls = 4;
+  // 用户邮箱(非必填)
+  string email = 5;
+}
+
+message UserFeedbackResponse {
+  ResponseHeader response_header = 1;
+}

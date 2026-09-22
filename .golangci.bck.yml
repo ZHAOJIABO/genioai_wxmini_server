@@ -1,0 +1,52 @@
+run:
+  # 超过此时间限制的 linter 将被杀死，单位是秒
+  timeout: 600s
+
+linters:
+  enable:
+    # - errcheck
+    - gosimple
+    - govet
+    - asasalint
+    - bodyclose
+    - makezero
+    - loggercheck
+    - gci
+    - gofmt
+    - goimports
+  presets:
+    - bugs
+    - performance
+  disable:
+    - nilerr
+    - errcheck
+    - musttag
+    - errchkjson
+    - unused
+    - staticcheck
+    - cyclop
+    - gosec
+    - gosmopolitan
+    - errorlint
+    - noctx
+    - contextcheck
+    - funlen
+    - exhaustive
+    - dupl
+
+linters-settings:
+  gci:
+    sections:
+      - standard                      # 标准库
+      - default                      # 第三方包
+      - prefix(va_visionai_server)   # 项目包
+      - blank                        # 空行
+      - dot                          # 点导入 
+    custom-order: true
+    skip-generated: true
+
+issues:
+  exclude-rules:
+    - path: _test\.go$
+      linters:
+        - errcheck   # 对测试文件禁用 errcheck

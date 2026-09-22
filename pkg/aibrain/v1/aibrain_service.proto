@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package aibrain;
+
+import "v1/aibrain.proto";
+
+option go_package = "github.com/bluefocus/va_interface/protos/aibrain/v1";
+
+// AIBrainService AI Brain服务，提供AIBrain（AI-Generated Content）相关的服务接口
+// 包括异步任务管理和实时聊天功能
+service AIBrainService {
+  // --- 异步任务管理接口 ---
+
+  // SubmitAsyncTask 提交一个异步生成任务
+  // 用于创建图片、视频等耗时较长的生成任务
+  rpc SubmitAsyncTask(SubmitAsyncTaskRequest) returns (SubmitAsyncTaskResponse);
+
+  // GetAsyncTask 获取指定异步任务的状态和结果
+  // 通过任务ID查询单个任务的详细信息
+  rpc GetAsyncTask(GetAsyncTaskRequest) returns (GetAsyncTaskResponse);
+
+  // GetAsyncTasks 批量获取异步任务状态
+  // 支持通过任务ID列表或状态过滤器批量查询任务
+  rpc GetAsyncTasks(GetAsyncTasksRequest) returns (GetAsyncTasksResponse);
+
+  // CancelAsyncTask 取消指定的异步任务
+  // 尝试取消正在执行或等待执行的任务
+  rpc CancelAsyncTask(CancelAsyncTaskRequest) returns (CancelAsyncTaskResponse);
+
+  // UploadInputFile 上传文件到input目录下，作为后续入参使用(Cloud ComfyUI 执行器下使用)
+  rpc UploadComfyUIInputFile(UploadComfyUIInputFileRequest) returns (UploadComfyUIInputFileResponse);
+
+  // --- 实时聊天接口 ---
+
+  // ChatStream 进行流式聊天对话
+  // 提供实时的文本生成和对话功能，支持服务器端流式响应
+  rpc ChatStream(ChatStreamRequest) returns (stream ChatStreamResponse);
+
+  // --- 系统管理接口 ---
+
+  // HealthCheck 健康检查
+  // 用于检查服务的可用性和健康状态
+  rpc HealthCheck(HealthCheckRequest) returns (HealthCheckResponse);
+}

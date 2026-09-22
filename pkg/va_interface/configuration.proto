@@ -1,0 +1,145 @@
+syntax = "proto3";
+package va_interface;
+
+import "common.proto";
+import "constants.proto";
+
+option go_package = "va_visionai_server/internal/va_interface";
+
+message Configuration {
+  // 配置版本
+  string version = 1;
+  // Debug 开关
+  bool debug_enabled = 2;
+  // 图片聊天开关
+  bool image_chat_enabled = 3;
+  // 语音聊天开关
+  bool voice_chat_enabled = 4;
+  // 文字聊天开关
+  bool text_chat_enabled = 5;
+  // 是否支持未登录使用
+  bool chat_with_not_login = 6;
+  // 是否显示签到模块
+  bool signin_enabled = 7;
+  // 是否展示激励视频奖励得积分模块
+  bool reward_ad_enabled = 8;
+  // 最新版本号
+  int32 latest_version = 9;
+  // 更新文案
+  string update_text = 10;
+  // 该版本是否强制更新
+  bool force_update = 11;
+  // 全局load sdk 开关
+  bool global_load_sdk_enabled = 12;
+}
+
+// 验证码发起请求
+message ConfigurationRequest {
+  RequestHeader request_header = 1;
+}
+
+// 验证码发起响应
+message ConfigurationResponse {
+  ResponseHeader response_header = 1;
+  // 配置项
+  Configuration configuration = 2;
+  // piclib Configuration
+  PiclibConfig piclib_config = 3;
+}
+
+message PiclibConfig {
+  // 盲盒背景主题URL
+  string blind_box_background_url = 1;
+  // 盲盒 主标题
+  string blind_box_title = 2;
+  //  盲盒 副标题
+  string blind_box_subtitle = 3;
+  // 系统主题
+  Theme theme = 4;
+  // 支持邮箱
+  string support_email = 5;
+
+  // 首页ICON
+  string home_icon = 10;
+}
+
+message FeedbackConfigRequest {
+  RequestHeader request_header = 1;
+}
+
+message FeedbackConfigResponse {
+  ResponseHeader response_header = 1;
+  // 弹窗天数间隔(N 天內没有进行评分)
+  uint32 popup_interval = 2;
+  // 弹窗次数
+  uint32 popup_count = 3;
+}
+
+message EmotionalStateListRequest {
+  RequestHeader request_header = 1;
+}
+
+message EmotionalStateListResponse {
+  ResponseHeader response_header = 1;
+  // 情感状态列表
+  repeated EmotionalState emotional_state_list = 2;
+}
+
+// 情感状态
+message EmotionalState {
+  // 状态唯一表示
+  string emotional_iden = 1;
+  // 状态文案
+  string label = 2;
+  // 状态描述
+  string description = 3;
+}
+
+message RelationListRequest {
+  RequestHeader request_header = 1;
+}
+
+message RelationListResponse {
+  ResponseHeader response_header = 1;
+  // 关系列表
+  repeated Relation relation_list = 2;
+}
+
+message FixedTextDataRequest {
+  RequestHeader request_header = 1;
+}
+
+message FixedTextDataResponse {
+  ResponseHeader response_header = 1;
+  // 固定文案数据
+  repeated FixedTextData fixed_text_data = 2;
+}
+
+message FixedTextData {
+  // 文案唯一表示
+  string text_iden = 1;
+  // 文案
+  string text = 2;
+}
+
+// 首页弹窗提醒请求
+message GetPopupNotificationsRequest {
+  RequestHeader request_header = 1;
+}
+
+// 首页弹窗提醒响应
+message GetPopupNotificationsResponse {
+  ResponseHeader response_header = 1;
+  repeated PopupNotificationItem notifications = 2;
+}
+
+// 弹窗提醒项
+message PopupNotificationItem {
+  uint32 id = 1;
+  string title = 2;
+  string content = 3;
+  string image_url = 4;
+  string link_url = 5;
+  string notification_type = 6;
+  int32 priority = 7;
+}

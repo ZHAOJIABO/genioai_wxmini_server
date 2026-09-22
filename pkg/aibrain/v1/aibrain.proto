@@ -1,0 +1,445 @@
+syntax = "proto3";
+
+package aibrain;
+
+option go_package = "github.com/bluefocus/va_interface/protos/aibrain/v1";
+// --- 通用枚举定义 ---
+
+// AsyncTaskStatus 定义异步任务的状态
+enum AsyncTaskStatus {
+  // 未指定状态，默认值
+  ASYNC_TASK_STATUS_UNSPECIFIED = 0;
+  // 等待调度
+  ASYNC_TASK_STATUS_PENDING = 1;
+  // 处理中
+  ASYNC_TASK_STATUS_PROCESSING = 2;
+  // 等待第三方服务完成
+  ASYNC_TASK_STATUS_AWAITING_PROVIDER = 3;
+  // 等待重试
+  ASYNC_TASK_STATUS_PENDING_RETRY = 4;
+  // 已完成
+  ASYNC_TASK_STATUS_COMPLETED = 5;
+  // 失败
+  ASYNC_TASK_STATUS_FAILED = 6;
+}
+
+// AsyncTaskType 定义异步任务的类型
+enum AsyncTaskType {
+  // 未指定类型，默认值
+  ASYNC_TASK_TYPE_UNSPECIFIED = 0;
+  // 文本生成图片
+  ASYNC_TASK_TYPE_TEXT_TO_IMAGE = 1;
+  // 图片生成图片
+  ASYNC_TASK_TYPE_IMAGE_TO_IMAGE = 2;
+  // 文本生成视频
+  ASYNC_TASK_TYPE_TEXT_TO_VIDEO = 3;
+  // 图片生成视频
+  ASYNC_TASK_TYPE_IMAGE_TO_VIDEO = 4;
+}
+
+enum InputFileType {
+  // 未指定类型，默认值
+  INPUT_FILE_TYPE_UNSPECIFIED = 0;
+  // 图片
+  INPUT_FILE_TYPE_IMAGE = 1;
+}
+
+// --- 任务参数定义 ---
+
+// ImageGenerationParams 图片生成任务参数
+message ImageGenerationParams {
+  // 文本提示词
+  string prompt = 1;
+  // 负面提示词
+  string negative_prompt = 2;
+  // 图片宽度
+  int32 width = 3;
+  // 图片高度
+  int32 height = 4;
+  // 引导系数
+  float guidance_scale = 5;
+  // 推理步数
+  int32 steps = 6;
+  // 随机种子，-1表示随机
+  int64 seed = 7;
+  // 输入图片URL（用于image-to-image）
+  string input_image_url = 8;
+  // 模型名称
+  string model_name = 9;
+  // 采样器名称
+  string sampler_name = 10;
+  // ControlNet配置
+  repeated ControlNetConfig controlnet_configs = 11;
+}
+
+// ControlNet配置
+message ControlNetConfig {
+  // ControlNet模型名称
+  string model = 1;
+  // 输入图片URL
+  string image_url = 2;
+  // 权重
+  float weight = 3;
+  // 预处理器
+  string preprocessor = 4;
+}
+
+// VideoGenerationParams 视频生成任务参数
+message VideoGenerationParams {
+  // 文本提示词
+  string prompt = 1;
+  // 视频时长（秒）
+  int32 duration = 2;
+  // 宽高比，如 "16:9", "9:16"
+  string aspect_ratio = 3;
+  // 帧率
+  int32 fps = 4;
+  // 输入图片URL（用于image-to-video）
+  string input_image_url = 5;
+  // 模型名称
+  string model_name = 6;
+  // 视频质量设置
+  VideoQuality quality = 7;
+}
+
+// 视频质量设置
+message VideoQuality {
+  // 分辨率宽度
+  int32 width = 1;
+  // 分辨率高度
+  int32 height = 2;
+  // 比特率
+  int32 bitrate = 3;
+}
+
+// TaskParams 任务参数联合体
+message TaskParams {
+  oneof params {
+    // 图片生成参数
+    ImageGenerationParams image_params = 1;
+    // 视频生成参数
+    VideoGenerationParams video_params = 2;
+  }
+}
+
+// --- 任务结果定义 ---
+
+// ImageResult 图片生成结果
+message ImageResult {
+  // 生成的图片URL列表
+  repeated string image_urls = 1;
+  // 图片宽度
+  int32 width = 2;
+  // 图片高度
+  int32 height = 3;
+  // 使用的种子
+  int64 seed = 4;
+  // 实际使用的模型
+  string model_used = 5;
+  // 生成参数摘要
+  string generation_info = 6;
+}
+
+// VideoResult 视频生成结果
+message VideoResult {
+  // 生成的视频URL
+  string video_url = 1;
+  // 视频时长（秒）
+  int32 duration = 2;
+  // 视频宽度
+  int32 width = 3;
+  // 视频高度
+  int32 height = 4;
+  // 帧率
+  int32 fps = 5;
+  // 文件大小（字节）
+  int64 file_size = 6;
+  // 实际使用的模型
+  string model_used = 7;
+}
+
+// TaskResult 任务结果联合体
+message TaskResult {
+  oneof result {
+    // 图片生成结果
+    ImageResult image_result = 1;
+    // 视频生成结果
+    VideoResult video_result = 2;
+  }
+}
+
+// --- 聊天参数定义 ---
+
+// ChatParameters 聊天模型参数
+message ChatParameters {
+  // 温度参数，控制随机性 (0.0-2.0)
+  float temperature = 1;
+  // 最大生成token数
+  int32 max_tokens = 2;
+  // Top-p采样参数 (0.0-1.0)
+  float top_p = 3;
+  // 频率惩罚 (-2.0到2.0)
+  float frequency_penalty = 4;
+  // 存在惩罚 (-2.0到2.0)
+  float presence_penalty = 5;
+  // 停止词列表
+  repeated string stop = 6;
+  // 流式输出
+  bool stream = 7;
+  // 是否包含使用量信息
+  bool include_usage = 8;
+}
+
+// --- 异步任务相关消息定义 ---
+// 采用JSON灵活参数方案的gRPC定义
+message SubmitAsyncTaskRequest {
+  string task_type = 1; // "text_to_video", "image_to_video"
+  string model = 2; // 模型
+  string provider_hint = 3; // 服务提供商 kling
+  string parameters_json = 4; // JSON格式的动态参数，支持任意结构
+  int32 priority = 5; // 任务优先级，1-10，默认5
+  OutputConfig output = 6;
+}
+
+message OutputConfig {
+  // 输出路径，如果存在则将输出文件保存到指定路径，否则使用默认路径
+  // 目前仅支持存储COS，这里填写路径+文件名，例如: aibrain/cloud_comfy_task_12345.mp4
+  string cos_path = 1;
+}
+
+// SubmitAsyncTaskResponse 提交异步任务的响应
+message SubmitAsyncTaskResponse {
+  // 任务唯一标识
+  string task_id = 1;
+  // 任务当前状态
+  AsyncTaskStatus status = 2;
+  // 任务创建时间戳（Unix秒）
+  int64 created_at = 3;
+  // 预估完成时间（Unix秒）
+  int64 estimated_completion_at = 4;
+  // 实际选择的提供商
+  string selected_provider = 5;
+  // 实际选择的模型
+  string selected_model = 6;
+  // 选择来源 (config hint fallback)
+  string selection_source = 7;
+}
+
+// GetAsyncTaskRequest 获取异步任务信息的请求
+message GetAsyncTaskRequest {
+  // 任务唯一标识，必填
+  string task_id = 1;
+}
+
+// GetAsyncTaskResponse 获取异步任务信息的响应
+message GetAsyncTaskResponse {
+  // 任务唯一标识
+  string task_id = 1;
+  // 任务类型
+  AsyncTaskType task_type = 2;
+  // 工作流名称
+  string workflow_name = 3;
+  // 任务当前状态
+  AsyncTaskStatus status = 4;
+  // 任务进度，0-100
+  int32 progress = 5;
+  // 错误信息，仅在失败时有值
+  string error_message = 6;
+  // 任务结果，任务完成时有值
+  TaskResult result = 7;
+  // 任务创建时间戳（Unix秒）
+  int64 created_at = 8;
+  // 任务最后更新时间戳（Unix秒）
+  int64 updated_at = 9;
+  // 任务完成时间戳（Unix秒），可选
+  int64 completed_at = 10;
+  // 任务元数据
+  map<string, string> metadata = 11;
+  // 任务优先级
+  int32 priority = 12;
+}
+
+// GetAsyncTasksRequest 批量获取任务状态的请求
+message GetAsyncTasksRequest {
+  // 任务ID列表，可选，与status_filter二选一
+  repeated string task_ids = 1;
+  // 状态过滤器，可选，与task_ids二选一
+  AsyncTaskStatus status_filter = 2;
+  // 限制返回数量，默认100，最大1000
+  int32 limit = 3;
+  // 偏移量，用于分页
+  int32 offset = 4;
+  // 按创建时间排序，true为降序
+  bool order_by_created_desc = 5;
+}
+
+// GetAsyncTasksResponse 批量获取任务状态的响应
+message GetAsyncTasksResponse {
+  // 任务列表
+  repeated GetAsyncTaskResponse tasks = 1;
+  // 总数量（用于分页）
+  int32 total_count = 2;
+  // 下一页偏移量，-1表示没有下一页
+  int32 next_offset = 3;
+}
+
+// CancelAsyncTaskRequest 取消异步任务的请求
+message CancelAsyncTaskRequest {
+  // 任务唯一标识，必填
+  string task_id = 1;
+  // 取消原因，可选
+  string reason = 2;
+}
+
+// CancelAsyncTaskResponse 取消异步任务的响应
+message CancelAsyncTaskResponse {
+  // 任务唯一标识
+  string task_id = 1;
+  // 取消操作是否成功
+  bool success = 2;
+  // 响应消息
+  string message = 3;
+  // 任务最终状态
+  AsyncTaskStatus final_status = 4;
+}
+
+// UploadComfyUIInputFileRequest 上传文件到input目录下的请求
+
+message UploadComfyUIInputFileRequest {
+  // 文件名
+  string file_name = 1;
+  // 文件内容
+  bytes file_content = 2;
+  // URL （也支持URL上传）
+  string url = 3;
+  // 文件类型
+  InputFileType file_type = 4;
+}
+
+// UploadComfyUIInputFileResponse 上传文件到input目录下的响应
+message UploadComfyUIInputFileResponse {
+  // 文件名
+  string file_name = 1;
+  // 文件URL
+  string file_url = 2;
+}
+
+// --- 实时聊天相关消息定义 ---
+
+// ChatRole 定义聊天消息的角色
+enum ChatRole {
+  // 未指定角色，默认值
+  CHAT_ROLE_UNSPECIFIED = 0;
+  // 系统消息
+  CHAT_ROLE_SYSTEM = 1;
+  // 用户消息
+  CHAT_ROLE_USER = 2;
+  // 助手消息
+  CHAT_ROLE_ASSISTANT = 3;
+}
+
+// ContentPart 定义了消息的一个部分，可以是文本、图片或视频
+message ContentPart {
+  oneof data {
+    // 文本内容
+    string text = 1;
+    // 图片URL
+    string image_url = 2;
+    // 视频URL
+    string video_url = 3;
+  }
+}
+
+// ChatMessage 定义聊天消息
+message ChatMessage {
+  // 消息角色
+  ChatRole role = 1;
+  // 消息内容，支持多模态
+  repeated ContentPart parts = 2;
+  // 消息时间戳（Unix秒）
+  int64 timestamp = 3;
+}
+
+// ChatStreamRequest 流式聊天请求
+message ChatStreamRequest {
+  // 模型名称，如 "gpt-4o", "doubao-pro"
+  string model_name = 1;
+  // 上下文消息列表
+  repeated ChatMessage messages = 2;
+  // 模型参数
+  ChatParameters parameters = 3;
+  // 请求元数据
+  map<string, string> metadata = 4;
+  // 会话ID，用于上下文管理
+  string session_id = 5;
+}
+
+// TokenUsage token使用量统计
+message TokenUsage {
+  // 输入token数
+  int32 prompt_tokens = 1;
+  // 输出token数
+  int32 completion_tokens = 2;
+  // 总token数
+  int32 total_tokens = 3;
+}
+
+// ChatStreamResponse 流式聊天响应
+message ChatStreamResponse {
+  // 响应块唯一标识
+  string chunk_id = 1;
+  // 响应内容片段
+  string content_chunk = 2;
+  // 是否为最后一个响应块
+  bool is_finish = 3;
+  // 结束原因，仅在is_finish为true时有效
+  string finish_reason = 4;
+  // 使用量统计，仅在最后一个chunk中包含
+  TokenUsage usage = 5;
+  // 响应时间戳
+  int64 timestamp = 6;
+}
+
+// --- 健康检查相关消息定义 ---
+
+// ServingStatus 定义服务状态
+enum ServingStatus {
+  // 未指定状态，默认值
+  SERVING_STATUS_UNSPECIFIED = 0;
+  // 正在服务
+  SERVING_STATUS_SERVING = 1;
+  // 未在服务
+  SERVING_STATUS_NOT_SERVING = 2;
+  // 服务未知
+  SERVING_STATUS_SERVICE_UNKNOWN = 3;
+}
+
+// HealthCheckRequest 健康检查请求
+message HealthCheckRequest {
+  // 服务名称，可选，为空则检查整体服务
+  string service = 1;
+}
+
+// ServiceStatus 具体服务状态
+message ServiceStatus {
+  // 服务名称
+  string name = 1;
+  // 服务状态
+  ServingStatus status = 2;
+  // 状态描述
+  string message = 3;
+  // 最后检查时间
+  int64 last_check_time = 4;
+}
+
+// HealthCheckResponse 健康检查响应
+message HealthCheckResponse {
+  // 整体服务状态
+  ServingStatus status = 1;
+  // 状态描述
+  string message = 2;
+  // 各个子服务状态
+  repeated ServiceStatus services = 3;
+  // 检查时间戳
+  int64 check_timestamp = 4;
+}

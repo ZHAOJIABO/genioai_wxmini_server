@@ -1,0 +1,45 @@
+syntax = "proto3";
+package va_interface;
+
+import "device.proto";
+
+option go_package = "va_visionai_server/internal/va_interface";
+
+// Web客户端信息
+message WebClient {
+  // Web应用包名/标识符（与App.package_name作用相同，用于project_id判断）
+  // 例如: "com.example.web"、"web.genio.ai" 等
+  string package_name = 1;
+  // Web应用版本号
+  string client_version = 2;
+  // 构建版本号（可选）
+  string build_number = 3;
+  // Web应用平台类型（可选）：admin、user、mobile_web等
+  string platform = 4;
+}
+
+// 浏览器信息
+message BrowserInfo {
+  // IP地址（IPv4）
+  string ip = 1;
+  // 浏览器User Agent
+  string user_agent = 2;
+  // 浏览器名称（Chrome、Firefox、Safari、Edge等）
+  string browser_name = 3;
+  // 浏览器版本
+  string browser_version = 4;
+  // 屏幕宽度（像素）
+  int32 screen_width = 5;
+  // 屏幕高度（像素）
+  int32 screen_height = 6;
+  // 语言
+  Language language = 7;
+  // 时区
+  string timezone = 8;
+  // 操作系统平台（Windows、MacOS、Linux等）
+  string platform = 9;
+  // IPv6地址（可选）
+  string ipv6 = 10;
+  // 屏幕像素密度
+  double pixel_ratio = 11;
+}

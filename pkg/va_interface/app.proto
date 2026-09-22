@@ -1,0 +1,18 @@
+syntax = "proto3";
+package va_interface;
+
+option go_package = "va_visionai_server/internal/va_interface";
+
+// APP属性
+message App {
+  // 应用包名, 例如：com.moji.MojiWeather
+  string package_name = 1;
+  // 应用名，例如：陌陌
+  string app_name = 2;
+  // app类目, 参见多盟APP类目表
+  repeated string category = 3;
+  // 应用版本号 eg 3.2.9
+  string app_version = 4;
+  // 应用商店版本号 eg (oppo、vivo、华为等)
+  string app_store_version = 5;
+}

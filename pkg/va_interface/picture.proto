@@ -1,0 +1,823 @@
+syntax = "proto3";
+package va_interface;
+
+import "common.proto";
+import "constants.proto";
+
+option go_package = "va_visionai_server/internal/va_interface";
+
+message WorkflowInput {
+  // 参数名称
+  string input_name = 1;
+  // 输入类型
+  MessageType input_type = 2;
+  // 输入内容（图片URL）
+  string input_content = 3;
+}
+
+message WorkflowExampleImage {
+  // 原始图片
+  repeated string ori_content = 1;
+  // 原始图片数量
+  int32 ori_content_count = 2;
+  // 输出图片
+  string result_content = 3;
+  // 图片高宽比
+  float aspect_ratio = 4;
+  // 输出样例（视频、图片）的缩略图
+  string result_thumbnail_url = 5;
+}
+
+message Workflow {
+  // workflow ID 问答时设置workflow id 可启用对应的workflow
+  string workflow_id = 1;
+  // 标题
+  string title = 2;
+  // 描述
+  string description = 3;
+  // 标识
+  string kind_id = 4;
+  // icon
+  string icon = 5;
+  // 使用此workflow需要的参数，如果长度为1表示需要1个输入。
+  repeated WorkflowInput inputs = 6;
+  // 示例图片
+  WorkflowExampleImage example_image = 7;
+  // 人脸数量
+  int32 face_count = 8;
+  // 工作流类型
+  WorkflowKindType kind_type = 9;
+  // 工作流生成主题(@deprecated)
+  WorkflowTheme theme = 10;
+  // 是否免费
+  bool is_free = 11;
+  // 是否热门
+  bool is_hot = 12;
+  // 是否新上模板
+  bool is_new = 13;
+  // workflow theme string类型
+  string workflow_theme = 14;
+  // 积分消耗
+  int32 credit_cost = 15;
+  // 任务链积分消耗 计算整个任务链每个模板的积分消耗总和
+  int32 chain_credit_cost = 16;
+  // 支持的额外参数
+  repeated ToolParamDetail support_extra_params = 17;
+  // 二创prompt（用于图生视频的二创prompt）
+  string recreate_prompt = 18;
+}
+
+message WorkflowKind {
+  // workflow标识
+  string kind_id = 1;
+  // 显示文本
+  string label = 2;
+  // 工作流类型 图片，视频
+  WorkflowKindType kind_type = 3;
+  // 工作流生成主题 人物，宠物
+  WorkflowTheme theme = 4;
+  // 工作流列表
+  repeated Workflow workflows = 5;
+  // 类型的封面图
+  repeated PictureInfo cover_pictures = 6;
+  // 分类描述
+  string description = 7;
+  // 分类展示样式
+  WorkflowKindDisplayStyle display_style = 8;
+}
+
+message PictureForgeInfo {
+  // userID
+  string user_id = 1;
+  // 任务ID
+  string task_id = 2;
+  // 任务状态
+  WorkflowTaskStatus task_status = 3;
+  // 任务进度 0-100
+  int32 task_progress = 4;
+  // 任务结果(图片信息)
+  PictureInfo task_result_picture_info = 5;
+  // 用户选择展示的图片信息
+  PictureInfo user_show_picture_info = 6;
+  // 用户图片信息(输入参数)
+  repeated PictureInfo user_picture_info = 7;
+  // 评分
+  repeated PicScoreInfo score = 8;
+  // 发布状态
+  PublishStatus publish_status = 9;
+  // workflow 引用的workflow信息
+  Workflow workflow = 10;
+  // 浏览量
+  string view_count = 11;
+  // 是否未读取任务结果
+  bool unread_task_result = 12;
+  // 允许展示原始图片
+  bool allow_show_ori_picture = 13;
+  // 工作流类型
+  WorkflowKindType kind_type = 14;
+  // 工作流生成主题
+  WorkflowTheme theme = 15;
+  // 是否免费
+  bool is_free = 16;
+  // workflow theme string类型
+  string workflow_theme = 17;
+  // 任务完成时间（秒级时间戳）
+  int64 task_complete_time = 18;
+  // 能否重试
+  bool can_retry = 19;
+  // tag
+  repeated string tags = 20;
+  // 任务失败原因标题
+  string task_fail_reason = 21;
+  // 任务失败原因详情
+  string task_fail_reason_full = 22;
+  // 使用的工具ID
+  string tool_id = 23;
+  // 使用的prompt
+  string prompt = 24;
+  // 默认可使用的图片转视频工具ID
+  string default_picture_to_video_tool_id = 25;
+  // 二创prompt（用于图生视频的二创prompt）
+  string recreate_prompt = 26;
+  // 是否为模型直连模式
+  bool is_model_direct = 27;
+  // 模型名称（仅模型直连模式有值）
+  string model_name = 28;
+  // 负面prompt（仅模型直连模式有值）
+  string negative_prompt = 29;
+  // 图片生成类型（文生图/图生图）
+  ImageGenerationType generation_type = 30;
+  // 任务消耗的积分
+  int32 credit_cost = 31;
+  // 多图结果列表（单图时为空或仅1个元素）
+  repeated PictureInfo task_result_pictures = 32;
+}
+
+message PicScoreInfo {
+  // 维度名称
+  string name = 1;
+  // 维度值
+  string value = 2;
+}
+
+// 模型配置（用于直接调用模型）
+message ModelConfig {
+  // 模型名称（如：flux-dev, sd3, wanx, kling等）
+  string model_name = 1;
+  // 生成图片数量（可选，默认1）
+  int32 num_images = 2;
+  // 推理步数（可选，使用模型默认值）
+  int32 steps = 3;
+  // CFG scale（可选，使用模型默认值）
+  float cfg_scale = 4;
+  // 种子（可选，-1表示随机）
+  int64 seed = 5;
+  // 宽度（可选，使用模型默认值）
+  int32 width = 6;
+  // 高度（可选，使用模型默认值）
+  int32 height = 7;
+  // 图片质量（可选，如：standard, hd, ultra等，具体取值由模型决定）
+  string quality = 8;
+  // 图片宽高比（可选，如：16:9, 1:1, 4:3, 3:2等，具体取值由模型决定）
+  string aspect_ratio = 9;
+}
+
+// 提交图片生成任务请求
+message SubmitPictureForgeTaskRequest {
+  RequestHeader request_header = 1;
+
+  // ===== Workflow模式字段（与模型直连模式二选一） =====
+  // 工作流ID（workflow模式必填，model_config存在时可不填）
+  string workflow_id = 2;
+  // 工作流参数
+  repeated WorkflowInput workflow_input = 3;
+  // 工作流主题
+  string workflow_theme = 4;
+  // 时长
+  string duration = 5;
+  // 分辨率
+  string resolution = 6;
+
+  // ===== 模型直连模式字段（与workflow模式二选一） =====
+  // 模型配置（如果设置了model_config，则忽略workflow_id）
+  ModelConfig model_config = 7;
+  // 用户输入的prompt（模型直连模式必填）
+  string user_prompt = 8;
+  // 负面prompt（可选，用于指定不想要的内容）
+  string negative_prompt = 9;
+  // 用户上传的图片URL列表（图生图模式使用，支持多图）
+  repeated string user_images = 10;
+  // 图生图强度（0.0-1.0，默认0.75，仅图生图时生效）
+  float strength = 11;
+}
+
+// 提交图片生成任务响应
+message SubmitPictureForgeTaskResponse {
+  ResponseHeader response_header = 1;
+  // 任务ID
+  string task_id = 2;
+}
+
+// 获取图片生成任务结果请求
+message GetPictureForgeTaskResultRequest {
+  RequestHeader request_header = 1;
+  // 任务ID
+  string task_id = 2;
+}
+
+// 获取图片生成任务结果响应
+message GetPictureForgeTaskResultResponse {
+  ResponseHeader response_header = 1;
+  PictureForgeInfo picture_forge_info = 2;
+}
+
+// // 列出所有生成图片任务请求
+// message ListPictureForgeTaskRequest {
+//   RequestHeader request_header = 1;
+//   // 分页信息
+//   PageCommon page_common = 2;
+//   // 工作流类型
+//   WorkflowKindType kind_type = 3;
+//   // 工作流生成主题
+//   WorkflowTheme theme = 4;
+// }
+
+// // 列出所有生成图片任务响应
+// message ListPictureForgeTaskResponse {
+//   ResponseHeader response_header = 1;
+//   // 分页信息
+//   PageCommon page_common = 2;
+//   // 任务列表
+//   repeated PictureForgeInfo picture_forge_infos = 3;
+// }
+
+enum SortBy {
+  DEFAULT = 0; // 默认按被引用次数排序
+  LATEST = 1; // 按创建时间倒序
+  SCORE = 2; // 按评分排序
+}
+
+// 社区图片列表请求
+message ListCommunityPictureRequest {
+  RequestHeader request_header = 1;
+  // 分页信息
+  PageCommon page_common = 2;
+  // 排序方式(支持被引用次数排序，创建时间排序，评分排序)
+  SortBy sort_by = 3;
+}
+
+// 社区图片列表响应
+message ListCommunityPictureResponse {
+  ResponseHeader response_header = 1;
+  // 分页信息
+  PageCommon page_common = 2;
+  // 图片列表
+  repeated PictureForgeInfo community_picture_infos = 3;
+}
+
+// 用户最近上传图片请求
+message ListUserUploadPictureRequest {
+  RequestHeader request_header = 1;
+}
+
+message PictureInfo {
+  // 图片链接
+  string url = 1;
+  // 图片高宽比
+  float aspect_ratio = 2;
+  // 缩略图链接(目前仅用于生成结果图片)
+  string thumbnail_url = 3;
+  // 图片ID
+  string file_id = 4;
+}
+
+// 用户最近上传图片响应
+message ListUserUploadPictureResponse {
+  ResponseHeader response_header = 1;
+  // 用户最近上传图片的URL（最多10个）
+  repeated PictureInfo picture_info = 2;
+}
+
+// 发布图片请求
+message PublishPictureRequest {
+  RequestHeader request_header = 1;
+  // 图片任务ID
+  string picture_forge_task_id = 2;
+  // 用户定义图片链接（如果有值，社区页面展示此图）
+  string user_show_picture_url = 3;
+  // 允许展示原始图片
+  bool allow_show_ori_picture = 4;
+}
+
+// 发布图片响应
+message PublishPictureResponse {
+  ResponseHeader response_header = 1;
+}
+
+// 删除图片请求
+message DeletePictureRequest {
+  RequestHeader request_header = 1;
+  // 图片任务ID
+  string picture_forge_task_id = 2;
+  // 批量删除
+  repeated string picture_forge_task_ids = 3;
+}
+
+// 删除图片响应
+message DeletePictureResponse {
+  ResponseHeader response_header = 1;
+}
+
+// 用户最近生成图片任务请求
+message ListUserPictureForgeTaskRequest {
+  RequestHeader request_header = 1;
+  // 分页信息
+  PageCommon page_common = 2;
+  // 工作流生成主题
+  WorkflowTheme theme = 3;
+  // 工作流主题(字符串类型参数)
+  string workflow_theme = 4;
+  // 工作流类型
+  WorkflowKindType workflow_kind_type = 5;
+  // 任务模式筛选（可选，不传或传TASK_MODE_ALL则返回所有）
+  TaskMode task_mode = 6;
+}
+
+// 用户最近生成图片任务响应
+message ListUserPictureForgeTaskResponse {
+  ResponseHeader response_header = 1;
+  // 分页信息
+  PageCommon page_common = 2;
+  // 任务列表
+  repeated PictureForgeInfo picture_forge_infos = 3;
+}
+
+// 获取工作流分类请求
+message ListWorkflowKindRequest {
+  RequestHeader request_header = 1;
+  // 工作流类型
+  WorkflowKindType workflow_kind_type = 2;
+  // 工作流生成主题
+  WorkflowTheme workflow_theme = 3;
+}
+
+// 获取工作流分类响应
+message ListWorkflowKindResponse {
+  ResponseHeader response_header = 1;
+  // 工作流分类
+  repeated WorkflowKind workflow_kinds = 2;
+}
+
+// 获取对应分类工作流分页请求
+message ListWorkflowPageRequest {
+  RequestHeader request_header = 1;
+  // 分页信息
+  PageCommon page_common = 2;
+  // 分类ID
+  string kind_id = 3;
+  // 主题ID
+  WorkflowTheme theme = 4;
+  // workflow 类型
+  WorkflowKindType workflow_kind_type = 5;
+}
+
+// 获取对应分类工作流分页响应
+message ListWorkflowPageResponse {
+  ResponseHeader response_header = 1;
+  // 分页信息
+  PageCommon page_common = 2;
+  // 工作流列表
+  repeated Workflow workflows = 3;
+}
+
+// 重试失败任务请求
+message RetryFailedTaskRequest {
+  RequestHeader request_header = 1;
+  // 任务ID
+  string task_id = 2;
+}
+
+// 重试失败任务响应
+message RetryFailedTaskResponse {
+  ResponseHeader response_header = 1;
+}
+
+// 清除用户上传图片请求
+message ClearUserUploadPictureRequest {
+  RequestHeader request_header = 1;
+}
+
+// 清除用户上传图片响应
+message ClearUserUploadPictureResponse {
+  ResponseHeader response_header = 1;
+}
+
+// 获取工作流分类及分类下数据请求
+message ListKindWithWorkflowsRequest {
+  RequestHeader request_header = 1;
+  // 限制数量
+  int32 limit = 2;
+  // 主题(@deprecated)
+  WorkflowTheme theme = 3;
+  // 工作流主题（字符串类型参数）
+  string workflow_theme = 4;
+}
+
+// 获取工作流分类及分类下数据响应
+message ListKindWithWorkflowsResponse {
+  ResponseHeader response_header = 1;
+  // 工作流分类
+  repeated WorkflowKind workflow_kinds = 2;
+}
+
+// Banner列表请求
+message ListBannerKindWithWorkflowsRequest {
+  RequestHeader request_header = 1;
+}
+
+// Banner列表响应
+message ListBannerKindWithWorkflowsResponse {
+  ResponseHeader response_header = 1;
+  // 人物Banner
+  WorkflowKind person_banner = 2;
+  // 宠物Banner
+  WorkflowKind pet_banner = 3;
+}
+
+// 删除用户最近上传图片（单个）请求
+message DeleteUserUploadPictureRequest {
+  RequestHeader request_header = 1;
+  // 数据ID
+  string file_id = 2;
+}
+
+// 删除用户最近上传图片（单个）响应
+message DeleteUserUploadPictureResponse {
+  ResponseHeader response_header = 1;
+}
+
+enum WorkflowKindDisplayStyle {
+  // 未指定
+  WORKFLOW_KIND_DISPLAY_STYLE_UNSPECIFIED = 0;
+  // normal 普通模板
+  WORKFLOW_KIND_DISPLAY_STYLE_ONE = 1;
+  // 重点模板-多
+  WORKFLOW_KIND_DISPLAY_STYLE_TWO = 2;
+  // 重点模板 - 16:9
+  WORKFLOW_KIND_DISPLAY_STYLE_THREE = 3;
+  // 重点模板-大
+  WORKFLOW_KIND_DISPLAY_STYLE_FOUR = 4;
+}
+
+message SubmitRandomWorkflowTaskRequest {
+  RequestHeader request_header = 1;
+  // 工作流参数
+  repeated string picture_url = 2;
+}
+
+message SubmitRandomWorkflowTaskResponse {
+  ResponseHeader response_header = 1;
+  // 任务ID
+  string task_id = 2;
+  // 工作流 theme
+  string workflow_theme = 3;
+}
+
+message WorkflowThemeInfo {
+  // 主题
+  string theme = 1;
+  // 主题名称
+  string name = 2;
+  // 主题描述
+  string description = 3;
+  // 主题图标
+  string icon = 4;
+  // 选中图标
+  string selected_icon = 5;
+}
+
+message WorkflowThemeInfoWithWorkflowKind {
+  // 主题
+  WorkflowThemeInfo theme_info = 1;
+  // 主题下分类
+  repeated WorkflowKind workflow_kinds = 2;
+  // 主题下工作流
+  repeated Workflow workflow = 3;
+}
+
+// 获取工作流主题及主题下分类、工作流数据请求
+message ListThemeWithWorkflowsRequest {
+  RequestHeader request_header = 1;
+  // 每个供工作流分类下限制数量
+  int32 workflow_limit = 2;
+  // 层级控制， false 时返回theme的workflowkind 字段，true时 返回workflow字段
+  optional bool without_workflow_kind = 3;
+  // 工作流类型
+  WorkflowKindType kind_type = 4;
+}
+
+// 获取工作流主题及主题下分类、工作流数据响应
+message ListThemeWithWorkflowsResponse {
+  ResponseHeader response_header = 1;
+  // 主题
+  repeated WorkflowThemeInfoWithWorkflowKind datas = 2;
+}
+
+message ListAllThemeInfoRequest {
+  RequestHeader request_header = 1;
+}
+
+message ListAllThemeInfoResponse {
+  ResponseHeader response_header = 1;
+  // 主题
+  repeated WorkflowThemeInfo theme_infos = 2;
+}
+
+// 图片引导生成视频请求
+message PictureToVideoGuideRequest {
+  RequestHeader request_header = 1;
+  // 图片URL
+  repeated string picture_url = 2;
+}
+
+// 图片引导生成视频响应
+message PictureToVideoGuideResponse {
+  ResponseHeader response_header = 1;
+  // 任务ID
+  string task_id = 2;
+  // 工作流 theme
+  string workflow_theme = 3;
+}
+
+message PictureToolsInfo {
+  string id = 1;
+  string simple_title = 2;
+  string title = 3;
+  string description = 4;
+  // @deprecated
+  string icon = 5;
+  // 封面图
+  PictureInfo cover = 6;
+  // 上传图片数量
+  int32 input_count = 7;
+  // 任务结果类型（图片 视频）
+  WorkflowKindType result_type = 8;
+  // 是否支持自定义prompt,如果不支持编辑prompt，客户端直接拉起相册
+  bool support_custom_prompt = 9;
+  // 是否是VIP工具
+  bool is_vip_tool = 10;
+  // 是否支持prompt 优化
+  bool support_prompt_optimization = 11;
+  // 工具参数
+  repeated ToolParamsInfo tool_param_infos = 12;
+  // 工具消耗积分
+  int32 credit = 13;
+  // 推荐封面图
+  string recommend_cover = 14;
+  // 工具首页显示的ICON
+  string tool_icon = 15;
+  // 首页工具icon上展示的tag icon
+  string tag_icon = 16;
+}
+
+// 获取图片工具列表请求
+message ListPictureToolsRequest {
+  RequestHeader request_header = 1;
+}
+
+// 获取图片工具列表响应
+message ListPictureToolsResponse {
+  ResponseHeader response_header = 1;
+  repeated PictureToolsInfo picture_tools_infos = 2;
+}
+
+// 提交图片工具任务请求
+message SubmitPictureToolsTaskRequest {
+  RequestHeader request_header = 1;
+  // 图片工具ID
+  string picture_tool_id = 2;
+  // prompt
+  string prompt = 3;
+  // 图片工具参数
+  repeated string input_images = 4;
+  // 开启prompt优化
+  bool enable_prompt_optimization = 5;
+
+  // 视频参数
+  // 视频时长
+  string video_duration = 6;
+  // 分辨率
+  string resolution = 7;
+}
+
+// 提交图片工具任务响应
+message SubmitPictureToolsTaskResponse {
+  ResponseHeader response_header = 1;
+  // 任务ID
+  string task_id = 2;
+}
+
+// 获取图片工具任务结果列表请求
+message ListPictureToolsTaskResultRequest {
+  RequestHeader request_header = 1;
+  // 分页信息
+  PageCommon page_common = 2;
+}
+
+// 获取图片工具任务结果列表响应
+message ListPictureToolsTaskResultResponse {
+  ResponseHeader response_header = 1;
+  // 分页信息
+  PageCommon page_common = 2;
+  // 任务结果
+  repeated PictureToolsTaskDetail task_details = 3;
+}
+
+// 工具任务详情
+message PictureToolsTaskDetail {
+  // 任务ID
+  string task_id = 1;
+  // 用户上传图片
+  repeated PictureInfo user_upload_images = 2;
+  // 任务状态
+  WorkflowTaskStatus task_status = 3;
+  // 任务进度 0-100
+  int32 task_progress = 4;
+  // 任务结果(图片信息)
+  PictureInfo task_result_picture_info = 5;
+  // 任务结果类型（图片 视频）
+  WorkflowKindType task_result_type = 6;
+  // 任务消耗的积分
+  int32 credit_cost = 7;
+}
+
+// 两步固定任务链（图→视频）
+message SubmitPictureTaskChainRequest {
+  RequestHeader request_header = 1;
+  // 如果还没创建第一步任务，填写first_submit参数创建完整的任务链，如果已有第一步任务，填写first_task_id
+  // 创建任务链
+  string workflow_id = 2;
+  repeated WorkflowInput workflow_input = 3;
+}
+
+message SubmitPictureTaskChainResponse {
+  ResponseHeader response_header = 1;
+  // 图片任务ID
+  string image_task_id = 2;
+  // 视频任务ID
+  string video_task_id = 3;
+}
+
+// 获取工具能力请求
+message GetToolEnhanceRequest {
+  RequestHeader request_header = 1;
+  // 工具ID
+  string tool_id = 2;
+}
+
+// 获取工具能力响应
+message GetToolEnhanceResponse {
+  ResponseHeader response_header = 1;
+  // 工具能力
+  repeated ToolEnhance tool_enhances = 2;
+}
+
+// 工具推荐请求
+message GetToolRecommendRequest {
+  RequestHeader request_header = 1;
+}
+
+// 工具推荐响应
+message GetToolRecommendResponse {
+  ResponseHeader response_header = 1;
+  // 工具推荐
+  repeated PictureToolsInfo tool_infos = 2;
+}
+
+// 猜你喜欢-工作流推荐请求
+message GetWorkflowRecommendRequest {
+  RequestHeader request_header = 1;
+  // 推荐数量（默认10，固定展示10个版位）
+  int32 limit = 2;
+}
+
+// 猜你喜欢-工作流推荐响应
+message GetWorkflowRecommendResponse {
+  ResponseHeader response_header = 1;
+  // 推荐的工作流列表（包含图片+视频模版）
+  repeated Workflow workflows = 2;
+}
+
+// Banner跳转类型
+enum BannerLinkType {
+  // 不跳转
+  BANNER_LINK_TYPE_NONE = 0;
+  // 跳转到工作流分类页面（link_addr为分类ID）
+  BANNER_LINK_TYPE_KIND = 1;
+  // 跳转到工具详情页面（link_addr为工具ID）
+  BANNER_LINK_TYPE_TOOL = 2;
+  // 跳转到invite 页面(无需 link_addr)
+  BANNER_LINK_TYPE_INVITE = 3;
+}
+
+// Banner信息
+message BannerInfo {
+  // banner唯一标识
+  string banner_key = 1;
+  // banner标题
+  string title = 2;
+  // 图片地址
+  string image_url = 3;
+  // 缩略图地址（可选）
+  string thumbnail_url = 4;
+  // 跳转类型
+  BannerLinkType link_type = 5;
+  // 跳转地址（link_type为KIND时存储kindID，link_type为TOOL时存储toolID）
+  string link_addr = 6;
+  // 由此判断跳转到二级页面时是视频还是图片
+  WorkflowKindType kind_type = 7;
+}
+
+// ==================== 获取Banner列表 ====================
+
+message GetBannerListRequest {
+  RequestHeader request_header = 1;
+}
+
+message GetBannerListResponse {
+  ResponseHeader response_header = 1;
+  // banner列表
+  repeated BannerInfo banners = 2;
+}
+
+// 弹窗信息
+message PopupInfo {
+  // 弹窗图片地址
+  string popup_image_url = 1;
+  // 本次获得的积分（0表示未获得或已领取过）
+  int32 points_awarded = 2;
+  // 弹窗按钮文案
+  string popup_button_text = 3;
+  // 弹窗按钮背景颜色
+  string popup_button_color = 4;
+  // 弹窗按钮文字颜色
+  string popup_button_text_color = 5;
+}
+
+// ==================== 点击Banner ====================
+
+message ClickBannerRequest {
+  RequestHeader request_header = 1;
+  // banner唯一标识
+  string banner_key = 2;
+}
+
+message ClickBannerResponse {
+  ResponseHeader response_header = 1;
+  // 是否展示弹窗
+  bool should_show = 2;
+  // 弹窗信息（需要弹的话）
+  PopupInfo popup = 3;
+}
+
+// ==================== 获取生图模型列表 ====================
+
+// 生图模型信息
+message ImageGenerationModelInfo {
+  // 模型名称（如 flux-dev, sd3, wanx）
+  string model_name = 1;
+  // 显示名称（如 "Flux Dev", "Stable Diffusion 3"）
+  string display_name = 2;
+  // 模型描述
+  string description = 3;
+  // 模型图标URL（可选）
+  string icon = 4;
+  // 是否支持文生图
+  bool support_t2i = 5;
+  // 是否支持图生图
+  bool support_i2i = 6;
+  // 积分消耗
+  int32 credit_points = 7;
+  // 默认宽度
+  int32 default_width = 8;
+  // 默认高度
+  int32 default_height = 9;
+  // 支持的质量选项（如 standard, hd, ultra）
+  repeated string support_qualities = 10;
+  // 最大生成图片数
+  int32 max_images = 11;
+  // 质量积分规则，key为quality值，value为基础积分之上的额外积分
+  map<string, int32> quality_credit_rules = 12;
+  // 最大输入图片数（0表示不支持图片输入）
+  int32 max_input_images = 13;
+}
+
+message ListImageGenerationModelsRequest {
+  RequestHeader request_header = 1;
+}
+
+message ListImageGenerationModelsResponse {
+  ResponseHeader response_header = 1;
+  // 可用的生图模型列表
+  repeated ImageGenerationModelInfo models = 2;
+}

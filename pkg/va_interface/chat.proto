@@ -1,0 +1,298 @@
+syntax = "proto3";
+package va_interface;
+
+import "common.proto";
+import "constants.proto";
+import "profile.proto";
+import "prompt.proto";
+import "report.proto";
+
+option go_package = "va_visionai_server/internal/va_interface";
+
+message Chat {
+  // Chat ID
+  string chat_id = 1;
+  // Chat Title
+  string title = 2;
+  // Chat Create Time
+  string create_time = 3;
+  // Chat Image URL
+  string image = 4;
+  // Chat last time
+  string last_time = 5;
+  // prompt info
+  Prompt prompt = 6;
+  // profile info
+  repeated UserProfile profiles = 7;
+}
+
+enum MessageSender {
+  // Robot
+  ASSISTANT = 0;
+  // User
+  USER = 1;
+}
+
+enum Model {
+  MODEL_GPT4O = 0;
+  // doubao lite
+  MODEL_DOUBAO = 1;
+  MODEL_GPT4 = 2;
+  MODEL_GPT4O_MINI = 3;
+  MODEL_GPTO1_PREVIEW = 4;
+  MODEL_GPTO1_MINI = 5;
+  // doubao pro
+  MODEL_DOUBAO_PRO = 6;
+  MODEL_DOUBAO_VISION_PRO = 7;
+  MODEL_KIMI_VISION_PREVIEW = 8;
+  MODEL_DEEPSEEK_V3 = 9;
+  MODEL_DEEPSEEK_R1 = 10;
+  MODEL_HUOSHAN_DEEPSEEK_R1 = 11;
+  MODEL_TENCENT_HUNYUAN_VISION = 12;
+  MODEL_TENCENT_HUNYUAN_TURBOS = 13;
+  MODEL_DOUBAO_LITE = 14;
+  MODEL_GEMINI_2_0_FLASH = 15;
+  MODEL_GPT4_1 = 16;
+  MODEL_GEMINI_2_5_PRO_THINKING = 17;
+  MODEL_GEMINI_2_5_FLASH = 18;
+  MODEL_GEMINI_2_5_FLASH_THINKING = 19;
+}
+
+// 聊天列表获取请求
+message ChatListRequest {
+  RequestHeader request_header = 1;
+  // 提取索引，默认从1开始
+  int32 offset = 2;
+  // 提取的数量，默认20
+  int32 count = 3;
+}
+
+// 聊天列表获取响应
+message ChatListResponse {
+  ResponseHeader response_header = 1;
+  repeated Chat chats = 2;
+}
+
+// 聊天信息获取请求
+message ChatMessageListRequest {
+  RequestHeader request_header = 1;
+  // Chat ID
+  string chat_id = 2;
+  // 提取索引，默认从1开始，从时间倒序
+  int32 offset = 3;
+  // 提取的数量，默认20
+  int32 count = 4;
+}
+
+// 聊天信息获取响应
+message ChatMessageListResponse {
+  ResponseHeader response_header = 1;
+  // Chat ID
+  string chat_id = 2;
+  // Chat Message List
+  repeated Message messages = 3;
+}
+
+message Message {
+  // Chat ID，该ID是由客户端在用户首次发送消息前生成
+  string chat_id = 1;
+  // Chat Message ID，格式为om-UUID，示例om-e356adfa-f545-48f2-a4f2-ba9d22362c7d
+  // 当客户端发送消息时，需要客户端自己生成MessageId
+  // 当服务端返回消息时，消息ID由服务端生成并返回
+  string message_id = 2;
+  // Chat Message Content，格式为Markdown，客户端可以选择使用
+  string content = 3;
+  // 图片或者文件的资源URL v1.10.3 过时，使用urls
+  string url = 4;
+  // Chat Message Create Time
+  string create_time = 5;
+  // Chat Message Type
+  MessageType message_type = 6;
+  // Chat Message Sender
+  MessageSender sender = 7;
+  // 将Markdown经过HTML化的内容，客户端可以选择使用
+  string html_content = 8;
+  // 使用的模型ID
+  Model model_id = 9;
+  // 指定SystemPrompt，目前仅用于Mac平台
+  string system_prompt = 10;
+  // 语音信息时,此字段必填
+  VoiceInfo voice_info = 11;
+  // promptid  客户端传入此字段时,根据这个id 查找对应的prompt
+  // ,如果没有则使用默认的prompt
+  string prompt_id = 12;
+  // 用户对该模型消息质量的评价
+  LLMMsgQuality quality = 13;
+  // 使用的模型名称（服务端尝试查找对应模型并转换至model_id）
+  string model_name = 14;
+  // 一次消息包含图片或者文件的资源URL（需同类型）
+  repeated string urls = 15;
+  // 资源数据
+  repeated Blob blobs = 16;
+  // 用户自定义个人信息ID
+  repeated string custom_profile_ids = 17;
+  // 聊天业务处理ID
+  ChatBizHandlerID chat_biz_handler_id = 18;
+  // 当前消息是深度思考模型生成的
+  bool is_reasoning = 19;
+  // 隐藏推理内容
+  bool hidden_reasoning = 20;
+}
+
+message Blob {
+  FileType file_type = 1;
+  bytes data = 2;
+}
+
+message VoiceInfo {
+  // 语音ID (客户端发送消息时必填,服务端返回时必填)
+  // 客户端发送消息时,先上传语音内容 会拿到file md5 ,正式发送时将md5 传入
+  // 服务端收到消息时,根据md5 查找语音内容
+  string md5 = 1;
+  // 语音时长 (客户端发送消息时不必填,服务端返回时必填)
+  uint32 duration = 2;
+  // 语音资源地址(服务端返回时必填,不直接返回语音字节,需要听语音时客户端直接访问OSS地址)
+  string url = 3;
+}
+
+// 用户消息发送
+message ChatMessageSendRequest {
+  RequestHeader request_header = 1;
+  // Chat ID
+  Message message = 2;
+}
+
+// 接收消息 (流式接收)
+message ChatMessageStreamResponse {
+  ResponseHeader response_header = 1;
+  // 请求消息ID
+  string req_message_id = 2;
+  // 回复消息ID，流式回应一个问题时，消息ID唯一
+  string reply_message_id = 3;
+  // 回复消息内容，逐token，客户端需要拼接内容
+  string message_token = 4;
+  // 如果超过日限额后，下次可用的恢复时间，仅statu_code=DAILY_TOKEN_LIMIT_EXCEEDED有效
+  string recover_time = 5;
+  // 消息是否结束标记
+  // 该字段如果为true表示流式接收完成message_token为空，html_content为整条HTML格式化后的消息，如有需要客户端可以替换渲染该字段
+  bool is_end = 6;
+  // 使用的模型ID
+  Model model_id = 7;
+  // 将Markdown经过HTML化的内容，客户端可以选择使用
+  // 该字段仅在流式最后一条消息返回后，客户端需要判断is_end字段是否为true，否则客户端需要继续接收message_token
+  string html_content = 8;
+
+  // 建议的追问问题
+  repeated string follow_questions = 9;
+}
+
+// 接收消息 (独立接收)
+message ChatMessageResponse {
+  ResponseHeader response_header = 1;
+  // 回复消息，全部回复内容，客户端无需拼接
+  Message message = 2;
+  // 如果超过日限额后，下次可用的恢复时间，仅statu_code=DAILY_TOKEN_LIMIT_EXCEEDED有效
+  string recover_time = 5;
+}
+
+// 聊天存档（删除）请求
+message ChatArchiveRequest {
+  RequestHeader request_header = 1;
+  // Chat ID
+  string chat_id = 2;
+}
+
+// 聊天存档（删除）响应
+message ChatArchiveResponse {
+  ResponseHeader response_header = 1;
+}
+
+// 聊天存档（删除）请求
+// 基于RequestHeader中的accessToken和UserId字段
+message ClearChatHistoryRequest {
+  RequestHeader request_header = 1;
+}
+
+// 聊天存档（删除）响应
+message ClearChatHistoryResponse {
+  ResponseHeader response_header = 1;
+}
+
+message ListModelsRequest {
+  RequestHeader request_header = 1;
+}
+
+message ListModelsResponse {
+  ResponseHeader response_header = 1;
+  repeated ModelInfo models = 2;
+}
+
+message ModelInfo {
+  // 模型名称，将其设置到Message的model_name字段
+  // 后端根据文本映射到枚举的model_id来切换模型
+  string model_name = 1;
+  // 模型标签，用于展示给用户
+  string model_label = 2;
+  // icon
+  string icon = 3;
+}
+
+// 用户聊天列表请求
+message ListUserProfileChatRequest {
+  RequestHeader request_header = 1;
+  string profile_id = 2;
+  int32 offset = 3;
+  int32 count = 4;
+}
+
+// 用户聊天列表响应
+message ListUserProfileChatResponse {
+  ResponseHeader response_header = 1;
+  repeated Chat chats = 2;
+}
+
+// 滚动聊天消息请求
+message ScrollChatMessageRequest {
+  RequestHeader request_header = 1;
+  string chat_id = 2;
+  string cursor = 3;
+  int32 limit = 4;
+  string profile_id = 5;
+}
+
+// 滚动聊天消息响应
+message ScrollChatMessageResponse {
+  ResponseHeader response_header = 1;
+  repeated Message messages = 2;
+  string cursor = 3;
+}
+
+// 获取建议问题请求
+message SuggestQuestionsWithProfileRequest {
+  RequestHeader request_header = 1;
+  string chat_id = 2;
+  string profile_id = 3;
+}
+
+// 获取建议问题响应
+message SuggestQuestionsWithProfileResponse {
+  ResponseHeader response_header = 1;
+  repeated string questions = 2;
+}
+
+// 删除聊天消息请求
+message DeleteChatMessageRequest {
+  RequestHeader request_header = 1;
+  string message_id = 2;
+}
+
+// 删除聊天消息响应
+message DeleteChatMessageResponse {
+  ResponseHeader response_header = 1;
+}
+
+// starlit获取建议问题请求
+message StarlitQuestionsWithProfileRequest {
+  RequestHeader request_header = 1;
+  string profile_id = 2;
+}

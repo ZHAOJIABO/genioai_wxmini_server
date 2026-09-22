@@ -1,0 +1,52 @@
+variables:
+  OUTSEE_DOCKER_REGISTRY: oversea-hub.domob-inc.com
+  BASE_IMAGE_NAME: va_visionai_server
+  GIT_SSL_NO_VERIFY: "true"
+  #GIT_LFS_ENABLED: "1"
+  #GIT_LFS_SKIP_SMUDGE: "1"
+
+stages:
+  - build
+
+
+.build_template: &build_template
+  stage: build
+  tags:
+    - bfo
+  dependencies: []
+  before_script:
+    - git lfs install --skip-repo
+    - git lfs pull
+  script:
+    - SAFE_TAG_NAME=$(echo "${CI_COMMIT_REF_NAME}" | sed 's/[\/]/-/g')
+    - cp Dockerfile-tpl Dockerfile
+    - sed -i 's#__VERSION__#'"${CI_COMMIT_REF_NAME}"'#g' Dockerfile
+    - docker build --progress=plain -t ${OUTSEE_DOCKER_REGISTRY}/domob-hub/${IMAGE_NAME}:${SAFE_TAG_NAME} .
+    - docker push ${OUTSEE_DOCKER_REGISTRY}/domob-hub/${IMAGE_NAME}:${SAFE_TAG_NAME}
+    - |
+      if [[ "${IMAGE_NAME}" == *"-sandbox" ]]; then
+        docker tag ${OUTSEE_DOCKER_REGISTRY}/domob-hub/${IMAGE_NAME}:${SAFE_TAG_NAME} ${OUTSEE_DOCKER_REGISTRY}/domob-hub/${IMAGE_NAME}:latest
+        docker push ${OUTSEE_DOCKER_REGISTRY}/domob-hub/${IMAGE_NAME}:latest
+        docker rmi ${OUTSEE_DOCKER_REGISTRY}/domob-hub/${IMAGE_NAME}:latest
+      fi
+
+
+branch_build:
+  <<: *build_template
+  only:
+    - /^ci-.*$/
+    - develop
+    - master
+    - /^hotfix\/.*$/
+    - /^feature\/.*$/
+  variables:
+    IMAGE_NAME: ${BASE_IMAGE_NAME}-sandbox
+    TAG_NAME: ${CI_COMMIT_REF_NAME}
+
+tag_build:
+  <<: *build_template
+  only:
+    - tags
+  variables:
+    IMAGE_NAME: ${BASE_IMAGE_NAME}
+    TAG_NAME: ${CI_COMMIT_TAG}

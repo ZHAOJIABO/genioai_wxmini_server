@@ -1,0 +1,41 @@
+syntax = "proto3";
+package va_interface;
+
+import "common.proto";
+
+option go_package = "va_visionai_server/internal/va_interface";
+
+enum TTSEncoder {
+  MP3 = 0;
+  PCM = 1;
+}
+
+message TTSRequest {
+  RequestHeader request_header = 1;
+  string speaker = 2;
+  string msg = 3;
+  string message_id = 4;
+  TTSEncoder tts_encoder = 5;
+}
+
+message TTSStreamResponse {
+  ResponseHeader response_header = 1;
+  bool is_end = 2;
+  bytes audio = 3;
+  string message_id = 4;
+  //  string audio_url = 4;
+}
+
+message ListSpeakerRequest {
+  RequestHeader request_header = 1;
+}
+message ListSpeakerResponse {
+  ResponseHeader response_header = 1;
+  repeated SpeakerInfo speaker_list = 2;
+}
+
+message SpeakerInfo {
+  string speaker_id = 1;
+  string speaker_name = 2;
+  string example_url = 3;
+}

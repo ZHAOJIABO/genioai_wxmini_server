@@ -1,0 +1,141 @@
+syntax = "proto3";
+package va_interface;
+
+option go_package = "va_visionai_server/internal/va_interface";
+
+message Device {
+  // ipv4 点分十进制, 必须为终端真实IP地址
+  string ip = 1;
+  // user agent，来自http头, 必须是以Mozilla开头的标准格式ua
+  string user_agent = 2;
+  // IOS6.0及以上的idfa号
+  string idfa = 3;
+  string idfa_md5 = 4;
+  // 安卓设备的imei号
+  string imei = 5;
+  // 安卓设备的imei号的md5值,若填写imei原值，则不用填此字段
+  string imei_md5 = 6;
+  // oaid
+  string oaid = 7;
+  string oaid_md5 = 8;
+  // android_id
+  string android_id = 9;
+
+  // 设备类型，0-手机;1-平板;2-PC;3-互联网电视
+  int32 device_type = 10;
+
+  // 设备品牌
+  // 例如：nokia, samsung
+  string brand = 11;
+
+  // 设备型号
+  // 例如：n70, galaxy
+  string model = 12;
+
+  // 操作系统
+  // 例如：1:Android,2:iOS
+  int32 os = 13;
+
+  // 操作系统版本
+  // 例如：7.0.2
+  string osv = 14;
+  // 设备所处网络环境 0-未识别, 1-wifi, 2-2g, 3-3g, 4-4g, 5-5g
+  int32 network = 15; // default 1
+
+  // 设备的网络运营商 0-未知, 1-移动, 2-联通, 3-电信
+  int32 operator = 16;
+
+  // 设备屏幕尺寸：宽
+  int32 width = 17;
+
+  // 设备屏幕尺寸：高
+  int32 height = 18;
+  // 屏幕方向 0-未知, 1-竖屏, 2-横屏
+  int32 orientation = 20;
+
+  message Geo {
+    // 纬度, 取值范围[-90.0 , +90.0]
+    double lat = 1;
+    // 经度, 取值范围[-180.0 , +180.0]
+    double lon = 2;
+  }
+  Geo geo = 21;
+
+  // 用户已安装 app 列表
+  repeated string installed_app = 22;
+
+  // 广协CAID
+  message CAID {
+    // 必须和版本同时使用才有意义，版本形如"20201201"
+    string ver = 1;
+    string caid = 2;
+  }
+  repeated CAID caids = 23;
+
+  // 系统启动标识
+  string boot_mark = 24;
+  // 系统启动更新标识
+  string update_mark = 25;
+  // mac地址，如00:0A:D5:B7:80:5E，OTT资源必填
+  string mac = 26;
+  // android id md5值
+  string android_id_md5 = 27;
+  // ipv6 必须为终端真实IP地址
+  string ipv6 = 28;
+
+  message UserInfo {
+    //年龄
+    int32 age = 1;
+    //性别
+    int32 gender = 2;
+  }
+  UserInfo user_info = 29;
+  //IOS设 备 初始化 时 间
+  string birth_time = 30;
+  //IOS设备的系统启动时间
+  string boot_time = 31;
+  //IOS设备的系统更新时间
+  string update_time = 32;
+
+  // IOS 的IDFV
+  string idfv = 33;
+  string idfv_md5 = 34;
+  Language language = 35;
+
+  //时区
+  string timezone = 36;
+}
+
+enum AppStore {
+  UNKNOWN = 0;
+  OFFICIAL = 1;
+  OPPO = 2;
+  VIVO = 3;
+  XIAOMI = 4;
+  HUAWEI = 5;
+  QIHU360 = 6;
+  HONOR = 7;
+  BAIDU = 8;
+  GETAPPS = 9;
+  RUSTORE = 10;
+  YINGYONGBAO = 11;
+  KUAISHOU = 12;
+  DOUYIN_MINI_PROGRAM = 13;
+  WECHAT_MINI_PROGRAM = 14;
+  GOOGLE_PLAY = 15;
+  ZHUOYITONG = 16;
+  FACEBOOK = 17;
+}
+
+enum Language {
+  CHINESE = 0;
+  ENGLISH = 1;
+  RUSSIAN = 2;
+  VIETNAMESE = 3;
+  // 葡萄牙语
+  PORTUGUESE = 4;
+  INDONESIAN = 5;
+  MALAY = 6;
+  THAI = 7;
+  FILIPINO = 8;
+}

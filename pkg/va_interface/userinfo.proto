@@ -1,0 +1,182 @@
+syntax = "proto3";
+package va_interface;
+
+import "common.proto";
+import "constants.proto";
+import "picture.proto";
+import "subscribe.proto";
+
+option go_package = "va_visionai_server/internal/va_interface";
+
+// 验证码发起请求
+message VerifyRequest {
+  RequestHeader request_header = 1;
+  // 手机号，必须以+地区开头，比如+8617600001111
+  string phone_number = 2;
+}
+
+// 验证码发起响应
+message VerifyResponse {
+  ResponseHeader response_header = 1;
+}
+
+// 登录请求
+message LoginRequest {
+  RequestHeader request_header = 1;
+  // 手机号，必须以+地区开头，比如+8617600001111
+  string phone_number = 2;
+  // 验证码
+  string verify_code = 3;
+  // openID （小程序登录）
+  string open_id = 4;
+}
+
+// 登录响应
+message LoginResponse {
+  ResponseHeader response_header = 1;
+  // 授权token
+  string access_token = 2;
+  // 过期时间
+  string expire_time = 3;
+  // 刷新token，用来获取access_token
+  string refresh_token = 4;
+  // 用户信息
+  UserInfo user_info = 5;
+  //  @deprecated (客户端v1.5及以后不再使用) 用户配置
+  UserConfig user_config = 6;
+}
+
+message UserConfig {
+  // 分享链接
+  string share_url = 1;
+  // 订阅页面弹出配置 （true: 弹出，false: 不弹出）
+  bool pop_subscribe = 2;
+  // piclib 弹窗提示赠送每日积分
+  bool pop_free_daily_score = 3;
+  // 免费用户登录后赠送积分数量
+  int32 free_daily_credit = 4;
+  // 是否展示首页弹窗
+  bool should_show = 5;
+  //首页弹窗信息（需要弹的话）
+  PopupInfo home_popup = 6;
+  // 首页悬浮工具框默认tool_id
+  string float_tool_bar_tool_id = 7;
+}
+
+// 刷新token请求
+message RefreshTokenRequest {
+  RequestHeader request_header = 1;
+  // 刷新token
+  string refresh_token = 2;
+}
+
+// 刷新token响应
+message RefreshTokenResponse {
+  ResponseHeader response_header = 1;
+  // 授权token
+  string access_token = 2;
+  // 过期时间
+  string expire_time = 3;
+}
+
+// 登出请求
+message LogoutRequest {
+  RequestHeader request_header = 1;
+}
+
+// 登出响应
+message LogoutResponse {
+  ResponseHeader response_header = 1;
+}
+
+// 用户信息
+message UserInfo {
+  // 用户id
+  string user_id = 2;
+  // 用户名
+  string user_name = 1;
+  // 手机号，必须以+地区开头，比如+8617600001111
+  string phone_number = 3;
+  // 头像
+  string avatar = 4;
+  // 性别
+  Gender gender = 5;
+  // 生日
+  string birthday = 6;
+  // 昵称
+  string nickname = 7;
+  // 注册时间
+  string register_time = 8;
+  // 最后登录时间
+  string last_login_time = 9;
+  // 用户配置
+  UserConfig user_config = 10;
+  // 订阅信息
+  SubscribeInfo subscribe_info = 11;
+  // genio会员积分
+  GenioUserAmount genio_amount = 12;
+}
+
+// 用户信息请求
+message UserInfoRequest {
+  RequestHeader request_header = 1;
+}
+
+// 用户信息响应
+message UserInfoResponse {
+  ResponseHeader response_header = 1;
+  // 用户信息
+  UserInfo user_info = 2;
+}
+
+// 苹果登录请求
+message LoginWithAppleRequest {
+  RequestHeader request_header = 1;
+  // 苹果登录凭证
+  string apple_id_token = 2;
+}
+
+// 苹果登录响应
+message LoginWithAppleResponse {
+  ResponseHeader response_header = 1;
+  // 用户信息
+  UserInfo user_info = 2;
+  //  @deprecated (客户端v1.5及以后不再使用) 用户配置
+  UserConfig user_config = 3;
+}
+
+// 注销账号请求
+message DeleteUserRequest {
+  RequestHeader request_header = 1;
+}
+
+// 注销账号响应
+message DeleteUserResponse {
+  ResponseHeader response_header = 1;
+}
+
+// 用户fcm/apns token上报请求
+message UserNotifyTokenRequest {
+  RequestHeader request_header = 1;
+  // token字符串
+  string token = 2;
+}
+
+// 用户fcm/apns token上报响应
+message UserNotifyTokenResponse {
+  ResponseHeader response_header = 1;
+}
+
+// 修改用户个人信息请求
+message EditUserInfoRequest {
+  RequestHeader request_header = 1;
+  // 用户名（可选，不传则不修改）
+  string user_name = 2;
+  // 头像URL（可选，不传则不修改）
+  string avatar = 3;
+}
+
+// 修改用户个人信息响应
+message EditUserInfoResponse {
+  ResponseHeader response_header = 1;
+}

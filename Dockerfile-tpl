@@ -1,0 +1,34 @@
+FROM harbor-office.domob-inc.cn/domob-hub/va_golang:1.24.4 as build
+
+ENV GOPROXY https://goproxy.cn,direct
+ENV GO111MODULE on
+ENV GOPRIVATE git.domob-inc.cn
+
+WORKDIR /go/cache
+ADD go.mod .
+ADD go.sum .
+ADD . .
+RUN go mod download
+
+WORKDIR /go/release
+ADD . .
+RUN GOOS=linux CGO_ENABLED=1 go build -ldflags="-s -w -X main.__version__=__VERSION__"  -installsuffix cgo -o va_visionai_server cmd/main.go
+
+FROM harbor-office.domob-inc.cn/domob-hub/visionai_base:0.0.2 as prod
+
+# 安装 zstd 解压工具
+RUN apt-get update && apt-get install -y zstd && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /application/
+RUN mkdir -p /application/bin/ /application/data/ /application/assets/migrations
+COPY --from=build /go/release/va_visionai_server /application/bin/va_visionai_server
+# COPY --from=build /go/release/pay_usersubscribe_sync /application/bin/pay_usersubscribe_sync
+COPY ./conf/server.yaml /application/conf/server.yaml
+COPY ./conf/gemini_auth.json /application/auth/gemini_auth.json
+COPY ./assets/nutrition_reference.json /application/health/nutrition_reference.json
+COPY ./assets/migrations/* /application/assets/migrations/
+COPY ./assets/bin/* /application/bin/
+COPY ./assets/GeoLite2-Country.mmdb /application/assets/GeoLite2-Country.mmdb
+ENV FACE_DETECT_MODEL_PATH=/application/bin/seeta_fd_frontal_v1.0.bin
+
+CMD bin/face-detect-x86_64 & bin/va_visionai_server

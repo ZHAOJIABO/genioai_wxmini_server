@@ -1,0 +1,343 @@
+syntax = "proto3";
+package va_interface;
+
+import "common.proto";
+import "constants.proto";
+
+option go_package = "va_visionai_server/internal/va_interface";
+
+enum ProductGroup {
+  // 默认产品组
+  PRODUCT_GROUP_DEFAULT = 0;
+  // 升级产品组（仅限升级场景使用）
+  PRODUCT_GROUP_UPGRADE = 1;
+}
+
+enum PurchaseType {
+  // 未知
+  PURCHASE_TYPE_UNKNOWN = 0;
+  // 内购
+  PURCHASE_TYPE_IN_APP = 1;
+  // 订阅
+  PURCHASE_TYPE_SUBSCRIPTION = 2;
+}
+
+message SubscribeInfo {
+  // 产品ID，用于标识订阅的具体产品
+  string product_id = 1;
+
+  // 订阅状态:
+  // SubscribeNot(0) - 未订阅
+  // SubscribeActivate(1) - 订阅生效中
+  // SubscribeExpired(2) - 订阅过期
+  SubscribeStatus status = 2;
+
+  // 订阅结束时间
+  string subscribe_expired_time = 3;
+
+  // 订阅级别 (高级别订阅状态生效时不可订阅低级别)
+  int32 subscribe_level = 4;
+
+  // 积分额度
+  int32 credit = 5;
+}
+
+// 创建订阅订单
+message CreateOrderRequest {
+  // 请求头
+  RequestHeader request_header = 1;
+  // 产品ID
+  string product_id = 2;
+  // 支付方式
+  PaymentWay payment_way = 3;
+}
+
+// 创建订阅订单响应
+message CreateOrderResponse {
+  // 响应头
+  ResponseHeader response_header = 1;
+  // 订单ID (IOS AppStore 场景使用)
+  string uuid = 2;
+  // 支付宝 Sign (Android Alipay 场景使用)
+  string alipay_pay_params = 3;
+}
+
+// 商品信息
+message ProductInfo {
+  // 商品ID
+  string product_id = 1;
+  // 商品名称
+  string product_name = 2;
+  // 商品描述
+  string description = 3;
+  // 商品价格
+  double price = 4;
+  // 价格单位
+  string price_unit = 5;
+  // 价格label
+  string price_label = 6;
+  // 折扣系数
+  double discount = 7;
+  // 折扣label
+  string discount_label = 8;
+  // 均摊价格
+  double average_price = 9;
+  // 均摊单位
+  string average_price_unit = 10;
+  // 均摊价格label
+  string average_price_label = 11;
+  // 订阅级别
+  int32 subscribe_level = 12;
+  // 是否是体验产品
+  bool is_trial = 13;
+  // icon
+  string icon = 14;
+  // 购买类型
+  PurchaseType purchase_type = 15;
+  // 会员赠送信用点数
+  int32 member_grant_credit_point = 16;
+  // product group name
+  string product_group_id = 17;
+  // 折扣优惠图标
+  string off_tag_icon = 18;
+}
+
+// 商品信息列表
+message ProductInfoListRequest {
+  // 请求头
+  RequestHeader request_header = 1;
+  // 商品组
+  ProductGroup product_group = 2;
+  // 获取全部商品
+  bool fetch_all = 3;
+}
+
+// 商品信息列表响应
+message ProductInfoListResponse {
+  // 响应头
+  ResponseHeader response_header = 1;
+  // 商品信息列表
+  repeated ProductInfo product_info = 2;
+}
+
+// 获取用户额度请求
+message GetUserAmountRequest {
+  // 请求头
+  RequestHeader request_header = 1;
+}
+
+// 获取用户额度响应
+message GetUserAmountResponse {
+  // 响应头
+  ResponseHeader response_header = 1;
+  // 用户文本消息额度
+  int32 text_chat_amount = 2;
+  // 用户图片消息额度
+  int32 image_chat_amount = 3;
+  // piclib 会员积分
+  PicLibUserAmount pic_lib_amount = 4;
+}
+
+message PicLibUserAmount {
+  // 总积分
+  int32 total_amount = 1;
+  // 会员积分
+  int32 member_amount = 2;
+  // 内购积分
+  int32 purchase_amount = 3;
+  // 系统赠送积分
+  int32 system_grant_amount = 4;
+}
+
+message GenioUserAmount {
+  // 总积分
+  int32 total_amount = 1;
+  // 会员积分
+  int32 member_amount = 2;
+  // 内购积分
+  int32 purchase_amount = 3;
+  // 系统赠送积分
+  int32 system_grant_amount = 4;
+}
+
+// 获取 Genio 用户额度请求
+message GetGenioUserAmountRequest {
+  // 请求头
+  RequestHeader request_header = 1;
+}
+
+// 获取 Genio 用户额度响应
+message GetGenioUserAmountResponse {
+  // 响应头
+  ResponseHeader response_header = 1;
+  // genio 用户积分
+  GenioUserAmount genio_amount = 2;
+}
+
+// 订单结果回传请求
+message PaymentResultCallbackRequest {
+  // 请求头
+  RequestHeader request_header = 1;
+  // 订单ID
+  string order_id = 2;
+  // 订单状态
+  PaymentStatus payment_status = 3;
+  // 交易凭证  (IOS传输 transactionID)
+  string transaction = 4;
+}
+
+// 订单结果回传响应
+message PaymentResultCallbackResponse {
+  // 响应头
+  ResponseHeader response_header = 1;
+  // 订单状态
+  PaymentStatus payment_status = 2;
+  // 订阅信息
+  SubscribeInfo subscribe_info = 3;
+  // 购买类型
+  PurchaseType purchase_type = 4;
+  // 本次回调的商品信息
+  ProductInfo product_info = 5;
+}
+
+// 信用积分明细
+message CreditDetail {
+  // 积分变化数量
+  int32 credit_change_amount = 1;
+  // 积分变化时间
+  string credit_change_time = 2;
+  // 积分变化原因
+  string credit_change_reason = 3;
+  // 关联的任务ID（扣费/退款交易）
+  string task_id = 4;
+  // 用户输入的 prompt
+  string user_prompt = 5;
+  // 生图结果URL列表
+  repeated string result_urls = 6;
+}
+
+// 信用积分明细请求
+message CreditDetailRequest {
+  // 请求头
+  RequestHeader request_header = 1;
+  // 分页信息
+  PageCommon page_common = 2;
+  // 积分变化类型
+  CreditChangeType credit_change_type = 3;
+}
+
+// 信用积分明细响应(分页)
+message CreditDetailResponse {
+  // 响应头
+  ResponseHeader response_header = 1;
+  // 信用积分明细列表
+  repeated CreditDetail credit_detail = 2;
+  // 分页信息
+  PageCommon page_common = 3;
+  // 剩余总信用点数
+  int32 remaining_total_credit = 4;
+  // 剩余订阅赠送信用点数
+  int32 remaining_subscribe_credit_point = 5;
+  // 剩余购买信用点数
+  int32 remaining_buy_credit_point = 6;
+  // 剩余系统赠送积分
+  int32 remaining_system_grant_credit = 7;
+}
+
+message CouponRedeemRequest {
+  // 请求头
+  RequestHeader request_header = 1;
+  // 优惠券码
+  string coupon_code = 2;
+}
+
+message CouponRedeemResponse {
+  // 响应头
+  ResponseHeader response_header = 1;
+  // 兑换结果
+  bool redeem_result = 2;
+  // 订阅信息
+  SubscribeInfo subscribe_info = 3;
+}
+
+// 订阅退出流程类型
+enum SubscriptionExitFlowType {
+  // 默认流程
+  EXIT_FLOW_DEFAULT = 0;
+  // A组：强制付费流程
+  EXIT_FLOW_FORCE_PAYMENT = 1;
+  // B组：部分功能可用流程
+  EXIT_FLOW_PARTIAL_FEATURES = 2;
+}
+
+// 获取订阅退出配置请求
+message GetSubscriptionExitConfigRequest {
+  // 请求头
+  RequestHeader request_header = 1;
+}
+
+// 获取订阅退出配置响应
+message GetSubscriptionExitConfigResponse {
+  // 响应头
+  ResponseHeader response_header = 1;
+  // 退出流程类型
+  SubscriptionExitFlowType exit_flow_type = 2;
+  // 配置详情（JSON格式，包含页面跳转URL等）
+  string config_details = 3;
+}
+
+// 给用户增加积分请求
+message AddUserCreditsRequest {
+  // 请求头
+  RequestHeader request_header = 1;
+  // 用户注册邮箱
+  string email = 2;
+  // 增加的积分数量
+  int64 amount = 3;
+}
+
+// 给用户增加积分响应
+message AddUserCreditsResponse {
+  // 响应头
+  ResponseHeader response_header = 1;
+  // 是否成功
+  bool success = 2;
+  // 增加后的总积分
+  int64 total_credits = 3;
+}
+
+// 单个用户的生图统计信息
+message UserTaskStatsInfo {
+  // 用户ID
+  string user_id = 1;
+  // 用户UUID
+  string uuid = 2;
+  // 邮箱
+  string email = 3;
+  // 总任务数
+  int64 total_tasks = 4;
+  // 已完成任务数
+  int64 completed_tasks = 5;
+  // 失败任务数
+  int64 failed_tasks = 6;
+  // 处理中任务数
+  int64 processing_tasks = 7;
+  // 总消耗积分
+  int64 total_credits_consumed = 8;
+  // 最后一次生图时间
+  string last_task_time = 9;
+}
+
+// 获取用户生图统计请求
+message GetUserTaskStatsRequest {
+  // 请求头
+  RequestHeader request_header = 1;
+}
+
+// 获取用户生图统计响应
+message GetUserTaskStatsResponse {
+  // 响应头
+  ResponseHeader response_header = 1;
+  // 用户生图统计列表
+  repeated UserTaskStatsInfo user_stats = 2;
+}

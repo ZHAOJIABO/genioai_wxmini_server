@@ -1,0 +1,92 @@
+[
+    {
+        "name": "hide_weekly_for_new_users",
+        "priority": 10,
+        "rule": {
+            "user_id_suffix": [
+                0,
+                1,
+                2,
+                3,
+                4
+            ]
+        },
+        "payload": {
+            "exclusions": [
+                "weekly"
+            ]
+        }
+    },
+    {
+        "name": "premium_pricing_test",
+        "priority": 20,
+        "rule": {
+            "user_id_suffix": [
+                5,
+                6,
+                7
+            ]
+        },
+        "payload": {
+            "inclusions": [
+                "monthly",
+                "yearly"
+            ],
+            "modifications": {
+                "monthly": {
+                    "Price": 19.99,
+                    "PriceLabel": "$19.99/mo",
+                    "Name": "Premium Monthly"
+                },
+                "yearly": {
+                    "Price": 199.99,
+                    "PriceLabel": "$199.99/yr",
+                    "Discount": 0.17,
+                    "DiscountLabel": "Save 17%"
+                }
+            }
+        }
+    },
+    {
+        "name": "discount_experiment",
+        "priority": 15,
+        "rule": {
+            "user_id_suffix": [
+                8,
+                9
+            ]
+        },
+        "payload": {
+            "modifications": {
+                "yearly": {
+                    "Price": 79.99,
+                    "PriceLabel": "$79.99/yr",
+                    "Discount": 0.33,
+                    "DiscountLabel": "Limited Time: 33% OFF!"
+                }
+            }
+        }
+    },
+    {
+        "name": "vip_only_experiment",
+        "priority": 25,
+        "rule": {
+            "user_id_suffix": [
+                1
+            ]
+        },
+        "payload": {
+            "inclusions": [
+                "yearly"
+            ],
+            "modifications": {
+                "yearly": {
+                    "Name": "VIP Yearly Plan",
+                    "Price": 299.99,
+                    "PriceLabel": "$299.99/yr",
+                    "Level": 10
+                }
+            }
+        }
+    }
+]

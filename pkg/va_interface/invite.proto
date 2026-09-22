@@ -1,0 +1,100 @@
+syntax = "proto3";
+
+package va_interface;
+
+import "common.proto";
+import "google/api/annotations.proto";
+
+option go_package = "va_visionai_server/internal/va_interface";
+
+service InviteService {
+  // 获取当前用户邀请信息
+  rpc GetInviteInfo(GetInviteInfoRequest) returns (GetInviteInfoResponse) {
+    option (google.api.http) = {
+      post: "/v1/invite/info"
+      body: "*"
+    };
+  }
+  // 使用邀请码
+  rpc UseInviteCode(UseInviteCodeRequest) returns (UseInviteCodeResponse) {
+    option (google.api.http) = {
+      post: "/v1/invite/use"
+      body: "*"
+    };
+  }
+  // 获取邀请记录列表（邀请人查看）
+  rpc GetInviteRecords(GetInviteRecordsRequest) returns (GetInviteRecordsResponse) {
+    option (google.api.http) = {
+      post: "/v1/invite/records"
+      body: "*"
+    };
+  }
+}
+
+// 邀请信息
+message InviteInfo {
+  // 用户的邀请码
+  string invite_code = 1;
+  // 成功邀请人数
+  int64 invited_count = 2;
+  // 累计获得的积分
+  int64 total_credits = 3;
+  // 已使用的邀请码（如果已使用）
+  string used_invite_code = 4;
+  // 用户专属邀请连接
+  string invite_url = 5;
+}
+
+// 邀请记录项
+message InviteRecordItem {
+  // 被邀请人ID
+  string invite_user_id = 1;
+  // 邀请时间
+  string invite_time = 2;
+  // 获得的积分
+  string credits = 3;
+}
+
+// ==================== 获取邀请信息 ====================
+
+// 获取邀请信息请求
+message GetInviteInfoRequest {
+  RequestHeader request_header = 1;
+}
+
+// 获取邀请信息响应
+message GetInviteInfoResponse {
+  ResponseHeader response_header = 1;
+  // 邀请信息
+  InviteInfo invite_info = 2;
+}
+
+// ==================== 使用邀请码 ====================
+
+// 使用邀请码请求
+message UseInviteCodeRequest {
+  RequestHeader request_header = 1;
+  // 要使用的邀请码
+  string invite_code = 2;
+}
+
+// 使用邀请码响应
+message UseInviteCodeResponse {
+  ResponseHeader response_header = 1;
+  // 获得的积分数量
+  int64 credit_amount = 2;
+}
+
+// ==================== 获取邀请记录列表 ====================
+
+// 获取邀请记录请求
+message GetInviteRecordsRequest {
+  RequestHeader request_header = 1;
+}
+
+// 获取邀请记录响应
+message GetInviteRecordsResponse {
+  ResponseHeader response_header = 1;
+  // 邀请记录列表
+  repeated InviteRecordItem records = 2;
+}

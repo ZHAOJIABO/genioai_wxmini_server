@@ -1,0 +1,79 @@
+syntax = "proto3";
+package va_interface;
+
+import "common.proto";
+import "constants.proto";
+
+option go_package = "va_visionai_server/internal/va_interface";
+
+message UploadRequest {
+  RequestHeader request_header = 1;
+  // 原文件名
+  string file_name = 2;
+  // 文件类型
+  FileType file_type = 3;
+  // 文件大小，字节数
+  int64 file_size = 4;
+  // 文件内容
+  bytes data = 5;
+  // 语音时长(上传类型为语音时,必填)
+  uint32 duration = 6;
+  // 是否人脸检测
+  bool face_detection = 7;
+  // 是否对文件进行相关提问
+  bool ask_question = 8;
+  // 上传时引用场景
+  string prompt_id = 9;
+}
+
+message UploadResponse {
+  ResponseHeader response_header = 1;
+  // 文件访问地址（原始）
+  string file_url = 2;
+  // 统一后的文件名
+  string file_name = 3;
+  // 文件md5
+  string file_md5 = 4;
+  // 以下字段仅图片返回
+  // 图片像素宽，仅图片返回
+  int32 image_width = 5;
+  // 图片像素高，仅图片返回
+  int32 image_height = 6;
+  // 图片低像素尺寸，如果原图宽度高于360px，则该字段返回360px，如果低于360则不压缩，原图返回
+  string low_quality_url = 7;
+  // 人脸数量
+  int32 face_count = 8;
+  // 相关提问
+  repeated string question = 9;
+  // fileID
+  string file_id = 10;
+}
+
+message ImageOpts {
+  // 是否人脸检测
+  bool face_detection = 1;
+}
+
+message UploadWithOptsRequest {
+  RequestHeader request_header = 1;
+  // 原文件名
+  string file_name = 2;
+  // 文件类型
+  FileType file_type = 3;
+  // 文件大小，字节数
+  int64 file_size = 4;
+  // 文件内容
+  bytes data = 5;
+  // 上传选项
+  oneof opts {
+    ImageOpts image_opts = 6;
+  }
+}
+
+message UploadWithOptsResponse {
+  ResponseHeader response_header = 1;
+  string file_url = 2;
+  oneof info {
+    ImageInfo image_info = 3;
+  }
+}

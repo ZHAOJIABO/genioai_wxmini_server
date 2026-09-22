@@ -1,0 +1,90 @@
+# 邮件服务配置示例
+# 将此配置添加到你的 config.yaml 文件中
+
+email:
+  # SMTP服务器地址
+  smtp_host: smtp.gmail.com
+
+  # SMTP端口 (TLS: 587, SSL: 465)
+  smtp_port: 587
+
+  # 发件人邮箱账号
+  username: your-email@gmail.com
+
+  # 邮箱密码或应用专用密码
+  # 对于Gmail，需要使用"应用专用密码"，不是普通密码
+  password: your-app-password-here
+
+  # 发件人显示地址
+  from_address: your-email@gmail.com
+
+  # 验证码过期时间（分钟）
+  expire_minutes: 5
+
+# ============================================
+# Gmail 应用专用密码设置步骤：
+# ============================================
+# 1. 访问 https://myaccount.google.com/security
+# 2. 开启"两步验证"
+# 3. 访问 https://myaccount.google.com/apppasswords
+# 4. 选择"应用" -> "其他(自定义名称)"
+# 5. 输入名称（如"VisionAI Server"）
+# 6. 点击"生成"，将得到16位密码
+# 7. 将16位密码（无空格）填入上面的 password 字段
+#
+# 示例密码格式: abcdabcdabcdabcd (16个字符)
+# ============================================
+
+# ============================================
+# 其他常用邮件服务商配置参考：
+# ============================================
+
+# Outlook/Hotmail:
+# email:
+#   smtp_host: smtp-mail.outlook.com
+#   smtp_port: 587
+#   username: your-email@outlook.com
+#   password: your-password
+#   from_address: your-email@outlook.com
+#   expire_minutes: 5
+
+# QQ邮箱:
+# email:
+#   smtp_host: smtp.qq.com
+#   smtp_port: 587
+#   username: your-qqnumber@qq.com
+#   password: your-authorization-code  # QQ邮箱授权码
+#   from_address: your-qqnumber@qq.com
+#   expire_minutes: 5
+#
+# QQ邮箱授权码获取：
+# 1. 登录QQ邮箱网页版
+# 2. 设置 -> 账户 -> POP3/IMAP/SMTP/Exchange/CardDAV/CalDAV服务
+# 3. 开启"IMAP/SMTP服务"
+# 4. 生成授权码
+
+# 163邮箱:
+# email:
+#   smtp_host: smtp.163.com
+#   smtp_port: 465
+#   username: your-email@163.com
+#   password: your-authorization-code  # 163授权码
+#   from_address: your-email@163.com
+#   expire_minutes: 5
+
+# 阿里云企业邮箱:
+# email:
+#   smtp_host: smtp.qiye.aliyun.com
+#   smtp_port: 465
+#   username: your-email@your-domain.com
+#   password: your-password
+#   from_address: your-email@your-domain.com
+#   expire_minutes: 5
+
+# ============================================
+# 测试邮件发送功能：
+# ============================================
+# 配置完成后，可以通过以下方式测试：
+# 1. 调用 SendEmailVerifyCode API
+# 2. 检查收件箱（包括垃圾邮件文件夹）
+# 3. 查看服务器日志确认邮件发送状态

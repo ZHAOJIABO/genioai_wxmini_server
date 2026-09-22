@@ -1,0 +1,717 @@
+syntax = "proto3";
+package va_interface;
+
+import "auth.proto";
+import "chat.proto";
+import "configuration.proto";
+import "media.proto";
+import "picture.proto";
+import "profile.proto";
+import "prompt.proto";
+import "report.proto";
+import "subscribe.proto";
+import "tts.proto";
+import "userinfo.proto";
+import "google/api/annotations.proto";
+
+option go_package = "va_visionai_server/internal/va_interface";
+
+service SystemService {
+  // 获取APP配置项
+  rpc GetAppConfiguration(ConfigurationRequest) returns (ConfigurationResponse) {
+    option (google.api.http) = {
+      post: "/v1/system/get_app_configuration"
+      body: "*"
+    };
+  }
+  // 获取用户评分弹窗配置
+  rpc GetFeedBackConfig(FeedbackConfigRequest) returns (FeedbackConfigResponse) {
+    option (google.api.http) = {
+      post: "/v1/system/get_feed_back_config"
+      body: "*"
+    };
+  }
+  // 情感状态列表
+  rpc GetEmotionalStateList(EmotionalStateListRequest) returns (EmotionalStateListResponse) {
+    option (google.api.http) = {
+      post: "/v1/system/get_emotional_state_list"
+      body: "*"
+    };
+  }
+  // 与档案的情感关系列表
+  rpc GetRelationList(RelationListRequest) returns (RelationListResponse) {
+    option (google.api.http) = {
+      post: "/v1/system/get_relation_list"
+      body: "*"
+    };
+  }
+  // 获取固定文案数据
+  rpc GetFixedTextData(FixedTextDataRequest) returns (FixedTextDataResponse) {
+    option (google.api.http) = {
+      post: "/v1/system/get_fixed_text_data"
+      body: "*"
+    };
+  }
+  // 获取首页弹窗提醒
+  rpc GetPopupNotifications(GetPopupNotificationsRequest) returns (GetPopupNotificationsResponse) {
+    option (google.api.http) = {
+      post: "/v1/system/get_popup_notifications"
+      body: "*"
+    };
+  }
+}
+service UserService {
+  // 获取用户信息
+  rpc GetUserInfo(UserInfoRequest) returns (UserInfoResponse) {
+    option (google.api.http) = {
+      post: "/v1/user/get_user_info"
+      body: "*"
+    };
+  }
+
+  // 修改用户名
+  rpc EditUserName(EditUserNameRequest) returns (EditUserNameResponse) {
+    option (google.api.http) = {
+      post: "/v1/user/edit_user_name"
+      body: "*"
+    };
+  }
+
+  // 注销账号
+  rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {
+    option (google.api.http) = {
+      post: "/v1/user/delete_user"
+      body: "*"
+    };
+  }
+
+  // 用户fcm/apns token上报
+  rpc UserNotifyToken(UserNotifyTokenRequest) returns (UserNotifyTokenResponse) {
+    option (google.api.http) = {
+      post: "/v1/user/notify_token"
+      body: "*"
+    };
+  }
+
+  // 修改用户个人信息
+  rpc EditUserInfo(EditUserInfoRequest) returns (EditUserInfoResponse) {
+    option (google.api.http) = {
+      post: "/v1/user/edit_user_info"
+      body: "*"
+    };
+  }
+}
+
+service ProfileService {
+  // 创建个人档案
+  rpc CreateUserProfile(CreateUserProfileRequest) returns (CreateUserProfileResponse);
+
+  // 编辑个人档案
+  rpc EditUserProfile(EditUserProfileRequest) returns (EditUserProfileResponse);
+
+  // 获取个人档案
+  rpc GetUserProfile(GetUserProfileRequest) returns (GetUserProfileResponse);
+
+  // 获取用户自定义个人信息列表
+  rpc GetCustomProfileList(GetCustomProfileListRequest) returns (GetCustomProfileListResponse);
+
+  // 创建用户自定义个人信息
+  rpc CreateCustomProfile(CreateCustomProfileRequest) returns (CreateCustomProfileResponse);
+
+  // 删除用户自定义个人信息
+  rpc DeleteCustomProfile(DeleteCustomProfileRequest) returns (DeleteCustomProfileResponse);
+
+  // 编辑用户自定义个人信息
+  rpc EditCustomProfile(EditCustomProfileRequest) returns (EditCustomProfileResponse);
+}
+
+service ChatService {
+  // 获取用户聊天列表
+  rpc GetChatList(ChatListRequest) returns (ChatListResponse) {
+    option (google.api.http) = {
+      post: "/v1/chat/get_chat_list"
+      body: "*"
+    };
+  }
+  // 获取聊天记录详情
+  rpc GetChatMessage(ChatMessageListRequest) returns (ChatMessageListResponse) {
+    option (google.api.http) = {
+      post: "/v1/chat/get_chat_message"
+      body: "*"
+    };
+  }
+  // 发送聊天消息，流式接收内容，推荐使用
+  rpc SendChatMessageStream(ChatMessageSendRequest) returns (stream ChatMessageStreamResponse) {
+    option (google.api.http) = {
+      post: "/v1/chat/send_chat_message_stream"
+      body: "*"
+    };
+  }
+  // 聊天存档，用户左滑删除
+  rpc ChatArchive(ChatArchiveRequest) returns (ChatArchiveResponse) {
+    option (google.api.http) = {
+      post: "/v1/chat/chat_archive"
+      body: "*"
+    };
+  }
+  // 删除聊天记录
+  rpc DeleteChatMessage(DeleteChatMessageRequest) returns (DeleteChatMessageResponse) {
+    option (google.api.http) = {
+      post: "/v1/chat/delete_chat_message"
+      body: "*"
+    };
+  }
+  // 清空服务器端历史记录，本地记录由客户端清理
+  rpc ClearChatHistory(ClearChatHistoryRequest) returns (ClearChatHistoryResponse) {
+    option (google.api.http) = {
+      post: "/v1/chat/clear_chat_history"
+      body: "*"
+    };
+  }
+  // 获取所有可用模型
+  rpc ListModels(ListModelsRequest) returns (ListModelsResponse) {
+    option (google.api.http) = {
+      post: "/v1/chat/list_models"
+      body: "*"
+    };
+  }
+  // 用户聊天列表
+  rpc ListUserProfileChat(ListUserProfileChatRequest) returns (ListUserProfileChatResponse) {
+    option (google.api.http) = {
+      post: "/v1/chat/list_user_profile_chat"
+      body: "*"
+    };
+  }
+  // 游标获取用户历史消息
+  rpc ScrollChatMessage(ScrollChatMessageRequest) returns (ScrollChatMessageResponse) {
+    option (google.api.http) = {
+      post: "/v1/chat/scroll_chat_message"
+      body: "*"
+    };
+  }
+  // 获取建议问题(支持附加partner_profile_id)
+  rpc SuggestQuestionsWithProfile(SuggestQuestionsWithProfileRequest) returns (SuggestQuestionsWithProfileResponse) {
+    option (google.api.http) = {
+      post: "/v1/chat/suggest_questions_with_profile"
+      body: "*"
+    };
+  }
+  // Starlit获取建议问题(支持附加partner_profile_id)
+  rpc StarlitQuestionsWithProfile(StarlitQuestionsWithProfileRequest) returns (stream ChatMessageStreamResponse) {
+    option (google.api.http) = {
+      post: "/v1/chat/starlit_questions_with_profile"
+      body: "*"
+    };
+  }
+}
+service MediaService {
+  // 用户上传图片，也可以上传文件
+  rpc UploadImage(UploadRequest) returns (UploadResponse) {
+    option (google.api.http) = {
+      post: "/v1/media/upload_image"
+      body: "*"
+    };
+  }
+  // 系统内部上传
+  rpc SysUploadFile(UploadRequest) returns (UploadResponse) {
+    option (google.api.http) = {
+      post: "/v1/media/sys_upload_file"
+      body: "*"
+    };
+  }
+  // upload with opts 暂不使用
+  rpc UploadWithOpts(UploadWithOptsRequest) returns (UploadWithOptsResponse) {
+    option (google.api.http) = {
+      post: "/v1/media/upload_with_opts"
+      body: "*"
+    };
+  }
+}
+service PromptService {
+  rpc ListPrompt(ListPromptsRequest) returns (ListPromptsResponse) {
+    option (google.api.http) = {
+      post: "/v1/prompt/list_prompt"
+      body: "*"
+    };
+  }
+  rpc ListCameraPrompt(ListCameraPromptRequest) returns (ListCameraPromptResponse) {
+    option (google.api.http) = {
+      post: "/v1/prompt/list_camera_prompt"
+      body: "*"
+    };
+  }
+  // prompt 增强
+  rpc PromptEnhance(PromptEnhanceRequest) returns (PromptEnhanceResponse) {
+    option (google.api.http) = {
+      post: "/v1/prompt/prompt_enhance"
+      body: "*"
+    };
+  }
+  // 获取灵感推荐
+  rpc GetInspirationPrompts(GetInspirationPromptsRequest) returns (GetInspirationPromptsResponse) {
+    option (google.api.http) = {
+      post: "/v1/prompt/get_inspiration_prompts"
+      body: "*"
+    };
+  }
+  // 获取用户自定义Prompt历史(工具)
+  rpc GetUserCustomPromptHistory(GetUserCustomPromptHistoryRequest) returns (GetUserCustomPromptHistoryResponse) {
+    option (google.api.http) = {
+      post: "/v1/prompt/get_user_custom_prompt_history"
+      body: "*"
+    };
+  }
+  // 删除自定义Prompt历史
+  rpc DeleteCustomPromptHistory(DeleteCustomPromptHistoryRequest) returns (DeleteCustomPromptHistoryResponse) {
+    option (google.api.http) = {
+      post: "/v1/prompt/delete_custom_prompt_history"
+      body: "*"
+    };
+  }
+}
+service TTSService {
+  rpc GetMsgAudio(TTSRequest) returns (stream TTSStreamResponse) {
+    option (google.api.http) = {
+      post: "/v1/tts/get_msg_audio"
+      body: "*"
+    };
+  }
+  rpc ListSpeaker(ListSpeakerRequest) returns (ListSpeakerResponse) {
+    option (google.api.http) = {
+      post: "/v1/tts/list_speaker"
+      body: "*"
+    };
+  }
+}
+service ReportService {
+  rpc ReportLLMMsgQuality(ReportLLMMsgQualityRequest) returns (ReportLLMMsgQualityResponse) {
+    option (google.api.http) = {
+      post: "/v1/report/report_llm_msg_quality"
+      body: "*"
+    };
+  }
+
+  rpc ReportUserEvent(ReportUserEventRequest) returns (ReportUserEventResponse) {
+    option (google.api.http) = {
+      post: "/v1/report/report_user_event"
+      body: "*"
+    };
+  }
+
+  // 监听事件流
+  rpc EventWatch(EventWatchRequest) returns (stream EventWatchResponse) {
+    option (google.api.http) = {
+      post: "/v1/report/event_watch"
+      body: "*"
+    };
+  }
+
+  // 用户反馈
+  rpc UserFeedback(UserFeedbackRequest) returns (UserFeedbackResponse) {
+    option (google.api.http) = {
+      post: "/v1/report/user_feedback"
+      body: "*"
+    };
+  }
+}
+
+service SubscribeService {
+  // 创建订阅订单
+  rpc CreateOrder(CreateOrderRequest) returns (CreateOrderResponse) {
+    option (google.api.http) = {
+      post: "/v1/subscribe/create_order"
+      body: "*"
+    };
+  }
+
+  // 获取商品信息列表
+  rpc GetProductInfoList(ProductInfoListRequest) returns (ProductInfoListResponse) {
+    option (google.api.http) = {
+      post: "/v1/subscribe/get_product_info_list"
+      body: "*"
+    };
+  }
+
+  // 用户额度
+  rpc GetUserAmount(GetUserAmountRequest) returns (GetUserAmountResponse) {
+    option (google.api.http) = {
+      post: "/v1/subscribe/get_user_amount"
+      body: "*"
+    };
+  }
+
+  // Genio 用户额度
+  rpc GetGenioUserAmount(GetGenioUserAmountRequest) returns (GetGenioUserAmountResponse) {
+    option (google.api.http) = {
+      post: "/v1/subscribe/get_genio_user_amount"
+      body: "*"
+    };
+  }
+
+  // 订单结果回传
+  rpc PaymentResultCallback(PaymentResultCallbackRequest) returns (PaymentResultCallbackResponse) {
+    option (google.api.http) = {
+      post: "/v1/subscribe/payment_result_callback"
+      body: "*"
+    };
+  }
+
+  // 信用积分明细
+  rpc GetCreditDetail(CreditDetailRequest) returns (CreditDetailResponse) {
+    option (google.api.http) = {
+      post: "/v1/subscribe/get_credit_detail"
+      body: "*"
+    };
+  }
+
+  // 兑换优惠券
+  rpc CouponRedeem(CouponRedeemRequest) returns (CouponRedeemResponse) {
+    option (google.api.http) = {
+      post: "/v1/subscribe/coupon_redeem"
+      body: "*"
+    };
+  }
+
+  // 获取订阅退出配置(用于GoCalA/B测)
+  rpc GetSubscriptionExitConfig(GetSubscriptionExitConfigRequest) returns (GetSubscriptionExitConfigResponse) {
+    option (google.api.http) = {
+      post: "/v1/subscribe/get_subscription_exit_config"
+      body: "*"
+    };
+  }
+
+  // 给用户增加积分
+  rpc AddUserCredits(AddUserCreditsRequest) returns (AddUserCreditsResponse) {
+    option (google.api.http) = {
+      post: "/v1/subscribe/add_user_credits"
+      body: "*"
+    };
+  }
+
+  // 获取用户生图统计
+  rpc GetUserTaskStats(GetUserTaskStatsRequest) returns (GetUserTaskStatsResponse) {
+    option (google.api.http) = {
+      post: "/v1/subscribe/get_user_task_stats"
+      body: "*"
+    };
+  }
+}
+
+// 图片生成服务
+service PictureForgeService {
+  // 提交图片生成任务
+  rpc SubmitPictureForgeTask(SubmitPictureForgeTaskRequest) returns (SubmitPictureForgeTaskResponse) {
+    option (google.api.http) = {
+      post: "/v1/pictureforge/submit_picture_forge_task"
+      body: "*"
+    };
+  }
+  // 重试失败任务
+  rpc RetryFailedTask(RetryFailedTaskRequest) returns (RetryFailedTaskResponse) {
+    option (google.api.http) = {
+      post: "/v1/pictureforge/retry_failed_task"
+      body: "*"
+    };
+  }
+  // 获取图片生成任务结果
+  rpc GetPictureForgeTaskResult(GetPictureForgeTaskResultRequest) returns (GetPictureForgeTaskResultResponse) {
+    option (google.api.http) = {
+      post: "/v1/pictureforge/get_picture_forge_task_result"
+      body: "*"
+    };
+  }
+  // 社区图片列表
+  rpc ListCommunityPicture(ListCommunityPictureRequest) returns (ListCommunityPictureResponse) {
+    option (google.api.http) = {
+      post: "/v1/pictureforge/list_community_picture"
+      body: "*"
+    };
+  }
+  // 用户最近上传图片
+  rpc ListUserUploadPicture(ListUserUploadPictureRequest) returns (ListUserUploadPictureResponse) {
+    option (google.api.http) = {
+      post: "/v1/pictureforge/list_user_upload_picture"
+      body: "*"
+    };
+  }
+  // 清除用户最近上传图片
+  rpc ClearUserUploadPicture(ClearUserUploadPictureRequest) returns (ClearUserUploadPictureResponse) {
+    option (google.api.http) = {
+      post: "/v1/pictureforge/clear_user_upload_picture"
+      body: "*"
+    };
+  }
+  // 删除用户最近上传图片（单个）
+  rpc DeleteUserUploadPicture(DeleteUserUploadPictureRequest) returns (DeleteUserUploadPictureResponse) {
+    option (google.api.http) = {
+      post: "/v1/pictureforge/delete_user_upload_picture"
+      body: "*"
+    };
+  }
+  // 用户最近生成图片任务
+  rpc ListUserPictureForgeTask(ListUserPictureForgeTaskRequest) returns (ListUserPictureForgeTaskResponse) {
+    option (google.api.http) = {
+      post: "/v1/pictureforge/list_user_picture_forge_task"
+      body: "*"
+    };
+  }
+  // 发布图片
+  rpc PublishPicture(PublishPictureRequest) returns (PublishPictureResponse) {
+    option (google.api.http) = {
+      post: "/v1/pictureforge/publish_picture"
+      body: "*"
+    };
+  }
+  // 删除图片
+  rpc DeletePicture(DeletePictureRequest) returns (DeletePictureResponse) {
+    option (google.api.http) = {
+      post: "/v1/pictureforge/delete_picture"
+      body: "*"
+    };
+  }
+  // 获取工作流分类
+  rpc ListWorkflowKind(ListWorkflowKindRequest) returns (ListWorkflowKindResponse) {
+    option (google.api.http) = {
+      post: "/v1/pictureforge/list_workflow_kind"
+      body: "*"
+    };
+  }
+  //   获取对应分类工作流分页
+  rpc ListWorkflowPage(ListWorkflowPageRequest) returns (ListWorkflowPageResponse) {
+    option (google.api.http) = {
+      post: "/v1/pictureforge/list_workflow_page"
+      body: "*"
+    };
+  }
+  // 获取工作流分类及分类下数据
+  rpc ListKindWithWorkflows(ListKindWithWorkflowsRequest) returns (ListKindWithWorkflowsResponse) {
+    option (google.api.http) = {
+      post: "/v1/pictureforge/list_kind_with_workflows"
+      body: "*"
+    };
+  }
+  // 获取工作流主题及主题下分类、工作流数据
+  rpc ListThemeWithWorkflows(ListThemeWithWorkflowsRequest) returns (ListThemeWithWorkflowsResponse) {
+    option (google.api.http) = {
+      post: "/v1/pictureforge/list_theme_with_workflows"
+      body: "*"
+    };
+  }
+  //Banner列表
+  rpc ListBannerKindWithWorkflows(ListBannerKindWithWorkflowsRequest) returns (ListBannerKindWithWorkflowsResponse) {
+    option (google.api.http) = {
+      post: "/v1/pictureforge/list_banner_kind_with_workflows"
+      body: "*"
+    };
+  }
+  // 提交随机工作流任务
+  rpc SubmitRandomWorkflowTask(SubmitRandomWorkflowTaskRequest) returns (SubmitRandomWorkflowTaskResponse) {
+    option (google.api.http) = {
+      post: "/v1/pictureforge/submit_random_workflow_task"
+      body: "*"
+    };
+  }
+  //  获取所有主题
+  rpc ListAllThemeInfo(ListAllThemeInfoRequest) returns (ListAllThemeInfoResponse) {
+    option (google.api.http) = {
+      post: "/v1/pictureforge/list_all_theme_info"
+      body: "*"
+    };
+  }
+  // 图片引导生成视频接口
+  rpc PictureToVideoGuide(PictureToVideoGuideRequest) returns (PictureToVideoGuideResponse) {
+    option (google.api.http) = {
+      post: "/v1/pictureforge/picture_to_video_guide"
+      body: "*"
+    };
+  }
+  // 获取图片工具列表
+  rpc ListPictureTools(ListPictureToolsRequest) returns (ListPictureToolsResponse) {
+    option (google.api.http) = {
+      post: "/v1/pictureforge/list_picture_tools"
+      body: "*"
+    };
+  }
+  // 获取工具能力
+  rpc GetToolEnhance(GetToolEnhanceRequest) returns (GetToolEnhanceResponse) {
+    option (google.api.http) = {
+      post: "/v1/pictureforge/get_tool_enhance"
+      body: "*"
+    };
+  }
+  // 提交图片工具任务
+  rpc SubmitPictureToolsTask(SubmitPictureToolsTaskRequest) returns (SubmitPictureToolsTaskResponse) {
+    option (google.api.http) = {
+      post: "/v1/pictureforge/submit_picture_tools_task"
+      body: "*"
+    };
+  }
+  // 获取图片工具任务结果列表
+  rpc ListPictureToolsTaskResult(ListPictureToolsTaskResultRequest) returns (ListPictureToolsTaskResultResponse) {
+    option (google.api.http) = {
+      post: "/v1/pictureforge/list_picture_tools_task_result"
+      body: "*"
+    };
+  }
+  // 提交图片任务链（两步：图→视频）。
+  // 行为：
+  // - 若 first_step 为 first_submit：先提交第一步图片任务，再创建链；
+  // - 若 first_step 为 first_task_id：仅创建链并等待第一步完成；
+  // 返回 chain_id 与 first_task_id。
+  rpc SubmitPictureTaskChain(SubmitPictureTaskChainRequest) returns (SubmitPictureTaskChainResponse) {
+    option (google.api.http) = {
+      post: "/v1/pictureforge/submit_picture_task_chain"
+      body: "*"
+    };
+  }
+  // 工具推荐
+  rpc GetToolRecommend(GetToolRecommendRequest) returns (GetToolRecommendResponse) {
+    option (google.api.http) = {
+      post: "/v1/pictureforge/get_tool_recommend"
+      body: "*"
+    };
+  }
+  // 猜你喜欢-工作流推荐（等待生成时展示）
+  rpc GetWorkflowRecommend(GetWorkflowRecommendRequest) returns (GetWorkflowRecommendResponse) {
+    option (google.api.http) = {
+      post: "/v1/pictureforge/get_workflow_recommend"
+      body: "*"
+    };
+  }
+  // 获取Banner列表
+  rpc GetBannerList(GetBannerListRequest) returns (GetBannerListResponse) {
+    option (google.api.http) = {
+      post: "/v1/pictureforge/get_banner_list"
+      body: "*"
+    };
+  }
+  // 点击Banner（返回弹窗相关信息）
+  rpc ClickBanner(ClickBannerRequest) returns (ClickBannerResponse) {
+    option (google.api.http) = {
+      post: "/v1/pictureforge/click_banner"
+      body: "*"
+    };
+  }
+  // 获取生图模型列表
+  rpc ListImageGenerationModels(ListImageGenerationModelsRequest) returns (ListImageGenerationModelsResponse) {
+    option (google.api.http) = {
+      post: "/v1/pictureforge/list_image_generation_models"
+      body: "*"
+    };
+  }
+}
+// 身份验证服务
+service AuthService {
+  // 游客登录
+  rpc GuestLogin(GuestLoginRequest) returns (AuthResponse) {
+    option (google.api.http) = {
+      post: "/v1/auth/guest_login"
+      body: "*"
+    };
+  }
+  // 发送手机验证码
+  rpc SendPhoneVerifyCode(PhoneVerifyCodeRequest) returns (PhoneVerifyCodeResponse) {
+    option (google.api.http) = {
+      post: "/v1/auth/send_phone_verify_code"
+      body: "*"
+    };
+  }
+  // 手机号登录
+  rpc PhoneAuth(PhoneAuthRequest) returns (AuthResponse) {
+    option (google.api.http) = {
+      post: "/v1/auth/phone_auth"
+      body: "*"
+    };
+  }
+  // 苹果ID登录
+  rpc AppleAuth(AppleAuthRequest) returns (AuthResponse) {
+    option (google.api.http) = {
+      post: "/v1/auth/apple_auth"
+      body: "*"
+    };
+  }
+  // 谷歌账号登录
+  rpc GoogleAuth(GoogleAuthRequest) returns (AuthResponse) {
+    option (google.api.http) = {
+      post: "/v1/auth/google_auth"
+      body: "*"
+    };
+  }
+  // 微信小程序身份登录
+  rpc WeChatAuth(WeChatAuthRequest) returns (AuthResponse) {
+    option (google.api.http) = {
+      post: "/v1/auth/wechat_auth"
+      body: "*"
+    };
+  }
+  // 检验后端保存的微信登录态（需要有效业务 Token）
+  rpc WeChatCheckSession(WeChatSessionRequest) returns (WeChatSessionResponse) {
+    option (google.api.http) = {
+      post: "/v1/auth/wechat_check_session"
+      body: "*"
+    };
+  }
+  // 重置微信 session_key，不刷新业务 Token，也不延长微信登录态有效期
+  rpc WeChatResetSession(WeChatSessionRequest) returns (WeChatSessionResponse) {
+    option (google.api.http) = {
+      post: "/v1/auth/wechat_reset_session"
+      body: "*"
+    };
+  }
+  // 发送邮箱验证码
+  rpc SendEmailVerifyCode(EmailVerifyCodeRequest) returns (EmailVerifyCodeResponse) {
+    option (google.api.http) = {
+      post: "/v1/auth/send_email_verify_code"
+      body: "*"
+    };
+  }
+  // 邮箱验证码登录
+  rpc EmailAuth(EmailAuthRequest) returns (AuthResponse) {
+    option (google.api.http) = {
+      post: "/v1/auth/email_auth"
+      body: "*"
+    };
+  }
+  // 邮箱密码登录
+  rpc EmailPasswordAuth(EmailPasswordAuthRequest) returns (AuthResponse) {
+    option (google.api.http) = {
+      post: "/v1/auth/email_password_auth"
+      body: "*"
+    };
+  }
+  // 邮箱注册
+  rpc EmailRegister(EmailRegisterRequest) returns (EmailRegisterResponse) {
+    option (google.api.http) = {
+      post: "/v1/auth/email_register"
+      body: "*"
+    };
+  }
+  // 找回密码 - 发送重置验证码
+  rpc SendPasswordResetCode(SendPasswordResetCodeRequest) returns (SendPasswordResetCodeResponse) {
+    option (google.api.http) = {
+      post: "/v1/auth/send_password_reset_code"
+      body: "*"
+    };
+  }
+  // 重置密码
+  rpc ResetPassword(ResetPasswordRequest) returns (ResetPasswordResponse) {
+    option (google.api.http) = {
+      post: "/v1/auth/reset_password"
+      body: "*"
+    };
+  }
+  // 刷新token
+  rpc RefreshToken(TokenRefreshRequest) returns (TokenRefreshResponse) {
+    option (google.api.http) = {
+      post: "/v1/auth/refresh_token"
+      body: "*"
+    };
+  }
+  // 退出登录
+  rpc Logout(AuthLogoutRequest) returns (AuthLogoutResponse) {
+    option (google.api.http) = {
+      post: "/v1/auth/logout"
+      body: "*"
+    };
+  }
+}

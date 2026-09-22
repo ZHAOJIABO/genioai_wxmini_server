@@ -1,0 +1,305 @@
+syntax = "proto3";
+package va_interface;
+
+import "app.proto";
+import "device.proto";
+import "web.proto";
+
+option go_package = "va_visionai_server/internal/va_interface";
+
+// @deprecated
+enum StatusCode {
+  SUCCESS = 0;
+
+  // 非法参数
+  INVALID_PARAM = 1001;
+  // 非法请求
+  INVALID_REQUEST = 1002;
+  // 请求失败
+  REQUEST_FAILED = 1003;
+
+  // 通用问题
+  // AccessToken错误
+  INVALID_ACCESS_TOKEN = 2001;
+  // AccessToken过期，需要刷新token
+  EXPIRED_ACCESS_TOKEN = 2002;
+  // RefreshToken错误，需要重新登录
+  INVALID_REFRESH_TOKEN = 2003;
+  // 无效的用户ID
+  INVALID_USER = 2004;
+  // 无效的APP
+  INVALID_APP = 2005;
+  // 无效的设别信息（可能对部分设备ID进行禁止访问）
+  INVALID_DEVICE = 2006;
+
+  // 用户行为
+  // 无效手机号
+  INVALID_PHONE_NUMBER = 4001;
+  // 验证码验证错误
+  INVALID_VERIFY_CODE = 4002;
+  // 积分消耗完毕
+  AMOUNT_EXHAUSTED = 4003;
+  // 发送消息过于频繁
+  SEND_MESSAGE_TOO_OFTEN = 4004;
+  // 文件过大
+  FILE_TOO_LARGE = 4005;
+  // 达到日积分奖励上限
+  DAILY_AMOUNT_LIMIT_EXCEEDED = 4006;
+  // 签到失败因为已签到
+  FAILED_BY_ALREADY_SIGNIN = 4007;
+  // 广告激励次数超过限制
+  FAILED_BY_AD_AWARD_LIMIT = 4008;
+  // 达到日使用上限
+  DAILY_TOKEN_LIMIT_EXCEEDED = 4009;
+  UPLOAD_CONTENT_SENSITIVE = 4010;
+  // 用户名已存在
+  USER_NAME_EXISTS = 4011;
+  // 正在处理任务数量超过限制
+  TASK_PROCESSING_LIMIT_EXCEEDED = 4012;
+  // 订阅过期
+  SUBSCRIBE_EXPIRED = 4013;
+  // 订阅未激活
+  SUBSCRIBE_NOT_ACTIVATE = 4014;
+  // 信用点数不足
+  CREDIT_POINT_NOT_ENOUGH = 4015;
+  // 兑换券 无效
+  INVALID_COUPON = 4016;
+
+  // 邮箱登录注册相关
+  // 邮箱格式无效
+  INVALID_EMAIL_FORMAT = 4017;
+  // 邮箱或密码错误
+  INVALID_EMAIL_OR_PASSWORD = 4018;
+  // 邮箱已注册
+  EMAIL_ALREADY_EXISTS = 4019;
+  // 邮箱未注册
+  EMAIL_NOT_REGISTERED = 4020;
+  // 密码格式不符合要求
+  INVALID_PASSWORD_FORMAT = 4021;
+  // 邮箱验证码错误
+  INVALID_EMAIL_VERIFY_CODE = 4022;
+  // 邮箱验证码过期
+  EMAIL_VERIFY_CODE_EXPIRED = 4023;
+  // 账号未设置密码（需要使用验证码登录）
+  PASSWORD_NOT_SET = 4024;
+
+  //大健康相关
+  // 未识别出食物
+  HEALTH_NO_FOOD = 5001;
+  //重复创建健康档案
+  CREATE_HEALTH_PROFILE_EXIST = 5002;
+}
+
+enum ResponseStatusCode {
+  // 未知错误
+  RESPONSE_STATUS_CODE_UNKNOWN_ERROR = 0;
+
+  // 成功
+  RESPONSE_STATUS_CODE_SUCCESS = 200;
+
+  // 非法参数
+  RESPONSE_STATUS_CODE_INVALID_PARAM = 1001;
+  // 非法请求
+  RESPONSE_STATUS_CODE_INVALID_REQUEST = 1002;
+  // 请求失败
+  RESPONSE_STATUS_CODE_REQUEST_FAILED = 1003;
+
+  // 通用问题
+  // AccessToken错误
+  RESPONSE_STATUS_CODE_INVALID_ACCESS_TOKEN = 2001;
+  // AccessToken过期，需要刷新token
+  RESPONSE_STATUS_CODE_EXPIRED_ACCESS_TOKEN = 2002;
+  // RefreshToken错误，需要重新登录
+  RESPONSE_STATUS_CODE_INVALID_REFRESH_TOKEN = 2003;
+  // 无效的用户ID
+  RESPONSE_STATUS_CODE_INVALID_USER = 2004;
+  // 无效的APP
+  RESPONSE_STATUS_CODE_INVALID_APP = 2005;
+  // 无效的设别信息（可能对部分设备ID进行禁止访问）
+  RESPONSE_STATUS_CODE_INVALID_DEVICE = 2006;
+
+  // 用户行为
+  // 无效手机号
+  RESPONSE_STATUS_CODE_INVALID_PHONE_NUMBER = 4001;
+  // 验证码验证错误
+  RESPONSE_STATUS_CODE_INVALID_VERIFY_CODE = 4002;
+  // 积分消耗完毕
+  RESPONSE_STATUS_CODE_AMOUNT_EXHAUSTED = 4003;
+  // 发送消息过于频繁
+  RESPONSE_STATUS_CODE_SEND_MESSAGE_TOO_OFTEN = 4004;
+  // 文件过大
+  RESPONSE_STATUS_CODE_FILE_TOO_LARGE = 4005;
+  // 达到日积分奖励上限
+  RESPONSE_STATUS_CODE_DAILY_AMOUNT_LIMIT_EXCEEDED = 4006;
+  // 签到失败因为已签到
+  RESPONSE_STATUS_CODE_FAILED_BY_ALREADY_SIGNIN = 4007;
+  // 广告激励次数超过限制
+  RESPONSE_STATUS_CODE_FAILED_BY_AD_AWARD_LIMIT = 4008;
+  // 达到日使用上限
+  RESPONSE_STATUS_CODE_DAILY_TOKEN_LIMIT_EXCEEDED = 4009;
+  // 上传内容敏感
+  RESPONSE_STATUS_CODE_UPLOAD_CONTENT_SENSITIVE = 4010;
+  // 用户名已存在
+  RESPONSE_STATUS_CODE_USER_NAME_EXISTS = 4011;
+  // 正在处理任务数量超过限制
+  RESPONSE_STATUS_CODE_TASK_PROCESSING_LIMIT_EXCEEDED = 4012;
+  // 会员过期
+  RESPONSE_STATUS_CODE_SUBSCRIBE_EXPIRED = 4013;
+  // 订阅未激活
+  RESPONSE_STATUS_CODE_SUBSCRIBE_NOT_ACTIVATE = 4014;
+  // 信用点数不足
+  RESPONSE_STATUS_CODE_CREDIT_POINT_NOT_ENOUGH = 4015;
+  // 兑换券 无效
+  RESPONSE_STATUS_CODE_INVALID_COUPON = 4016;
+
+  // 邮箱登录注册相关
+  // 邮箱格式无效
+  RESPONSE_STATUS_CODE_INVALID_EMAIL_FORMAT = 4017;
+  // 邮箱或密码错误
+  RESPONSE_STATUS_CODE_INVALID_EMAIL_OR_PASSWORD = 4018;
+  // 邮箱已注册
+  RESPONSE_STATUS_CODE_EMAIL_ALREADY_EXISTS = 4019;
+  // 邮箱未注册
+  RESPONSE_STATUS_CODE_EMAIL_NOT_REGISTERED = 4020;
+  // 密码格式不符合要求
+  RESPONSE_STATUS_CODE_INVALID_PASSWORD_FORMAT = 4021;
+  // 邮箱验证码错误
+  RESPONSE_STATUS_CODE_INVALID_EMAIL_VERIFY_CODE = 4022;
+  // 邮箱验证码过期
+  RESPONSE_STATUS_CODE_EMAIL_VERIFY_CODE_EXPIRED = 4023;
+  // 账号未设置密码（需要使用验证码登录）
+  RESPONSE_STATUS_CODE_PASSWORD_NOT_SET = 4024;
+
+  //大健康相关
+  // 未识别出食物
+  RESPONSE_STATUS_CODE_HEALTH_NO_FOOD = 5001;
+}
+
+enum UserType {
+  // 注册用户
+  USER_TYPE_REGISTER = 0;
+  // 游客
+  USER_TYPE_TEMP = 1;
+}
+
+// 通用的请求Header
+// 支持移动端（App）和Web端
+message RequestHeader {
+  // ==================== 通用字段 ====================
+  // 请求ID
+  string req_id = 1;
+  // 请求Token（用户登录后携带）
+  string access_token = 2;
+  // 用户ID
+  string user_id = 5;
+  // 用户类型 0 注册用户 1 游客
+  UserType user_type = 7;
+  // 请求时间戳
+  int64 request_time_ms = 8;
+
+  // ==================== 移动端专用字段（可选）====================
+  // App版本信息（移动端使用）
+  optional App app = 3;
+  // 设备信息（移动端使用）
+  optional Device device = 4;
+  // AppStore（移动端使用）
+  optional AppStore app_store = 6;
+
+  // ==================== Web端专用字段（可选）====================
+  // Web客户端信息（Web端使用）
+  optional WebClient web_client = 9;
+  // 浏览器信息（Web端使用）
+  optional BrowserInfo browser_info = 10;
+}
+
+// 通用的响应Header
+message ResponseHeader {
+  // 请求ID
+  string req_id = 1;
+  // 错误码 @deprecated
+  StatusCode code = 2;
+  // 错误信息
+  string msg = 3;
+  // 服务端时间
+  string server_time = 4;
+  // 服务端版本
+  string server_version = 5;
+  // 响应时间
+  int64 response_time_ms = 6;
+  // 用户ID
+  string user_id = 7;
+  // 响应状态码
+  ResponseStatusCode response_status_code = 8;
+}
+
+message Empty {}
+
+message PageCommon {
+  // 页码 客户端传入
+  int32 page = 1;
+  // 页大小 客户端传入
+  int32 page_size = 2;
+  // 总数 服务端计算返回
+  int32 total = 3;
+}
+
+// RPC拦截器检查失败时的错误响应
+message InterceptorErrorResponse {
+  // 响应头，包含错误码和错误信息
+  ResponseHeader response_header = 1;
+}
+
+message ImageInfo {
+  // 图片URL
+  string url = 1;
+  // 图片像素宽
+  int32 width = 2;
+  // 图片像素高
+  int32 height = 3;
+  // 图片低像素尺寸
+  string thumbnail_url = 4;
+  // 检测到的人脸数量
+  int32 face_count = 5;
+}
+
+enum ConstellationAnalyzeStatus {
+  // 未分析
+  CONSTELATION_ANALYZE_STATUS_NOT_ANALYZED = 0;
+  // 分析中
+  CONSTELATION_ANALYZE_STATUS_ANALYZING = 1;
+  // 分析完成
+  CONSTELATION_ANALYZE_STATUS_ANALYZED = 2;
+}
+
+message Relation {
+  // 关系唯一表示
+  string relation_iden = 1;
+  // 关系文案
+  string label = 2;
+  // 关系描述
+  string description = 3;
+  // icon
+  string icon = 4;
+}
+
+// ==================== 工具相关公共类型 ====================
+
+// 工具参数信息
+message ToolParamsInfo {
+  string label = 1;
+  repeated ToolParamDetail detail = 2;
+}
+
+// 工具参数详情
+message ToolParamDetail {
+  string label = 1;
+  string value = 2;
+  int32 credit = 3;
+}
+
+// 工具能力
+message ToolEnhance {
+  string title = 1;
+  string cover = 2;
+  string prompt = 3;
+}
