@@ -86,7 +86,10 @@ docker compose --profile https run --rm --no-deps nginx nginx -t
 docker compose --profile https up -d nginx
 ```
 
-用 curl https://geniomini.appbobo.cn/metrics 验证证书和转发，并检查是否有指向旧服务器的 AAAA 记录。
+用 curl -I https://geniomini.appbobo.cn/admin/ 验证证书和 Nginx（预期 403），
+再用本机 http://127.0.0.1:8200/metrics 验证后端（预期 200）。
+公网管理入口与 metrics 被 Nginx 禁止访问；需要管理后台时通过 SSH 端口转发访问本机 8200。
+检查是否有指向旧服务器的 AAAA 记录。
 无证书时先停在第 4 步，暂不配置小程序公网入口。
 
 ```bash
