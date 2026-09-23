@@ -65,10 +65,8 @@ func (m *MultiMarshaler) ContentType(v interface{}) string {
 }
 
 func (m *MultiMarshaler) Marshal(v interface{}) ([]byte, error) {
-	if currentRequest.IsStreaming {
-		return m.streamMarshaler.Marshal(v)
-	}
-	return m.cryptoMarshaler.Marshal(v)
+	// All HTTP responses are JSON. Keep the existing request decoding below.
+	return m.streamMarshaler.Marshal(v)
 }
 
 func (m *MultiMarshaler) Unmarshal(data []byte, v interface{}) error {

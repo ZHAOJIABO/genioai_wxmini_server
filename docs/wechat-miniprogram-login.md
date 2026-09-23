@@ -37,7 +37,7 @@ WeChatMiniPrograms:
 
 无需事先提供业务 `access_token` / `user_id`。`auth_type` 允许 `miniprogram` 或省略；App 和网页 OAuth 类型会被拒绝。设备信息沿用项目现有公共请求头。
 
-**当前服务在 PROD 模式使用现有 XOR + Base64 网关编解码；不能直接发送上述明文 JSON。** 小程序需复用项目请求封装，对请求编码、响应解码。DEV / LOCAL 使用标准 grpc-gateway JSON，响应字段通常为 camelCase；PROD 解码后的字段为 snake_case。下面 `apiRequest` 表示已经处理这些差异和公共请求头的客户端封装，不是本项目新增的 JS 函数：
+**当前服务在 PROD 模式仍要求对请求做 XOR + Base64 编码；不能直接发送上述明文 JSON。** 响应已改为普通 JSON，无需 XOR + Base64 解码。DEV / LOCAL 响应字段通常为 camelCase；PROD 响应字段为 snake_case。下面 `apiRequest` 表示已经处理这些差异和公共请求头的客户端封装，不是本项目新增的 JS 函数：
 
 ```javascript
 wx.login({

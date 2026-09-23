@@ -3,6 +3,7 @@ package api
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -38,7 +39,11 @@ func TestWeChatSessionGateway(t *testing.T) {
 			if err := vai.RegisterAuthServiceHandlerServer(context.Background(), mux, stub); err != nil {
 				t.Fatal(err)
 			}
-			body, err := codec.Marshal(&vai.WeChatSessionRequest{RequestHeader: &vai.RequestHeader{UserId: "user", AccessToken: "business-token", App: &vai.App{PackageName: "project"}}})
+			requestCodec := codec
+			if _, production := codec.(*common.MultiMarshaler); production {
+				requestCodec = common.NewCryptoMarshaler()
+			}
+			body, err := requestCodec.Marshal(&vai.WeChatSessionRequest{RequestHeader: &vai.RequestHeader{UserId: "user", AccessToken: "business-token", App: &vai.App{PackageName: "project"}}})
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -57,7 +62,7 @@ func TestWeChatSessionGateway(t *testing.T) {
 				t.Fatal("session request was not forwarded")
 			}
 			var result vai.WeChatSessionResponse
-			if err := codec.Unmarshal(bytes.TrimSpace(response.Body.Bytes()), &result); err != nil {
+			if err := json.Unmarshal(bytes.TrimSpace(response.Body.Bytes()), &result); err != nil {
 				t.Fatal(err)
 			}
 			if !result.Valid {
@@ -99,7 +104,11 @@ func TestWeChatGateway(t *testing.T) {
 			if err := vai.RegisterAuthServiceHandlerServer(context.Background(), mux, stub); err != nil {
 				t.Fatal(err)
 			}
-			body, err := codec.Marshal(&vai.WeChatAuthRequest{
+			requestCodec := codec
+			if production {
+				requestCodec = common.NewCryptoMarshaler()
+			}
+			body, err := requestCodec.Marshal(&vai.WeChatAuthRequest{
 				Code: "one-use-code", AuthType: "miniprogram",
 				RequestHeader: &vai.RequestHeader{App: &vai.App{PackageName: "com.example.mini"}},
 			})
@@ -117,7 +126,11 @@ func TestWeChatGateway(t *testing.T) {
 				t.Fatalf("incorrect request: %v", stub.received)
 			}
 			var response vai.AuthResponse
-			if err := codec.Unmarshal(bytes.TrimSpace(recorder.Body.Bytes()), &response); err != nil {
+			decode := codec.Unmarshal
+			if production {
+				decode = func(data []byte, v interface{}) error { return json.Unmarshal(data, v) }
+			}
+			if err := decode(bytes.TrimSpace(recorder.Body.Bytes()), &response); err != nil {
 				t.Fatal(err)
 			}
 			if response.GetAccessToken() != "business-token" || response.GetAuthType() != vai.AuthType_AUTH_TYPE_WECHAT {

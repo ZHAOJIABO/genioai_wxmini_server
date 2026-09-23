@@ -28,11 +28,11 @@
 | 环境 | 请求体 | 响应体 |
 | --- | --- | --- |
 | DEV / LOCAL | 普通 JSON；可使用本文 snake_case 请求字段 | 标准 grpc-gateway JSON，一般为 camelCase 字段、字符串枚举 |
-| PROD | JSON 的 UTF-8 字节经过项目现有 XOR + Base64 编码，发送原始 Base64 文本 | 原始 Base64 文本；解码后一般为 snake_case 字段、数字枚举 |
+| PROD | JSON 的 UTF-8 字节经过项目现有 XOR + Base64 编码，发送原始 Base64 文本 | 普通 JSON；一般为 snake_case 字段、数字枚举 |
 
-所有请求设置 `Content-Type: application/json`。PROD 的 Base64 文本不要再次 `JSON.stringify` 加引号，也不要包成 `{data: ...}`。应复用项目现有网关编解码模块，编码参数需与后端一致。示例 JSON 均指**编码前/解码后**的数据。
+所有请求设置 `Content-Type: application/json`。PROD 请求的 Base64 文本不要再次 `JSON.stringify` 加引号，也不要包成 `{data: ...}`。应复用项目现有请求编码模块，编码参数需与后端一致。示例 JSON 均指请求编码前、响应接收后的数据。
 
-使用 `wx.request` 时建议设置 `dataType: 'text'`，由请求封装按环境解码，避免 PROD 的 Base64 响应被自动当作 JSON 解析。本文末尾提供可接入现有编解码模块的示例。
+使用 `wx.request` 时可直接按 JSON 解析响应。已有响应解码封装需去掉 PROD 的 XOR + Base64 解码。本文末尾提供请求封装示例。
 
 ### 公共请求头
 
@@ -187,7 +187,7 @@ HTTP 200 只表示请求已处理。先解码响应，再检查 `response_header
 以下 JavaScript 是文档示例，可放入小程序工具模块。`encodeBody` 和 `decodeBody` 是需要对接的通信适配器：
 
 - DEV/LOCAL：分别传 `JSON.stringify`、`JSON.parse`。
-- PROD：分别传现有项目的“对象 → UTF-8 JSON → XOR → Base64 文本”和逆向解码函数；解码函数必须返回对象。
+- PROD：`encodeBody` 使用现有项目的“对象 → UTF-8 JSON → XOR → Base64 文本”；`decodeBody` 使用 `JSON.parse`（若 `wx.request` 已返回对象，则直接返回该对象）。
 
 该封装保留原始响应，内部兼容字段名和主要错误枚举，串行执行三个操作，并合并同一时刻的重复登录/重置。它不会自动重试网络请求或实现业务 Refresh Token 刷新。
 

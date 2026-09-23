@@ -27,11 +27,11 @@
 | 环境 | 请求体 / 响应体 |
 | --- | --- |
 | DEV / LOCAL | 普通 JSON。响应为标准 grpc-gateway JSON（camelCase 字段、字符串枚举） |
-| PROD | 整个 JSON body 经 XOR + Base64 编码，发送/接收原始 Base64 文本 |
+| PROD | 请求体经 XOR + Base64 编码；响应体为普通 JSON（snake_case 字段、数字枚举） |
 
-PROD 的编解码在 `internal/common/grpc_gateway_marshal.go`（`CryptoMarshaler`），仅在 `conf.IsProd()` 为真时挂载（`cmd/main.go:283`）。客户端应复用项目现有网关编解码模块，密钥需与后端一致。
+PROD 的请求解码在 `internal/common/grpc_gateway_marshal.go`，仅在 `conf.IsProd()` 为真时挂载。客户端发送请求时应复用项目现有编码模块；收到响应后直接解析 JSON。
 
-Base64 文本不要再次 `JSON.stringify`，也不要包成 `{data: ...}`。本文所有示例均为**编码前 / 解码后**的数据。
+请求的 Base64 文本不要再次 `JSON.stringify`，也不要包成 `{data: ...}`。本文所有示例均为请求编码前、响应接收后的数据。
 
 ### 公共请求头
 
@@ -403,7 +403,7 @@ POST /v1/pictureforge/list_user_picture_forge_task
 2. **误传 `InputPrompt`** —— 会覆盖模版的固定 prompt，导致模版效果失效。
 3. **用大小比较判断任务状态** —— 状态值是 0/10/20/30/40/50/100，不连续。`40` 不是失败，`10` 才是。只做等值判断。
 4. **漏处理 30 / 40 / 50** —— 把它们当未知状态而停止轮询，会导致任务卡在「生成中」。
-5. **PROD 环境漏做 XOR + Base64** —— 请求会直接解析失败。同时响应也需解码，勿让 HTTP 库自动按 JSON 解析。
+5. **PROD 环境漏做 XOR + Base64** —— 请求会直接解析失败。响应为普通 JSON，不要再执行 XOR + Base64 解码。
 6. **忽略 `face_count`** —— 模版要求人脸而用户图无人脸时提交必失败，应在上传阶段用 `face_detection` 提前拦截。
 7. **只依赖流式推送** —— `task_progress_data` 无状态字段，且长连接易断，需轮询兜底。
 
