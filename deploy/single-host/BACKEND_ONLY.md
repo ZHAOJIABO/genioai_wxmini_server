@@ -86,6 +86,12 @@ docker compose --profile https run --rm --no-deps nginx nginx -t
 docker compose --profile https up -d nginx
 ```
 
+standalone 模式的续期也需要暂时占用 80 端口。首次启动 Nginx 后，将仓库中的
+`certbot-pre.sh`、`certbot-deploy.sh`、`certbot-post.sh` 分别链接到
+`/etc/letsencrypt/renewal-hooks/pre/`、`deploy/`、`post/`，使 Certbot 自动续期时
+先暂停 Nginx，成功后复制新证书，最后恢复 Nginx。续期时 HTTP/HTTPS 会短暂中断。
+用 `certbot renew --dry-run` 验证续期链路，结束后再次检查 `docker compose ps`。
+
 用 curl -I https://geniomini.appbobo.cn/admin/ 验证证书和 Nginx（预期 403），
 再用本机 http://127.0.0.1:8200/metrics 验证后端（预期 200）。
 公网管理入口与 metrics 被 Nginx 禁止访问；需要管理后台时通过 SSH 端口转发访问本机 8200。
