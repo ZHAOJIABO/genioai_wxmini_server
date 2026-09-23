@@ -60,6 +60,26 @@ curl -fsS http://127.0.0.1:8200/metrics -o /dev/null && echo 'HTTP OK'
 服务器构建需要拉取 Go 和 Debian 基础镜像、Go 模块，也需要能拉取 MySQL、Redis。
 若拉取失败，保留完整错误信息，先处理实际网络/镜像源问题，不要反复重试编译。
 
+### Docker Hub 基础镜像无法拉取时
+
+阿里云镜像加速器不一定包含所需的 Go 标签。可在 GitHub 仓库的 Actions 页面手动运行
+`Build backend images for ECS`。它在 GitHub 的 x86_64 构建机上打包 backend、MySQL、Redis，
+不包含任何 `private/` 文件或生产密钥。任务完成后下载 `backend-images-<commit>` artifact，
+解压得到 `images-first-install.tar.gz` 和校验文件，再传到服务器当前目录。
+
+```bash
+cd /opt/genio-backend-code/deploy/single-host
+sha256sum -c images-first-install.tar.gz.sha256
+gunzip -c images-first-install.tar.gz | docker load
+docker image inspect genio-backend:first-install mysql:8.0 redis:7.2-alpine >/dev/null
+docker compose up -d mysql backend-redis backend
+docker compose ps
+```
+
+这是替代上面的 `docker compose ... build backend` 的路径；已导入镜像后不要再执行 build。
+artifact 只保留 7 天，请下载后及时保存或导入。导入会临时同时占用压缩包和镜像空间，
+先用 `df -h /` 检查余量。不要执行 `docker compose down -v`。
+
 第一次建库需等待健康检查。HTTP OK 只证明 HTTP 路由可访问。
 失败时用 docker compose logs --tail=80 backend 查看原因，日志可能含 DSN，分享前遮盖密码。
 自动建表不会自动创建项目、后台管理员或模板，需要后续初始化，不能只凭容器 running 判定完成。

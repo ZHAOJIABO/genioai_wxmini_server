@@ -19,6 +19,7 @@ cp "$BACKEND_DIR"/conf/*.go "$BACKEND_DIR/conf/model_config.json" "$BUILD_TMP/ba
 cp "$BACKEND_DIR/assets/nutrition_reference.json" "$BUILD_TMP/backend/assets/"
 cp -R "$BACKEND_DIR/assets/migrations" "$BUILD_TMP/backend/assets/"
 docker build --platform linux/amd64 -f "$DEPLOY_DIR/backend.Dockerfile" \
+  --build-arg "GOPROXY=${GOPROXY:-https://goproxy.cn,direct}" \
   -t "genio-backend:$RELEASE_TAG" "$BUILD_TMP/backend"
 IMAGES=("genio-backend:$RELEASE_TAG")
 if [[ "$BRAIN_DIR" != "--backend-only" ]]; then
@@ -29,10 +30,14 @@ if [[ "$BRAIN_DIR" != "--backend-only" ]]; then
   IMAGES+=("genio-ai-brain:$RELEASE_TAG")
 fi
 # Bundle dependencies for the mainland server rather than requiring Docker Hub there.
-for dependency in mysql:8.0 redis:7.2-alpine nginx:1.28-alpine; do
+for dependency in mysql:8.0 redis:7.2-alpine; do
   docker pull --platform linux/amd64 "$dependency"
   IMAGES+=("$dependency")
 done
+if [[ "$BRAIN_DIR" != "--backend-only" ]]; then
+  docker pull --platform linux/amd64 nginx:1.28-alpine
+  IMAGES+=("nginx:1.28-alpine")
+fi
 docker image save "${IMAGES[@]}" \
   | gzip > "$DEPLOY_DIR/images-$RELEASE_TAG.tar.gz"
 tar -czf "$DEPLOY_DIR/deployment-config.tar.gz" -C "$DEPLOY_DIR" \

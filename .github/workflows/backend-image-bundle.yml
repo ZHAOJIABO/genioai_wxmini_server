@@ -1,0 +1,29 @@
+name: Build backend images for ECS
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bundle:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Linux amd64 images and bundle dependencies
+        env:
+          GOPROXY: https://proxy.golang.org,direct
+        run: bash deploy/single-host/build.sh --backend-only first-install
+      - name: Record checksum
+        working-directory: deploy/single-host
+        run: sha256sum images-first-install.tar.gz > images-first-install.tar.gz.sha256
+      - uses: actions/upload-artifact@v4
+        with:
+          name: backend-images-${{ github.sha }}
+          path: |
+            deploy/single-host/images-first-install.tar.gz
+            deploy/single-host/images-first-install.tar.gz.sha256
+          compression-level: 0
+          retention-days: 7

@@ -1,5 +1,6 @@
 FROM golang:1.24.4-bookworm AS build
-ENV GOPROXY=https://goproxy.cn,direct
+ARG GOPROXY=https://goproxy.cn,direct
+ENV GOPROXY=${GOPROXY}
 ENV GOMAXPROCS=2
 WORKDIR /src
 COPY go.mod go.sum ./
