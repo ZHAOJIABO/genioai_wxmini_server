@@ -69,7 +69,9 @@ Debian 软件包安装使用阿里云镜像站。若某个 ECR 镜像拉取失�
 
 ## 3. HTTPS
 
-准备覆盖 appbobo.cn 的证书（可使用 DNS 验证签发），放到服务器：
+先在 DNS 中添加 `api.appbobo.cn` 的 A 记录指向 `60.205.114.31`，保留根域名原记录。
+确认证书签发前该子域名已解析到新服务器，并在安全组开放 TCP 80、443。
+准备覆盖 `api.appbobo.cn` 的证书，放到服务器：
 
 ```text
 /opt/genio-backend-code/deploy/single-host/private/tls/fullchain.pem
@@ -84,12 +86,11 @@ docker compose --profile https run --rm --no-deps nginx nginx -t
 docker compose --profile https up -d nginx
 ```
 
-先用 curl --resolve appbobo.cn:443:SERVER_IP https://appbobo.cn/metrics 验证证书和转发，
-再把 appbobo.cn 的 A 记录指向服务器公网 IP，并检查旧 AAAA 记录。
+用 curl https://api.appbobo.cn/metrics 验证证书和转发，并检查是否有指向旧服务器的 AAAA 记录。
 无证书时先停在第 4 步，暂不配置小程序公网入口。
 
 ```bash
-curl -i -X POST https://appbobo.cn/v1/pictureforge/submit_picture_forge_task
+curl -i -X POST https://api.appbobo.cn/v1/pictureforge/submit_picture_forge_task
 ```
 
 预期 HTTP 503，不应创建任务。再验证微信登录、模板管理和 OSS 上传。
