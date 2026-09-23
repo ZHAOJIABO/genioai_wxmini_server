@@ -1,0 +1,22 @@
+# Placeholder configuration. Enable only after credentials and OSS support are ready.
+providers:
+  gptimage:
+    enabled: false
+    name: gptimage
+    endpoint: https://gpt-image.example.invalid
+    timeout: 300s
+    default_output_prefix: wxmini/generated/
+    oss_path: wxmini/input
+    extra:
+      bearer_token: ${GPTIMAGE_BEARER_TOKEN}
+      image_format: png
+    models:
+      - name: FILL_GPT_IMAGE_MODEL
+        capabilities: [text_to_image, image_to_image]
+routing:
+  text_to_image:
+    default_provider: gptimage
+    default_model: FILL_GPT_IMAGE_MODEL
+  image_to_image:
+    default_provider: gptimage
+    default_model: FILL_GPT_IMAGE_MODEL

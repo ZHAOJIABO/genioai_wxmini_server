@@ -1,0 +1,57 @@
+servername: wxmini-production
+LogConfig:
+  LogPath: log/backend.log
+  LogLevel: info
+  MaxAgeDays: 7
+  MaxSize: 10
+  MaxBackups: 3
+  Compress: true
+VisionAiServerConfig:
+  Port: 8181
+  HTTPPort: 8200
+  DialTimeout: 10s
+  Mode: PROD
+  Region: cn
+Mysql:
+  Addr: mysql
+  Port: 3306
+  User: backend
+  Password: BACKEND_PASSWORD_HERE
+  Db: genio_backend
+  MigrationsDir: /application/assets/migrations
+Redis:
+  Addr: backend-redis:6379
+  Db: 0
+  AuthInfo: ""
+MongoDB:
+  Addr: ""
+metrics:
+  addr: ":9188"
+  namespace: wxmini
+geoip:
+  enabled: false
+AIBrainServer:
+  Addr: ai-brain:8080
+WeChatMiniPrograms:
+  - ProjectID: FILL_PROJECT_ID
+    AppID: FILL_WECHAT_APP_ID
+    AppSecret: FILL_WECHAT_APP_SECRET
+OssConfig:
+  Endpoint: https://oss-cn-beijing.aliyuncs.com
+  AccessKeyId: FILL_OSS_ACCESS_KEY_ID
+  AccessKeySecret: FILL_OSS_ACCESS_KEY_SECRET
+  Bucket: genioai
+  UgcAddr: https://genioai.oss-cn-beijing.aliyuncs.com
+Admin:
+  jwt_secret: ADMIN_SECRET_HERE
+EventSink:
+  enabled: false
+PushGateway:
+  enabled: false
+Reconciler:
+  enabled: true
+  interval: 1m
+  redis_scan_count: 100
+  max_tasks_per_round: 100
+  worker_pool_size: 1
+  key_ttl_seconds: 3600
