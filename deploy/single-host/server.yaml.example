@@ -27,6 +27,7 @@ MongoDB:
   Addr: ""
 metrics:
   addr: ":9188"
+  path: "/metrics"
   namespace: wxmini
 geoip:
   enabled: false

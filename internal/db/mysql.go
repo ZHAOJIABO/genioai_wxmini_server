@@ -29,7 +29,6 @@ func InitMysql() error {
 		conf.GlobalConfig.Mysql.Port,
 		conf.GlobalConfig.Mysql.Db,
 		"Asia%2FShanghai")
-	log.Println(connectionInfo)
 	var err error
 	mysqldb, err = gorm.Open(mysql.Open(connectionInfo), &gorm.Config{
 		PrepareStmt: true,

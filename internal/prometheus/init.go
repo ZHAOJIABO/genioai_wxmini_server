@@ -124,8 +124,11 @@ func RegisterPrometheus(addr, namespace string) (*http.Server, error) {
 	httpHandle := promhttp.HandlerFor(r, promhttp.HandlerOpts{})
 
 	route := http.NewServeMux()
-
-	route.Handle(conf.GlobalConfig.Metrics.Path, httpHandle)
+	path := conf.GlobalConfig.Metrics.Path
+	if path == "" {
+		path = "/metrics"
+	}
+	route.Handle(path, httpHandle)
 	srv := &http.Server{
 		Addr:    addr,
 		Handler: route,
