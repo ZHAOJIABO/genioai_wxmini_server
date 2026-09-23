@@ -62,7 +62,8 @@ curl -fsS http://127.0.0.1:8200/metrics -o /dev/null && echo 'HTTP OK'
 
 ### Docker Hub 基础镜像无法拉取时
 
-阿里云镜像加速器不一定包含所需的 Go 标签。可在 GitHub 仓库的 Actions 页面手动运行
+基础镜像使用 Go 1.24 系列的 `golang:1.24-bookworm`，与项目 `go.mod` 的 Go 1.24 要求一致。
+阿里云镜像加速器仍不一定包含这个标签；若服务器拉取失败，可在 GitHub 仓库的 Actions 页面手动运行
 `Build backend images for ECS`。它在 GitHub 的 x86_64 构建机上打包 backend、MySQL、Redis，
 不包含任何 `private/` 文件或生产密钥。任务完成后下载 `backend-images-<commit>` artifact，
 解压得到 `images-first-install.tar.gz` 和校验文件，再传到服务器当前目录。
