@@ -7,6 +7,8 @@
 !internal/**
 !pkg/
 !pkg/**
+!admin_ui/
+!admin_ui/**
 !conf/
 !conf/*.go
 !conf/model_config.json

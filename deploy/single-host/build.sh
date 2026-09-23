@@ -14,7 +14,7 @@ trap 'rm -rf "$BUILD_TMP"' EXIT
 # Use curated build contexts; production YAML, env files and credentials stay outside images.
 mkdir -p "$BUILD_TMP/backend/conf" "$BUILD_TMP/backend/assets" "$BUILD_TMP/brain"
 cp "$BACKEND_DIR/go.mod" "$BACKEND_DIR/go.sum" "$BUILD_TMP/backend/"
-cp -R "$BACKEND_DIR/cmd" "$BACKEND_DIR/internal" "$BACKEND_DIR/pkg" "$BUILD_TMP/backend/"
+cp -R "$BACKEND_DIR/cmd" "$BACKEND_DIR/internal" "$BACKEND_DIR/pkg" "$BACKEND_DIR/admin_ui" "$BUILD_TMP/backend/"
 cp "$BACKEND_DIR"/conf/*.go "$BACKEND_DIR/conf/model_config.json" "$BUILD_TMP/backend/conf/"
 cp "$BACKEND_DIR/assets/nutrition_reference.json" "$BUILD_TMP/backend/assets/"
 cp -R "$BACKEND_DIR/assets/migrations" "$BUILD_TMP/backend/assets/"

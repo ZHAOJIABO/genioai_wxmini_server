@@ -8,6 +8,7 @@ COPY pkg ./pkg
 RUN go mod download
 COPY cmd ./cmd
 COPY internal ./internal
+COPY admin_ui ./admin_ui
 COPY conf/*.go conf/model_config.json ./conf/
 COPY assets/nutrition_reference.json ./assets/
 COPY assets/migrations ./assets/migrations
