@@ -318,14 +318,8 @@ func (e *ComfyUIExecutor) SyncProviderStatus(ctx context.Context, task *model.Pi
 			zap.String("promptID", promptID),
 			zap.Error(err))
 
-		// 模拟进度更新：计算随机增量（8% 到 12%），确保不超过85%
-		if task.Progress < 85 {
-			increment := int32(8 + (task.Progress % 5)) // 简单的伪随机增量：8-12%
-			newProgress := task.Progress + increment
-			if newProgress > 85 {
-				newProgress = 85
-			}
-
+		newProgress := nextSimulatedProgress(task.Progress, simulatedPaceImage)
+		if newProgress > task.Progress {
 			// 调用通用进度更新函数，状态参数传0表示不改变状态
 			if err := updateTaskProgressAndSendEvent(ctx, e.taskDao, e.rdb, task, newProgress, 0); err != nil {
 				zlog.LogWithContext(ctx).Error("更新ComfyUI模拟进度失败", zap.Error(err))
@@ -378,10 +372,12 @@ func (e *ComfyUIExecutor) ProcessSuccessfulResult(ctx context.Context, task *mod
 		return errors.Wrap(err, "获取ComfyUI历史记录失败")
 	}
 
-	// 从ComfyUI下载完结果文件后：更新进度至90%
-	if err := updateTaskProgressAndSendEvent(ctx, e.taskDao, e.rdb, task, 90, 0); err != nil {
+	// 开始下载结果文件：更新进度并启动尾段平滑推进
+	if err := updateTaskProgressAndSendEvent(ctx, e.taskDao, e.rdb, task, constants.ProgressDownloading, 0); err != nil {
 		zlog.LogWithContext(ctx).Error("更新下载完成进度失败", zap.Error(err))
 	}
+	ramp := startTailRamp(e.taskDao, task)
+	defer ramp.Stop()
 
 	// 处理输出结果
 	var resultURL, webpURL string
@@ -426,7 +422,8 @@ func (e *ComfyUIExecutor) ProcessSuccessfulResult(ctx context.Context, task *mod
 				resultURL = ossURL
 
 				// 将主文件上传到OSS成功后：更新进度至95%
-				if err := updateTaskProgressAndSendEvent(context.Background(), e.taskDao, e.rdb, task, 95, 0); err != nil {
+				ramp.Stop()
+				if err := updateTaskProgressAndSendEvent(context.Background(), e.taskDao, e.rdb, task, constants.ProgressFinalizing, 0); err != nil {
 					zlog.LogWithContext(ctx).Error("更新上传完成进度失败", zap.Error(err))
 				}
 

@@ -160,30 +160,13 @@ func (e *CloudComfyExecutor) SyncProviderStatus(ctx context.Context, task *model
 		aigcv1.AsyncTaskStatus_ASYNC_TASK_STATUS_AWAITING_PROVIDER,
 		aigcv1.AsyncTaskStatus_ASYNC_TASK_STATUS_PENDING_RETRY:
 
-		// 根据AIGC返回的进度更新任务进度，如果没有则模拟进度增量
-		var newProgress int32
-		if resp.GetProgress() > 0 && resp.GetProgress() <= 100 {
-			// 使用AIGC提供的真实进度，但限制在ProgressProviderMaxSimulated以内（为后续下载/上传处理留空间）
-			newProgress = resp.GetProgress()
-			if newProgress > constants.ProgressProviderMaxSimulated {
-				newProgress = constants.ProgressProviderMaxSimulated
-			}
-		} else {
-			// 模拟进度更新
-			if task.Progress < constants.ProgressProviderMaxSimulated {
-				increment := int32(3 + (task.Progress % 3))
-				newProgress = task.Progress + increment
-				if newProgress > constants.ProgressProviderMaxSimulated {
-					newProgress = constants.ProgressProviderMaxSimulated
+		// AIGC Core 的进度已足够平滑，直接采用；它不上报（0）时保持当前值不动。
+		if aigc := resp.GetProgress(); aigc > 0 {
+			newProgress := mapAigcProgress(aigc)
+			if newProgress > task.Progress {
+				if err := updateTaskProgressAndSendEvent(ctx, e.taskDao, e.rdb, task, newProgress, 0); err != nil {
+					zlog.LogWithContext(ctx).Error("更新Cloud Comfy进度失败", zap.Error(err))
 				}
-			} else {
-				newProgress = task.Progress
-			}
-		}
-
-		if newProgress > task.Progress {
-			if err := updateTaskProgressAndSendEvent(ctx, e.taskDao, e.rdb, task, newProgress, 0); err != nil {
-				zlog.LogWithContext(ctx).Error("更新Cloud Comfy进度失败", zap.Error(err))
 			}
 		}
 
@@ -231,6 +214,8 @@ func (e *CloudComfyExecutor) ProcessSuccessfulResult(ctx context.Context, task *
 	if err := updateTaskProgressAndSendEvent(ctx, e.taskDao, e.rdb, task, constants.ProgressDownloading, 0); err != nil {
 		zlog.LogWithContext(ctx).Error("更新下载开始进度失败", zap.Error(err))
 	}
+	ramp := startTailRamp(e.taskDao, task)
+	defer ramp.Stop()
 
 	var resultData model.PictureTaskResult
 	var err2 error
@@ -248,7 +233,8 @@ func (e *CloudComfyExecutor) ProcessSuccessfulResult(ctx context.Context, task *
 		return errors.Wrap(err2, "处理任务结果失败")
 	}
 
-	if err := updateTaskProgressAndSendEvent(ctx, e.taskDao, e.rdb, task, constants.ProgressUploading, 0); err != nil {
+	ramp.Stop()
+	if err := updateTaskProgressAndSendEvent(ctx, e.taskDao, e.rdb, task, constants.ProgressFinalizing, 0); err != nil {
 		zlog.LogWithContext(ctx).Error("更新上传完成进度失败", zap.Error(err))
 	}
 

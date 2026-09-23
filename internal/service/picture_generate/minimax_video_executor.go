@@ -7,8 +7,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"image"
-	"math"
-	"math/rand/v2"
 	"strconv"
 	"time"
 
@@ -335,10 +333,8 @@ func (e *MinimaxVideoExecutor) SyncProviderStatus(ctx context.Context, task *mod
 	}
 
 	// 更新进度
-	if !status.Done && task.Progress < constants.ProgressProviderMaxSimulated {
-		currentProgress := task.Progress
-		delta := rand.IntN(5) + 3
-		task.Progress = int32(math.Min(float64(currentProgress)+float64(delta), constants.ProgressProviderMaxSimulated))
+	if !status.Done {
+		task.Progress = nextSimulatedProgress(task.Progress, simulatedPaceVideo)
 	}
 
 	if status.Done {
@@ -386,6 +382,13 @@ func (e *MinimaxVideoExecutor) SyncProviderStatus(ctx context.Context, task *mod
 }
 
 func (e *MinimaxVideoExecutor) processSuccessfulMinimaxResult(ctx context.Context, task *model.PictureTask, videoURL string) error {
+	// 进入下载/上传阶段：先推到下载起点，再由后台平滑推进到收尾区间
+	if err := updateTaskProgressAndSendEvent(ctx, e.taskDao, e.rdb, task, constants.ProgressDownloading, 0); err != nil {
+		zlog.LogWithContext(ctx).Error("更新下载开始进度失败", zap.Error(err))
+	}
+	ramp := startTailRamp(e.taskDao, task)
+	defer ramp.Stop()
+
 	// 下载视频
 	videoData, err := e.minimaxClient.DownloadVideo(ctx, videoURL)
 	if err != nil {
@@ -418,6 +421,7 @@ func (e *MinimaxVideoExecutor) processSuccessfulMinimaxResult(ctx context.Contex
 	}
 
 	// 完成内部任务
+	ramp.Stop()
 	return e.completeInternalTask(ctx, task, ossURL, frameOssURL, frameBytes)
 }
 

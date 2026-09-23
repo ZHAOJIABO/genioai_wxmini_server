@@ -77,6 +77,23 @@ func (d *PictureTaskDao) UpdateTask(ctx context.Context, task *model.PictureTask
 	)
 }
 
+// UpdateTaskProgressIfHigher 只更新进度列，且仅在新值更大时写入，返回是否实际写入。
+// 供后台平滑推进进度使用：列级更新避免 UpdateTask 的整行 Save 覆盖主流程正在写的字段，
+// 条件更新保证进度不会被落后的后台写回退。
+func (d *PictureTaskDao) UpdateTaskProgressIfHigher(ctx context.Context, taskID string, progress int32) (bool, error) {
+	result := d.db.WithContext(ctx).
+		Model(&model.PictureTask{}).
+		Where("task_id = ? AND progress < ?", taskID, progress).
+		Updates(map[string]interface{}{
+			"progress":   progress,
+			"updated_at": time.Now(),
+		})
+	if result.Error != nil {
+		return false, errors.Wrap(result.Error, "update task progress")
+	}
+	return result.RowsAffected > 0, nil
+}
+
 // UpdateTaskPublishStatus 更新发布状态
 func (d *PictureTaskDao) UpdateTaskPublishStatus(ctx context.Context, taskID string, isPublished bool) error {
 	return errors.Wrap(

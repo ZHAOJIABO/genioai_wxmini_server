@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"image"
 	"math"
-	"math/rand/v2"
 	"sort"
 	"strings"
 	"time"
@@ -362,10 +361,8 @@ func (e *KlingImage2VideoExecutor) SyncProviderStatus(ctx context.Context, task 
 		task.ProviderSyncErrorCount = 0
 	}
 
-	if !status.Done && task.Progress < constants.ProgressProviderMaxSimulated {
-		currentProgress := task.Progress
-		delta := rand.IntN(5) + 3
-		task.Progress = int32(math.Min(float64(currentProgress)+float64(delta), constants.ProgressProviderMaxSimulated))
+	if !status.Done {
+		task.Progress = nextSimulatedProgress(task.Progress, simulatedPaceVideo)
 	}
 
 	if status.Done {
@@ -416,6 +413,8 @@ func (e *KlingImage2VideoExecutor) processSuccessfulKlingResult(ctx context.Cont
 	if err := e.updateTaskFieldsAndSendEvent(ctx, task, "", 0); err != nil {
 		return errors.Wrap(err, "更新下载前进度失败")
 	}
+	ramp := startTailRamp(e.taskDao, task)
+	defer ramp.Stop()
 	projectID := task.ProjectID
 	data, err := e.klingClient.DownloadVideo(ctx, videoURL)
 	if err != nil {
@@ -441,7 +440,8 @@ func (e *KlingImage2VideoExecutor) processSuccessfulKlingResult(ctx context.Cont
 			frameOssURL = ""
 		}
 	}
-	task.Progress = constants.ProgressUploading
+	ramp.Stop()
+	task.Progress = constants.ProgressFinalizing
 	if err := e.updateTaskFieldsAndSendEvent(ctx, task, "", 0); err != nil {
 		return errors.Wrap(err, "update task fields and send event failed")
 	}

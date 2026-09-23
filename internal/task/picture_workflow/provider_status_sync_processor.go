@@ -2,6 +2,7 @@ package picture_workflow_task
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
@@ -17,14 +18,18 @@ import (
 )
 
 const (
-	DefaultProviderSyncPollInterval = 5 * time.Second
-	DefaultProviderSyncBatchSize    = 10
-	DefaultProviderTaskTimeout      = 15 * time.Minute
-	providerStatusSyncLockKey       = "visionai:provider_status_sync_lock"
-	providerStatusSyncLockTTL       = 30 * time.Second
-	taskStatusSyncLockKeyPrefix     = "visionai:task_status_sync_lock:"
-	taskStatusSyncLockTTL           = 15 * time.Second
-	userProcessingLockKeyPrefix     = "visionai:user_processing_lock:"
+	DefaultProviderSyncPollInterval  = 2 * time.Second
+	DefaultProviderSyncBatchSize     = 10
+	DefaultProviderTaskTimeout       = 15 * time.Minute
+	providerStatusSyncLockKey        = "visionai:provider_status_sync_lock"
+	providerStatusSyncLockTTL        = 30 * time.Second
+	taskStatusSyncLockResourcePrefix = "task_status_sync:"
+	// 终态处理（下载/上传、退款、完成推送）非幂等，且整个过程中 DB 状态仍是
+	// AWAITING_PROVIDER_COMPLETION、会被下一轮重新捞出，只能靠这个 TTL 自然过期挡住重入，
+	// 因此要留足一次下载+上传的余量。
+	// 进度轮询那条廉价分支（仅查状态+写进度）会在返回前显式释放锁，不受这个 TTL 节流。
+	taskStatusSyncLockTTL       = 15 * time.Second
+	userProcessingLockKeyPrefix = "visionai:user_processing_lock:"
 )
 
 type ProviderStatusSyncConfig struct {
@@ -197,21 +202,33 @@ func (p *ProviderStatusSyncProcessor) handleSingleTask(ctx context.Context, task
 	taskLogger.Debug("Attempting to sync provider status for task")
 
 	// 为具体任务获取同步锁，避免同一任务被多次同步
-	taskStatusSyncLockKey := fmt.Sprintf("%s%s", taskStatusSyncLockKeyPrefix, task.TaskID)
-	taskLogger.Debug("Attempting to acquire task status sync lock", zap.String("lock_key", taskStatusSyncLockKey))
+	taskSyncResource := taskStatusSyncLockResourcePrefix + task.TaskID
+	taskLogger.Debug("Attempting to acquire task status sync lock", zap.String("lock_resource", taskSyncResource))
 
-	acquired, err := p.rdb.SetNX(taskStatusSyncLockKey, "1", taskStatusSyncLockTTL).Result()
+	lockValue, err := p.lockMgr.AcquireLock(ctx, taskSyncResource, taskStatusSyncLockTTL)
 	if err != nil {
-		taskLogger.Error("Failed to attempt acquiring task status sync lock", zap.Error(err), zap.String("lock_key", taskStatusSyncLockKey))
+		if errors.Is(err, common.ErrAcquireLockFailed) {
+			taskLogger.Debug("Another instance is syncing this task, skipping.", zap.String("lock_resource", taskSyncResource))
+		} else {
+			taskLogger.Error("Failed to attempt acquiring task status sync lock", zap.Error(err), zap.String("lock_resource", taskSyncResource))
+		}
 		return
 	}
-	if !acquired {
-		taskLogger.Debug("Another instance is syncing this task, skipping.", zap.String("lock_key", taskStatusSyncLockKey))
-		return
-	}
-	taskLogger.Debug("Successfully acquired task status sync lock", zap.String("lock_key", taskStatusSyncLockKey))
+	taskLogger.Debug("Successfully acquired task status sync lock", zap.String("lock_resource", taskSyncResource))
 
-	// 注意：不在defer中释放锁，让其自动过期，避免影响其他业务逻辑
+	// 默认保留锁到 TTL 过期：终态处理非幂等，必须挡住下一轮重入。
+	// 只有"仍在进行中"的廉价分支才把 releaseNow 置为 true，提前释放以免节流进度更新。
+	releaseNow := false
+	defer func() {
+		if !releaseNow {
+			return
+		}
+		// 使用独立上下文，确保释放锁不受父 ctx 取消影响
+		if rerr := p.lockMgr.ReleaseLock(context.Background(), taskSyncResource, lockValue); rerr != nil && !errors.Is(rerr, common.ErrLockNotHeld) {
+			taskLogger.Warn("release task status sync lock error", zap.Error(rerr))
+		}
+	}()
+
 	if time.Since(task.UpdatedAt) > p.cfg.TaskTimeout && task.Status == int32(pb.WorkflowTaskStatus_WORKFLOW_TASK_STATUS_AWAITING_PROVIDER_COMPLETION) {
 		taskLogger.Error("Task has been awaiting provider completion for too long, marking as FAILED",
 			zap.Duration("elapsed", time.Since(task.UpdatedAt)),
@@ -248,6 +265,8 @@ func (p *ProviderStatusSyncProcessor) handleSingleTask(ctx context.Context, task
 		// 这是因为执行器最了解其内部状态，调用方应信任其判断。
 		if newStatus != pb.WorkflowTaskStatus_WORKFLOW_TASK_STATUS_FAILED {
 			taskLogger.Warn("Task status is not FAILED despite sync error. It will be retried on the next cycle.", zap.Error(syncErr))
+			// 仅回写错误信息与失败计数，幂等且廉价，可立即释放锁让下一轮继续推进
+			releaseNow = true
 			// 执行器已经在内存中更新了 task 的错误信息和失败计数，在这里我们负责将这些更新持久化到数据库。
 			// UpdateTask 为数据库写入操作,设置 30 秒超时
 			updateCtx, updateCancel := context.WithTimeout(context.WithoutCancel(ctx), 30*time.Second)
@@ -299,6 +318,9 @@ func (p *ProviderStatusSyncProcessor) handleSingleTask(ctx context.Context, task
 		}
 		// 对于FAILED状态，锁已在FailTask中释放，此处无需操作。
 	} else {
+		// 任务仍在进行中：本轮只查了状态、写了进度，幂等且廉价，立即释放锁，
+		// 否则单任务的进度更新会被 taskStatusSyncLockTTL 节流成一格。
+		releaseNow = true
 		taskLogger.Debug("Task still ongoing after sync or status unchanged.", zap.Int32("status", int32(newStatus)))
 	}
 }

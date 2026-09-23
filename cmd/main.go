@@ -94,8 +94,8 @@ func NewApp() (*App, error) {
 		BatchSize:        5,
 	}
 	syncConfig := &picture_workflow_task.ProviderStatusSyncConfig{
-		PollInterval: 5 * time.Second,
-		BatchSize:    5,
+		PollInterval: 2 * time.Second,
+		BatchSize:    20,
 		TaskTimeout:  15 * time.Minute,
 	}
 

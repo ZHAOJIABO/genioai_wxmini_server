@@ -241,31 +241,13 @@ func (e *MinimaxTemplateVideoExecutor) SyncProviderStatus(ctx context.Context, t
 		aigcv1.AsyncTaskStatus_ASYNC_TASK_STATUS_AWAITING_PROVIDER,
 		aigcv1.AsyncTaskStatus_ASYNC_TASK_STATUS_PENDING_RETRY:
 
-		// 根据AIGC返回的进度更新任务进度，如果没有则模拟进度增量
-		var newProgress int32
-		if resp.GetProgress() > 0 && resp.GetProgress() <= 100 {
-			// 使用AIGC提供的进度，但限制在85%以内（为后续处理留空间）
-			newProgress = resp.GetProgress()
-			if newProgress > 85 {
-				newProgress = 85
-			}
-		} else {
-			// 模拟进度更新：计算增量（8% 到 12%），确保不超过85%
-			if task.Progress < 85 {
-				increment := int32(8 + (task.Progress % 5)) // 简单的伪随机增量：8-12%
-				newProgress = task.Progress + increment
-				if newProgress > 85 {
-					newProgress = 85
+		// AIGC Core 的进度已足够平滑，直接采用；它不上报（0）时保持当前值不动。
+		if aigc := resp.GetProgress(); aigc > 0 {
+			newProgress := mapAigcProgress(aigc)
+			if newProgress > task.Progress {
+				if err := updateTaskProgressAndSendEvent(ctx, e.taskDao, e.rdb, task, newProgress, 0); err != nil {
+					zlog.LogWithContext(ctx).Error("更新Minimax模板视频进度失败", zap.Error(err))
 				}
-			} else {
-				newProgress = task.Progress
-			}
-		}
-
-		// 调用通用进度更新函数，状态参数传0表示不改变状态
-		if newProgress > task.Progress {
-			if err := updateTaskProgressAndSendEvent(ctx, e.taskDao, e.rdb, task, newProgress, 0); err != nil {
-				zlog.LogWithContext(ctx).Error("更新Minimax模板视频进度失败", zap.Error(err))
 			}
 		}
 
@@ -307,10 +289,12 @@ func (e *MinimaxTemplateVideoExecutor) ProcessSuccessfulResult(ctx context.Conte
 		return errors.New("任务结果为空")
 	}
 
-	// 更新进度至90%
-	if err := updateTaskProgressAndSendEvent(ctx, e.taskDao, e.rdb, task, 90, 0); err != nil {
+	// 开始下载结果：更新进度并启动尾段平滑推进
+	if err := updateTaskProgressAndSendEvent(ctx, e.taskDao, e.rdb, task, constants.ProgressDownloading, 0); err != nil {
 		zlog.LogWithContext(ctx).Error("更新下载开始进度失败", zap.Error(err))
 	}
+	ramp := startTailRamp(e.taskDao, task)
+	defer ramp.Stop()
 
 	// 处理视频结果
 	videoResult := resp.GetResult().GetVideoResult()
@@ -322,6 +306,7 @@ func (e *MinimaxTemplateVideoExecutor) ProcessSuccessfulResult(ctx context.Conte
 	if err != nil {
 		return errors.Wrap(err, "处理视频结果失败")
 	}
+	ramp.Stop()
 
 	// 更新任务结果
 	resultJson, err := json.Marshal(taskResult)

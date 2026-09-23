@@ -245,27 +245,13 @@ func (e *GPTImage2I2IExecutor) SyncProviderStatus(ctx context.Context, task *mod
 		aigcv1.AsyncTaskStatus_ASYNC_TASK_STATUS_AWAITING_PROVIDER,
 		aigcv1.AsyncTaskStatus_ASYNC_TASK_STATUS_PENDING_RETRY:
 
-		var newProgress int32
-		if resp.GetProgress() > 0 && resp.GetProgress() <= 100 {
-			newProgress = resp.GetProgress()
-			if newProgress > 85 {
-				newProgress = 85
-			}
-		} else {
-			if task.Progress < 85 {
-				increment := int32(3 + (task.Progress % 3))
-				newProgress = task.Progress + increment
-				if newProgress > 85 {
-					newProgress = 85
+		// AIGC Core 的进度已足够平滑，直接采用；它不上报（0）时保持当前值不动。
+		if aigc := resp.GetProgress(); aigc > 0 {
+			newProgress := mapAigcProgress(aigc)
+			if newProgress > task.Progress {
+				if err := updateTaskProgressAndSendEvent(ctx, e.taskDao, e.rdb, task, newProgress, 0); err != nil {
+					zlog.LogWithContext(ctx).Error("更新GPT-Image-2图生图进度失败", zap.Error(err))
 				}
-			} else {
-				newProgress = task.Progress
-			}
-		}
-
-		if newProgress > task.Progress {
-			if err := updateTaskProgressAndSendEvent(ctx, e.taskDao, e.rdb, task, newProgress, 0); err != nil {
-				zlog.LogWithContext(ctx).Error("更新GPT-Image-2图生图进度失败", zap.Error(err))
 			}
 		}
 

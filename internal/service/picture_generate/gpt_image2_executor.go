@@ -189,9 +189,11 @@ func (e *GPTImage2Executor) ProcessSuccessfulResult(ctx context.Context, task *m
 		return errors.New("任务结果为空")
 	}
 
-	if err := updateTaskProgressAndSendEvent(ctx, e.taskDao, e.rdb, task, 90, 0); err != nil {
+	if err := updateTaskProgressAndSendEvent(ctx, e.taskDao, e.rdb, task, constants.ProgressDownloading, 0); err != nil {
 		zlog.LogWithContext(ctx).Error("更新下载开始进度失败", zap.Error(err))
 	}
+	ramp := startTailRamp(e.taskDao, task)
+	defer ramp.Stop()
 
 	var resultData model.PictureTaskResult
 
@@ -206,7 +208,8 @@ func (e *GPTImage2Executor) ProcessSuccessfulResult(ctx context.Context, task *m
 		return errors.Wrap(err, "处理任务结果失败")
 	}
 
-	if err := updateTaskProgressAndSendEvent(ctx, e.taskDao, e.rdb, task, 95, 0); err != nil {
+	ramp.Stop()
+	if err := updateTaskProgressAndSendEvent(ctx, e.taskDao, e.rdb, task, constants.ProgressFinalizing, 0); err != nil {
 		zlog.LogWithContext(ctx).Error("更新上传完成进度失败", zap.Error(err))
 	}
 
@@ -352,27 +355,13 @@ func (e *GPTImage2Executor) SyncProviderStatus(ctx context.Context, task *model.
 		aigcv1.AsyncTaskStatus_ASYNC_TASK_STATUS_AWAITING_PROVIDER,
 		aigcv1.AsyncTaskStatus_ASYNC_TASK_STATUS_PENDING_RETRY:
 
-		var newProgress int32
-		if resp.GetProgress() > 0 && resp.GetProgress() <= 100 {
-			newProgress = resp.GetProgress()
-			if newProgress > 85 {
-				newProgress = 85
-			}
-		} else {
-			if task.Progress < 85 {
-				increment := int32(3 + (task.Progress % 3))
-				newProgress = task.Progress + increment
-				if newProgress > 85 {
-					newProgress = 85
+		// AIGC Core 的进度已足够平滑，直接采用；它不上报（0）时保持当前值不动。
+		if aigc := resp.GetProgress(); aigc > 0 {
+			newProgress := mapAigcProgress(aigc)
+			if newProgress > task.Progress {
+				if err := updateTaskProgressAndSendEvent(ctx, e.taskDao, e.rdb, task, newProgress, 0); err != nil {
+					zlog.LogWithContext(ctx).Error("更新GPT-Image-2进度失败", zap.Error(err))
 				}
-			} else {
-				newProgress = task.Progress
-			}
-		}
-
-		if newProgress > task.Progress {
-			if err := updateTaskProgressAndSendEvent(ctx, e.taskDao, e.rdb, task, newProgress, 0); err != nil {
-				zlog.LogWithContext(ctx).Error("更新GPT-Image-2进度失败", zap.Error(err))
 			}
 		}
 

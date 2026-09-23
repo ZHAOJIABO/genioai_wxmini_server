@@ -184,14 +184,8 @@ func (e *Sora2Executor) SyncProviderStatus(ctx context.Context, task *model.Pict
 		aigcv1.AsyncTaskStatus_ASYNC_TASK_STATUS_PROCESSING,
 		aigcv1.AsyncTaskStatus_ASYNC_TASK_STATUS_AWAITING_PROVIDER,
 		aigcv1.AsyncTaskStatus_ASYNC_TASK_STATUS_PENDING_RETRY:
-		// 模拟进度增长
-		if task.Progress < constants.ProgressProviderMaxSimulated {
-			increment := int32(3 + (task.Progress % 3)) // 3-5%递增
-			newProgress := task.Progress + increment
-			if newProgress > constants.ProgressProviderMaxSimulated {
-				newProgress = constants.ProgressProviderMaxSimulated
-			}
-			task.Progress = newProgress
+		newProgress := nextSimulatedProgress(task.Progress, simulatedPaceVideo)
+		if newProgress > task.Progress {
 			if err := updateTaskProgressAndSendEvent(ctx, e.taskDao, e.rdb, task, newProgress, pb.WorkflowTaskStatus_WORKFLOW_TASK_STATUS_AWAITING_PROVIDER_COMPLETION); err != nil {
 				zlog.LogWithContext(ctx).Error("更新任务进度失败", zap.Error(err))
 			}
@@ -222,6 +216,8 @@ func (e *Sora2Executor) ProcessSuccessfulResult(ctx context.Context, task *model
 	if err := updateTaskProgressAndSendEvent(ctx, e.taskDao, e.rdb, task, constants.ProgressDownloading, pb.WorkflowTaskStatus_WORKFLOW_TASK_STATUS_PROCESSING); err != nil {
 		zlog.LogWithContext(ctx).Error("更新下载进度失败", zap.Error(err))
 	}
+	ramp := startTailRamp(e.taskDao, task)
+	defer ramp.Stop()
 
 	// 处理视频结果
 	var resultData model.PictureTaskResult
@@ -236,8 +232,9 @@ func (e *Sora2Executor) ProcessSuccessfulResult(ctx context.Context, task *model
 	}
 
 	// 更新进度到上传完成
-	task.Progress = constants.ProgressUploading
-	if err := updateTaskProgressAndSendEvent(ctx, e.taskDao, e.rdb, task, constants.ProgressUploading, pb.WorkflowTaskStatus_WORKFLOW_TASK_STATUS_PROCESSING); err != nil {
+	ramp.Stop()
+	task.Progress = constants.ProgressFinalizing
+	if err := updateTaskProgressAndSendEvent(ctx, e.taskDao, e.rdb, task, constants.ProgressFinalizing, pb.WorkflowTaskStatus_WORKFLOW_TASK_STATUS_PROCESSING); err != nil {
 		zlog.LogWithContext(ctx).Error("更新上传进度失败", zap.Error(err))
 	}
 
