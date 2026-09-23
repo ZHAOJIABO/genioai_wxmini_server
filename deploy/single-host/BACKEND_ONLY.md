@@ -50,7 +50,7 @@ Swap 只是构建缓冲，不代表应用运行内存足够；建好后检查磁
 
 ```bash
 docker compose config --quiet
-docker compose build --progress=plain backend
+docker compose --progress plain build backend
 docker compose up -d mysql backend-redis backend
 docker compose ps
 docker stats --no-stream
