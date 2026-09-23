@@ -11,7 +11,7 @@ x-common: &common
 services:
   mysql:
     <<: *common
-    image: mysql:8.0
+    image: public.ecr.aws/docker/library/mysql:8.0
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Run prepare.py first}
       BACKEND_DB_PASSWORD: ${BACKEND_DB_PASSWORD:?Run prepare.py first}
@@ -29,7 +29,7 @@ services:
 
   backend-redis:
     <<: *common
-    image: redis:7.2-alpine
+    image: public.ecr.aws/docker/library/redis:7.2-alpine
     command: ["redis-server", "--appendonly", "yes", "--maxmemory", "64mb", "--maxmemory-policy", "noeviction"]
     volumes: ["backend-redis-data:/data"]
     healthcheck:
@@ -41,7 +41,7 @@ services:
   brain-redis:
     <<: *common
     profiles: ["ai"]
-    image: redis:7.2-alpine
+    image: public.ecr.aws/docker/library/redis:7.2-alpine
     command: ["redis-server", "--appendonly", "yes", "--maxmemory", "64mb", "--maxmemory-policy", "noeviction"]
     volumes: ["brain-redis-data:/data"]
     healthcheck:
@@ -102,7 +102,7 @@ services:
 
   nginx:
     <<: *common
-    image: nginx:1.28-alpine
+    image: public.ecr.aws/docker/library/nginx:1.28-alpine
     profiles: ["https"]
     ports: ["80:80", "443:443"]
     volumes:

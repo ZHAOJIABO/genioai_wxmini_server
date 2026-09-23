@@ -29,14 +29,14 @@ if [[ "$BRAIN_DIR" != "--backend-only" ]]; then
     -t "genio-ai-brain:$RELEASE_TAG" "$BUILD_TMP/brain"
   IMAGES+=("genio-ai-brain:$RELEASE_TAG")
 fi
-# Bundle dependencies for the mainland server rather than requiring Docker Hub there.
-for dependency in mysql:8.0 redis:7.2-alpine; do
+# Bundle the same ECR dependencies referenced by Compose.
+for dependency in public.ecr.aws/docker/library/mysql:8.0 public.ecr.aws/docker/library/redis:7.2-alpine; do
   docker pull --platform linux/amd64 "$dependency"
   IMAGES+=("$dependency")
 done
 if [[ "$BRAIN_DIR" != "--backend-only" ]]; then
-  docker pull --platform linux/amd64 nginx:1.28-alpine
-  IMAGES+=("nginx:1.28-alpine")
+  docker pull --platform linux/amd64 public.ecr.aws/docker/library/nginx:1.28-alpine
+  IMAGES+=("public.ecr.aws/docker/library/nginx:1.28-alpine")
 fi
 docker image save "${IMAGES[@]}" \
   | gzip > "$DEPLOY_DIR/images-$RELEASE_TAG.tar.gz"

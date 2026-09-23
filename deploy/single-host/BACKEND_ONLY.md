@@ -57,29 +57,10 @@ docker stats --no-stream
 curl -fsS http://127.0.0.1:8200/metrics -o /dev/null && echo 'HTTP OK'
 ```
 
-服务器构建需要拉取 Go 和 Debian 基础镜像、Go 模块，也需要能拉取 MySQL、Redis。
-若拉取失败，保留完整错误信息，先处理实际网络/镜像源问题，不要反复重试编译。
-
-### Docker Hub 基础镜像无法拉取时
-
-构建镜像使用 Go 1.24 系列的 `golang:1.24`，与项目 `go.mod` 的 Go 1.24 要求一致。
-阿里云镜像加速器仍不一定包含这个标签；若服务器拉取失败，可在 GitHub 仓库的 Actions 页面手动运行
-`Build backend images for ECS`。它在 GitHub 的 x86_64 构建机上打包 backend、MySQL、Redis，
-不包含任何 `private/` 文件或生产密钥。任务完成后下载 `backend-images-<commit>` artifact，
-解压得到 `images-first-install.tar.gz` 和校验文件，再传到服务器当前目录。
-
-```bash
-cd /opt/genio-backend-code/deploy/single-host
-sha256sum -c images-first-install.tar.gz.sha256
-gunzip -c images-first-install.tar.gz | docker load
-docker image inspect genio-backend:first-install mysql:8.0 redis:7.2-alpine >/dev/null
-docker compose up -d mysql backend-redis backend
-docker compose ps
-```
-
-这是替代上面的 `docker compose ... build backend` 的路径；已导入镜像后不要再执行 build。
-artifact 只保留 7 天，请下载后及时保存或导入。导入会临时同时占用压缩包和镜像空间，
-先用 `df -h /` 检查余量。不要执行 `docker compose down -v`。
+镜像均从 Amazon ECR Public 上的 Docker 官方镜像仓库直接拉取；不依赖 Docker Hub 加速器。
+Go 1.24 构建镜像基于 Debian 13（trixie），运行镜像也使用 trixie，避免 CGO/glibc 不兼容。
+Debian 软件包安装使用阿里云镜像站。若某个 ECR 镜像拉取失败，保留完整错误信息，
+先处理该镜像的网络或标签问题，不要反复重试编译。
 
 第一次建库需等待健康检查。HTTP OK 只证明 HTTP 路由可访问。
 失败时用 docker compose logs --tail=80 backend 查看原因，日志可能含 DSN，分享前遮盖密码。
