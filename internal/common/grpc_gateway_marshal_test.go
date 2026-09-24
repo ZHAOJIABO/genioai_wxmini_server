@@ -62,3 +62,38 @@ func TestEncryptedProtoRequestAcceptsEnumName(t *testing.T) {
 		t.Fatalf("decoded project or input type incorrectly: %#v", &got)
 	}
 }
+
+func TestProtoRequestDecodingVariants(t *testing.T) {
+	for _, tc := range []struct {
+		name      string
+		body      string
+		marshaler interface {
+			Unmarshal([]byte, interface{}) error
+		}
+	}{
+		{
+			name:      "plain streaming request with camel case",
+			body:      `{"requestHeader":{"app":{"packageName":"com.mini.genioai"}},"workflowInput":[{"inputType":"MT_IMAGE"}]}`,
+			marshaler: NewStreamCryptoMarshaler(),
+		},
+		{
+			name:      "plain streaming request with numeric enum and unknown field",
+			body:      `{"request_header":{"web_client":{"package_name":"com.mini.genioai"}},"workflow_input":[{"input_type":1}],"future_field":true}`,
+			marshaler: NewStreamCryptoMarshaler(),
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			var got vai.SubmitPictureForgeTaskRequest
+			if err := tc.marshaler.Unmarshal([]byte(tc.body), &got); err != nil {
+				t.Fatal(err)
+			}
+			if len(got.GetWorkflowInput()) != 1 || got.GetWorkflowInput()[0].GetInputType() != vai.MessageType_MT_IMAGE {
+				t.Fatal("workflow input enum was not decoded")
+			}
+			header := got.GetRequestHeader()
+			if header.GetApp().GetPackageName() != "com.mini.genioai" && header.GetWebClient().GetPackageName() != "com.mini.genioai" {
+				t.Fatal("project ID was not decoded")
+			}
+		})
+	}
+}
