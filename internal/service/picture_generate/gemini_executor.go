@@ -308,18 +308,8 @@ func (e *GeminiExecutor) buildGeminiParameters(ctx context.Context, task *model.
 		"prompt": prompt,
 	}
 
-	var iamgeUrlList []string
-	for key, value := range params {
-		// 支持两种图片参数格式：
-		// 1. LoadImage 开头（旧格式，workflow模式）
-		// 2. input_image_ 开头（新格式，模型直连模式图生图）
-		if strings.HasPrefix(key, "LoadImage") || strings.HasPrefix(key, "input_image_") {
-			iamgeUrlList = append(iamgeUrlList, value)
-		}
-	}
-
-	if len(iamgeUrlList) > 0 {
-		requestParams["image_urls"] = iamgeUrlList
+	if imageURLs := collectOrderedImageURLs(params); len(imageURLs) > 0 {
+		requestParams["image_urls"] = imageURLs
 	}
 
 	// 处理可选的 aspect_ratio 参数

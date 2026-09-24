@@ -123,3 +123,17 @@ func TestGeminiExecutor_BuildGeminiParametersWithImages(t *testing.T) {
 	assert.Contains(t, urls, "data:image/png;base64,testbase64data1")
 	assert.Contains(t, urls, "data:image/jpeg;base64,testbase64data2")
 }
+
+func TestGeminiExecutor_PreservesWorkflowImageOrder(t *testing.T) {
+	executor := &GeminiExecutor{}
+	params := map[string]string{
+		"LoadImage2": "https://example.com/user.jpg",
+		"LoadImage1": "https://example.com/fixed.jpg",
+	}
+	result, err := executor.buildGeminiParameters(context.Background(), &model.PictureTask{}, params)
+	require.NoError(t, err)
+	require.Equal(t, []string{
+		"https://example.com/fixed.jpg",
+		"https://example.com/user.jpg",
+	}, result["image_urls"])
+}

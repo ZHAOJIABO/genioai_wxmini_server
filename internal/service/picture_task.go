@@ -22,6 +22,7 @@ import (
 	"gorm.io/gorm"
 
 	"va_visionai_server/conf"
+	v1 "va_visionai_server/internal/aibrain/v1"
 	"va_visionai_server/internal/common"
 	"va_visionai_server/internal/constants"
 	"va_visionai_server/internal/dao"
@@ -38,7 +39,6 @@ import (
 	"va_visionai_server/internal/utils"
 	pb "va_visionai_server/internal/va_interface"
 	"va_visionai_server/internal/zlog"
-	v1 "va_visionai_server/internal/aibrain/v1"
 
 	_ "golang.org/x/image/webp"
 	_ "image/jpeg"
@@ -288,6 +288,11 @@ func (s *PictureTaskService) PrepareTaskInputsAndWorkflow(ctx context.Context,
 		zlog.LogWithContext(ctx).Error("NotFoundWorkflow", zap.String("workflowID", workflowID), zap.Error(err))
 		return nil, "", nil, errors.Wrap(err, "get workflow info")
 	}
+	// Fixed images belong to the workflow, never to the client request. Apply them
+	// after user inputs so a caller cannot replace a server-configured image.
+	if err := applyFixedImageInputs(taskParams, workflowInfo.ApiConfig.FixedImageInputs); err != nil {
+		return nil, "", nil, err
+	}
 	taskParams["workflow_id"] = workflowID
 	taskParams["prompt"] = workflowInfo.Prompt
 	taskParams["api_iden"] = workflowInfo.ApiConfig.ApiIden
@@ -320,6 +325,16 @@ func (s *PictureTaskService) PrepareTaskInputsAndWorkflow(ctx context.Context,
 	s.ensureWanxDims(ctx, workflowInfo.ApiConfig.ModelName, aspectRatioText, strings.ToUpper(finalResolution), taskParams)
 
 	return taskParams, userPictureInfoJSONString, workflowInfo, nil
+}
+
+func applyFixedImageInputs(params, fixed map[string]string) error {
+	for name, imageURL := range fixed {
+		if !strings.HasPrefix(name, "LoadImage") || strings.TrimSpace(imageURL) == "" {
+			return errors.Errorf("invalid fixed image input %q", name)
+		}
+		params[name] = strings.TrimSpace(imageURL)
+	}
+	return nil
 }
 
 // PrepareTaskInputsFromModelDirect 从模型直连模式请求构建任务参数
@@ -441,7 +456,6 @@ func (s *PictureTaskService) PrepareTaskInputsFromModelDirect(
 
 	return taskParams, userPictureInfoJSONString, nil
 }
-
 
 // collectInputsAndAspect 透传工作流输入并计算图片输入的纵横比（后者覆盖前者）
 func (s *PictureTaskService) collectInputsAndAspect(

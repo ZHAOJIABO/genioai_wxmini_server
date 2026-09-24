@@ -100,14 +100,15 @@ type Workflow struct {
 }
 
 type WorkflowApiConfig struct {
-	ApiIden             string  `json:"api_iden"`
-	EffectScene         string  `json:"effect_scene"`
-	TaskType            string  `json:"task_type"`
-	ModelName           string  `json:"model_name"`
-	TimeRatio           float32 `json:"time_ratio"`
-	DefaultTimeDuration uint16  `json:"default_time_duration"`
-	DefaultResolution   string  `json:"default_resolution"`
-	AuditReplaceBy      string  `json:"audit_replace_by"`
+	FixedImageInputs    map[string]string `json:"fixed_image_inputs,omitempty"`
+	ApiIden             string            `json:"api_iden"`
+	EffectScene         string            `json:"effect_scene"`
+	TaskType            string            `json:"task_type"`
+	ModelName           string            `json:"model_name"`
+	TimeRatio           float32           `json:"time_ratio"`
+	DefaultTimeDuration uint16            `json:"default_time_duration"`
+	DefaultResolution   string            `json:"default_resolution"`
+	AuditReplaceBy      string            `json:"audit_replace_by"`
 	// RequireAuditBypass 表示该工作流是否需要进行避审替换
 	// true: 当满足其他条件时（如用户兑换了GOOGLENICE优惠券），进行工作流替换
 	// false（默认）: 不进行替换
