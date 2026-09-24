@@ -8,6 +8,8 @@ import (
 	"strings"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/proto"
 )
 
 type CryptoMarshaler struct {
@@ -164,10 +166,7 @@ func (m *CryptoMarshaler) Unmarshal(data []byte, v interface{}) error {
 	// 解密数据
 	decrypted := m.decrypt(encryptedData)
 
-	// 使用 decoder 来处理 JSON 解码
-	decoder := json.NewDecoder(bytes.NewReader(decrypted))
-	decoder.UseNumber() // 使用 Number 类型来保持数字精度
-	return decoder.Decode(v)
+	return unmarshalRequestJSON(decrypted, v)
 }
 
 func (m *CryptoMarshaler) NewDecoder(r io.Reader) runtime.Decoder {
@@ -261,6 +260,13 @@ func (m *StreamCryptoMarshaler) Unmarshal(data []byte, v interface{}) error {
 		data = m.decrypt(decryptedData)
 	}
 
+	return unmarshalRequestJSON(data, v)
+}
+
+func unmarshalRequestJSON(data []byte, v interface{}) error {
+	if message, ok := v.(proto.Message); ok {
+		return (protojson.UnmarshalOptions{DiscardUnknown: true}).Unmarshal(data, message)
+	}
 	decoder := json.NewDecoder(bytes.NewReader(data))
 	decoder.UseNumber()
 	return decoder.Decode(v)
