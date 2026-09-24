@@ -126,11 +126,12 @@ func (vh *ValidationHandler) ValidateAndExtract(ctx context.Context, req interfa
 	}
 	result.RequestHeader = reqHeader
 
-	if err := paramsCheck(ctx, req, reqHeader); err != nil {
+	requestCtx := buildCtx(ctx, reqHeader)
+	if err := paramsCheck(requestCtx, req, reqHeader); err != nil {
 		return nil, err
 	}
 
-	result.MappedUserID = checkUserIDMapping(ctx, reqHeader.GetUserId())
+	result.MappedUserID = checkUserIDMapping(requestCtx, reqHeader.GetUserId())
 
 	return result, nil
 }
