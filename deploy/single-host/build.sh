@@ -26,6 +26,7 @@ if [[ "$BRAIN_DIR" != "--backend-only" ]]; then
   cp "$BRAIN_DIR/go.mod" "$BRAIN_DIR/go.sum" "$BUILD_TMP/brain/"
   cp -R "$BRAIN_DIR/cmd" "$BRAIN_DIR/internal" "$BRAIN_DIR/pkg" "$BUILD_TMP/brain/"
   docker build --platform linux/amd64 -f "$DEPLOY_DIR/brain.Dockerfile" \
+    --build-arg "GOPROXY=${GOPROXY:-https://goproxy.cn,direct}" \
     -t "genio-ai-brain:$RELEASE_TAG" "$BUILD_TMP/brain"
   IMAGES+=("genio-ai-brain:$RELEASE_TAG")
 fi

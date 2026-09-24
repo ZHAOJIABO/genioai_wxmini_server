@@ -1,4 +1,6 @@
 FROM public.ecr.aws/docker/library/golang:1.24 AS build
+ARG GOPROXY=https://goproxy.cn,direct
+ENV GOPROXY=${GOPROXY}
 WORKDIR /src
 COPY . .
 RUN CGO_ENABLED=0 go build -p 2 -trimpath -o /out/ai-brain ./cmd/server
